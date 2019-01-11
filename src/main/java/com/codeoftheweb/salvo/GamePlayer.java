@@ -39,6 +39,8 @@ public class GamePlayer {
         this.player = player;
     }
 
+    public long getId() { return id; }
+
     public Date getCreationDate() { return this.creationDate; }
 
     public void setCreationDate(Date date) { this.creationDate = date; }

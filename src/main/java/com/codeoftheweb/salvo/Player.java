@@ -31,6 +31,8 @@ public class Player {
         this.userName = user;
     }
 
+    public long getId() { return id; }
+
     public String getUserName() { return this.userName; }
 
     public void setUserName(String user) { this.userName = user; }
