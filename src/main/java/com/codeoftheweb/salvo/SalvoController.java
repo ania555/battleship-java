@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class SalvoController {
 
+    private GamePlayerRepository gamePlayerRepository;
 
     @Autowired
     private GameRepository gameRepository;
+
 
    @RequestMapping("/games")
    public List<Object> getAllGames() {
@@ -28,7 +30,19 @@ public class SalvoController {
         Map<String, Object> oneGame = new LinkedHashMap<String, Object>();
         oneGame.put("id", game.getId());
         oneGame.put("created", game.getCreationDate());
+        oneGame.put("gamePlayers", getGamePlayers(game));
         return oneGame;
+   }
+
+   public List<Object> getGamePlayers(Game game) {
+        return game.getGamePlayers().stream()
+                .map(gplr -> gplr.getId())
+                .collect(Collectors.toList());
+        }
+
+
+
+
    }
 
    /* public List<Object> getAllGames() {
@@ -37,4 +51,4 @@ public class SalvoController {
 
 
 
-}
+

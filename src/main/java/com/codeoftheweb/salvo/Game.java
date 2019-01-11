@@ -37,6 +37,8 @@ public class Game {
 
     public String toString() { return "date " + this.creationDate; }
 
+    public Set<GamePlayer> getGamePlayers() { return  gamePlayers; }
+
     public void addGamePlayer(GamePlayer gamePlayer) {
         gamePlayer.setGame(this);
         gamePlayers.add(gamePlayer);
