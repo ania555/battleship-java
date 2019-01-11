@@ -19,19 +19,21 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
-    private String creationDate;
-    //private Date creationDate;
+    //private String creationDate;
+    private Date creationDate;
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
     public Game() { }
 
-    public Game(String date) { this.creationDate = date; }
+    public Game(Date date) { this.creationDate = date; }
 
-    public String getCreationDate() { return this.creationDate; }
+    public Date getCreationDate() { return this.creationDate; }
 
-    public void setCreationDate(String date) { this.creationDate = date; }
+    public long getId() { return id; }
+
+    public void setCreationDate(Date date) { this.creationDate = date; }
 
     public String toString() { return "date " + this.creationDate; }
 

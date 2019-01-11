@@ -33,12 +33,12 @@ public class SalvoApplication {
 			playerRepository.save(p3);
 			playerRepository.save(p4);
 
-			Game g1 = new Game("2/17/2018, 3:20:15 PM");
-			Game g2 = new Game("2/17/2018, 4:20:15 PM");
-			Game g3 = new Game("2/17/2018, 5:20:15 PM");
-			Game g4 = new Game("2/17/2018, 6:20:15 PM");
-			Game g5 = new Game("2/17/2018: 7:20:15 PM");
-			Game g6 = new Game("2/17/2018: 8:20:15 PM");
+			Game g1 = new Game(new Date());
+			Game g2 = new Game(new Date());
+			Game g3 = new Game(new Date());
+			Game g4 = new Game(new Date());
+			Game g5 = new Game(new Date());
+			Game g6 = new Game(new Date());
 
 			gameRepository.save(g1);
 			gameRepository.save(g2);
