@@ -30,19 +30,29 @@ public class SalvoController {
         Map<String, Object> oneGame = new LinkedHashMap<String, Object>();
         oneGame.put("id", game.getId());
         oneGame.put("created", game.getCreationDate());
-        oneGame.put("gamePlayers", getGamePlayers(game));
+        oneGame.put("gamePlayers", getMyGamePlayers(game));
         return oneGame;
    }
 
-   public List<Object> getGamePlayers(Game game) {
+   public List<Object> getMyGamePlayers(Game game) {
         return game.getGamePlayers().stream()
-                .map(gplr -> gplr.getId())
+                .map(gamePl -> makeGmPlayerDTO(gamePl))
                 .collect(Collectors.toList());
         }
 
+    public Map<String, Object> makeGmPlayerDTO(GamePlayer gamePlayer) {
+        Map<String, Object> oneGmPlayer = new LinkedHashMap<String, Object>();
+        oneGmPlayer.put("id", gamePlayer.getId());
+        oneGmPlayer.put("player", makePlayerDTO(gamePlayer.getPlayer()));
+        return oneGmPlayer;
+    }
 
-
-
+    public Map<String, Object> makePlayerDTO(Player player) {
+        Map<String, Object> onePlayer = new LinkedHashMap<String, Object>();
+        onePlayer.put("id", player.getId());
+        onePlayer.put("email", player.getUserName());
+        return onePlayer;
+    }
    }
 
    /* public List<Object> getAllGames() {
