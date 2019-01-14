@@ -43,7 +43,7 @@ public class Game {
         gamePlayer.setGame(this);
         gamePlayers.add(gamePlayer);
     }
-    //@JsonIgnore
+    @JsonIgnore
     public List<Player> getPlayers() {
         return gamePlayers.stream().map(gmpl -> gmpl.getPlayer()).collect(toList());
     }
