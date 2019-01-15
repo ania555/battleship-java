@@ -25,7 +25,8 @@ public class SalvoApplication {
 	public CommandLineRunner initData(PlayerRepository playerRepository,
 									  GameRepository gameRepository,
 									  GamePlayerRepository gamePlayerRepository,
-									  ShipRepository shipRepository) {
+									  ShipRepository shipRepository,
+									  SalvoRepository salvoRepository) {
 		return (args) -> {
 			Player p1 = new Player("j.bauer@ctu.gov");
 			Player p2 = new Player("c.obrian@ctu.gov");
@@ -97,6 +98,30 @@ public class SalvoApplication {
 			shipRepository.save(S13);
 			shipRepository.save(S14);
 			shipRepository.save(S15);
+
+			Salvo Sav1 = new Salvo(1, GP1, new ArrayList<String>(asList("A9", "A10")));
+			Salvo Sav2 = new Salvo(2, GP1, new ArrayList<String>(asList("B7", "B8")));
+			Salvo Sav3 = new Salvo(3, GP1, new ArrayList<String>(asList("C1", "C2")));
+			Salvo Sav4 = new Salvo(4, GP1, new ArrayList<String>(asList("E5", "E6")));
+			Salvo Sav5 = new Salvo(5, GP1, new ArrayList<String>(asList("G3", "G4")));
+
+			Salvo Sav11 = new Salvo(1, GP2, new ArrayList<String>(asList("D9", "D10")));
+			Salvo Sav12 = new Salvo(2, GP2, new ArrayList<String>(asList("F5", "F6")));
+			Salvo Sav13 = new Salvo(3, GP2, new ArrayList<String>(asList("H3", "H4")));
+			Salvo Sav14 = new Salvo(4, GP2, new ArrayList<String>(asList("I1", "I2")));
+			Salvo Sav15 = new Salvo(5, GP2, new ArrayList<String>(asList("J7", "J8")));
+
+			salvoRepository.save(Sav1);
+			salvoRepository.save(Sav2);
+			salvoRepository.save(Sav3);
+			salvoRepository.save(Sav4);
+			salvoRepository.save(Sav5);
+			salvoRepository.save(Sav11);
+			salvoRepository.save(Sav12);
+			salvoRepository.save(Sav13);
+			salvoRepository.save(Sav14);
+			salvoRepository.save(Sav15);
+
 		};
 	}
 

@@ -31,6 +31,9 @@ public class SalvoController {
         oneGamePlayer.put("ships", gamePlayerRepository.findOne(id).getShips().stream()
         .map(oneShip -> makeShipsDTO(oneShip))
         .collect(Collectors.toList()));
+        oneGamePlayer.put("salvoes", gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream()
+        .map(gamePl -> makeSalGmPlayerDTO(gamePl))
+        .collect(Collectors.toList()));
         return oneGamePlayer;
     }
 
@@ -74,6 +77,29 @@ public class SalvoController {
         aoneShip.put("type", ship.getType());
         aoneShip.put("locations", ship.getLocations());
         return aoneShip;
+    }
+
+    /*public List<Object> getSalGmPlayers(id) {
+        return gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream()
+                .map(gamePl -> makeGmPlayerDTO(gamePl))
+                .collect(Collectors.toList());
+    }*/
+
+    public Map<String, Object> makeSalGmPlayerDTO(GamePlayer gamePlayer) {
+        Map<String, Object> oneSalGmPl = new LinkedHashMap<String, Object>();
+        oneSalGmPl.put("gamePlayerId", gamePlayer.getId());
+        oneSalGmPl.put("gamePlayerEmail", gamePlayer.getPlayer().getUserName());
+        oneSalGmPl.put("gamePlayerSalvoes", gamePlayer.getSalvoes().stream()
+        .map(salvo -> makeSalvoesDTO(salvo))
+        .collect(Collectors.toList()));
+        return oneSalGmPl;
+    }
+
+    public Map<String, Object> makeSalvoesDTO(Salvo salvo) {
+        Map<String, Object> oneSalvo = new LinkedHashMap<String, Object>();
+        oneSalvo.put("turn", salvo.getTurnNumber());
+        oneSalvo.put("locations", salvo.getLocations());
+        return oneSalvo;
     }
    }
 
