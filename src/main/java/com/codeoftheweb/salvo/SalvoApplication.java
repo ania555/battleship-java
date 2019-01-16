@@ -29,10 +29,10 @@ public class SalvoApplication {
 									  SalvoRepository salvoRepository,
 									  ScoreRepository scoreRepository) {
 		return (args) -> {
-			Player p1 = new Player("j.bauer@ctu.gov");
-			Player p2 = new Player("c.obrian@ctu.gov");
-			Player p3 = new Player("t.almeida@ctu.gov");
-			Player p4 = new Player("d.palmer@whitehouse.gov");
+			Player p1 = new Player("j.bauer@ctu.gov", "24");
+			Player p2 = new Player("c.obrian@ctu.gov", "42");
+			Player p3 = new Player("t.almeida@ctu.gov", "mole");
+			Player p4 = new Player("d.palmer@whitehouse.gov", "palmer");
 
 			playerRepository.save(p1);
 			playerRepository.save(p2);
