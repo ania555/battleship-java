@@ -15,10 +15,21 @@ import java.util.stream.Collectors;
 public class SalvoController {
 
     @Autowired
+    private PlayerRepository playerRepository;
+
+    @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
     @Autowired
     private GameRepository gameRepository;
+
+
+    @RequestMapping("/leader_board")
+    public Object getLeaderBoard() {
+        return playerRepository.findAll().stream()
+                .map(player -> makeLeaderBoardDTO(player))
+                .collect(Collectors.toList());
+    }
 
     @RequestMapping("/game_view/{id}")
     public Object getGamePlayerView(@PathVariable Long id) {
@@ -106,6 +117,39 @@ public class SalvoController {
     public String showResult(Score score) {
         if (score == null) { return "game not finished"; }
         else { return score.getResult(); }
+    }
+
+    public Map<String, Object> makeLeaderBoardDTO(Player player) {
+        Map<String, Object> onePlayer = new LinkedHashMap<String, Object>();
+        onePlayer.put("id", player.getId());
+        onePlayer.put("email", player.getUserName());
+        onePlayer.put("totalScore", countTotalScore(player));
+        onePlayer.put("win_count", countWins(player));
+        onePlayer.put("loss_count", countLosses(player));
+        onePlayer.put("tie_count", countTies(player));
+        return onePlayer;
+    }
+
+    public int countWins(Player player) {
+        List<Object> wins = player.getScores().stream().filter(p -> p.getResult().equals("won")).collect(Collectors.toList());
+        return wins.size();
+    }
+
+    public int countLosses(Player player) {
+        List<Object> losses = player.getScores().stream().filter(p -> p.getResult().equals("lost")).collect(Collectors.toList());
+        return losses.size();
+    }
+
+    public int countTies(Player player) {
+        List<Object> ties = player.getScores().stream().filter(p -> p.getResult().equals("tied")).collect(Collectors.toList());
+        return ties.size();
+    }
+
+    public double countTotalScore(Player player) {
+        //double wins = countWins(player);
+        //double ties = countTies(player);
+        //double total = 1 * wins + 0.5 * ties;
+        return 1* countWins(player) + 0.5 * countTies(player);
     }
 
     }
