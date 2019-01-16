@@ -55,6 +55,13 @@ public class GamePlayer {
 
     public void setGame(Game game) { this.game = game; }
 
+    public Score getScore() {
+        String plrId = this.player.getUserName();
+        return this.game.getScores().stream().filter(s -> s.getPlayer().getUserName().equals(plrId)).findFirst().orElse(null);
+    }
+
+
+
     public Set<Ship> getShips() { return ships; }
 
     public void addShip(Ship ship) {

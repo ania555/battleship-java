@@ -61,6 +61,7 @@ public class SalvoController {
     public Map<String, Object> makeGmPlayerDTO(GamePlayer gamePlayer) {
         Map<String, Object> oneGmPlayer = new LinkedHashMap<String, Object>();
         oneGmPlayer.put("id", gamePlayer.getId());
+        oneGmPlayer.put("score", showResult(gamePlayer.getScore()));
         oneGmPlayer.put("player", makePlayerDTO(gamePlayer.getPlayer()));
         return oneGmPlayer;
     }
@@ -101,7 +102,14 @@ public class SalvoController {
         oneSalvo.put("locations", salvo.getLocations());
         return oneSalvo;
     }
-   }
+
+    public String showResult(Score score) {
+        if (score == null) { return "game not finished"; }
+        else { return score.getResult(); }
+    }
+
+    }
+
 
    /* public List<Object> getAllGames() {
     return gameRepository.findAll().stream().map(a -> a.getId()).collect(Collectors.toList());

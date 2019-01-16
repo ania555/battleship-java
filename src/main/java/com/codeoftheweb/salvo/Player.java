@@ -25,6 +25,9 @@ public class Player {
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<Score> scores;
+
     public Player() { }
 
     public Player(String user) {
@@ -47,5 +50,12 @@ public class Player {
     @JsonIgnore
     public List<Game> getGames() {
         return gamePlayers.stream().map(gmpl -> gmpl.getGame()).collect(toList());
+    }
+
+    public Set<Score> getScores() { return  scores; }
+
+    public void addScore(Score score) {
+        score.setPlayer(this);
+        scores.add(score);
     }
 }
