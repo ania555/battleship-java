@@ -45,9 +45,31 @@ function showShipsGrid(item) {
                 column.setAttribute("id", String.fromCharCode(65 + i) + "" + (j + 1));
                 for (let k = 0; k < item.ships.length; k++) {
                     for (let l = 0; l < item.ships[k].locations.length; l++) {
-                        if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l]) {
-                            column.innerHTML = String.fromCharCode(65 + i) + "" + (j + 1);
-                        }
+                        let n = getParams();
+                        //if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l]) {
+
+
+                            for (let m = 0; m < item.salvoes.length; m++) {
+                                if (item.salvoes[m].gamePlayerId != n) {
+                                    for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
+                                        for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
+                                            if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l] && String.fromCharCode(65 + i) + "" + (j + 1) != item.salvoes[m].gamePlayerSalvoes[p].locations[r]) {
+                                                column.setAttribute("class", "ship");
+                                            }
+                                            else if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l] && String.fromCharCode(65 + i) + "" + (j + 1) == item.salvoes[m].gamePlayerSalvoes[p].locations[r]) {
+                                                        column.innerHTML = item.salvoes[m].gamePlayerSalvoes[p].turn;
+                                                        //String.fromCharCode(65 + i) + "" + (j + 1);
+                                                        //column.setAttribute("class", "salvo");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+
+                        //}
                     }
                 }
                 row.appendChild(column);
@@ -83,6 +105,11 @@ function showSalvoesGrid(item) {
         }
     }
 }
+
+
+
+
+
 
 function showPlayers(item) {
     let container = document.querySelector("#players");
