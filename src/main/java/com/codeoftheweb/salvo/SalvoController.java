@@ -1,9 +1,11 @@
 package com.codeoftheweb.salvo;
 
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,6 +25,18 @@ public class SalvoController {
     @Autowired
     private GameRepository gameRepository;
 
+    @RequestMapping(value="/players", method= RequestMethod.POST)
+    public Map<String, Object> enroll(@RequestBody Player player)  {
+        Map<String, Object> showCrPlayer = new LinkedHashMap<String, Object>();
+        if (playerRepository.findByUserName(player.getUserName()) == null) {
+            Player createdPlayer = new Player(player.getUserName(), player.getPassword());
+            playerRepository.save(createdPlayer);
+            showCrPlayer.put("user", player.getUserName());
+        } else {
+            showCrPlayer.put("error", "Name in use");
+        }
+        return showCrPlayer;
+    }
 
     @RequestMapping("/leader_board")
     public Object getLeaderBoard() {
@@ -49,6 +63,38 @@ public class SalvoController {
     }
 
    @RequestMapping("/games")
+   public Map<String, Object> makeLogedPlayerGamesDTO(Authentication authentication) {
+       Map<String, Object> logPlayerGames = new LinkedHashMap<String, Object>();
+       if (isGuest(authentication) == false) {
+           logPlayerGames.put("player", makeLogPlayerDTO(playerRepository.findByUserName(authentication.getName())));
+           logPlayerGames.put("games", getAllGames());
+       }
+       else {
+           logPlayerGames.put("player", makeEmptyDTO());
+           logPlayerGames.put("games", getAllGames());
+       }
+       return logPlayerGames;
+   }
+
+   public Map<String, Object> makeLogPlayerDTO(Player player) {
+       Map<String, Object> logPlayer = new LinkedHashMap<String, Object>();
+           logPlayer.put("id", player.getId());
+           logPlayer.put("name", player.getUserName());
+           return logPlayer;
+    }
+
+    public Map<String, Object> makeEmptyDTO() {
+        Map<String, Object> emptyPlayer = new LinkedHashMap<String, Object>();
+        emptyPlayer.put("id", null);
+        emptyPlayer.put("name", null);
+        return emptyPlayer;
+    }
+
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+    }
+
+
    public List<Object> getAllGames() {
        return gameRepository.findAll().stream()
                .map(game -> makeGameDTO(game))

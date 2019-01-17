@@ -50,7 +50,17 @@ function showGames(item) {
 
 function showLeaders(item) {
     let container = document.querySelector("#leader-board");
-    for (let i = 0; i < item.length; i++) {
+
+    let sortedItems = item.sort(function(a, b) {
+        if (b.totalScore !== a.totalScore) {
+            return  b.totalScore - a.totalScore
+        }
+        else {
+            return b.win_count - a.win_count
+        }
+    });
+
+    for (let i = 0; i < sortedItems.length; i++) {
     console.log("row")
         let row = document.createElement("tr");
         container.appendChild(row);
