@@ -16,5 +16,12 @@ th, td {
 .to_left {
   width: 250px;
   text-align: left;
+}
 
+#loginForm {
+     visibility: visible;
+}
+
+#logoutForm {
+     visibility: hidden;
 }

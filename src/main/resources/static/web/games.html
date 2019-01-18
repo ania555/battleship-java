@@ -8,17 +8,23 @@
 <body>
     <h1>Games</h1>
     <br>
+    <div id="loginForm">
+        <form >
+            <label for="user">username<input id="user" type="text"></label>
+            <label for="password">password<input id="password" type="text"></label>
+            <input id="login" type="button" value="login"></input>
+        </form>
+    </div>
+    <br>
+    <div id="logoutForm">
+        <form >
+             <input id="logout" type="button" value="logout"></input>
+        </form>
+    </div>
+    <br>
     <ol id="output"></ol>
     <br>
-    <table id="leader-board">
-        <tr>
-            <th>Name</th>
-            <th>Total</th>
-            <th>Won</th>
-            <th>Lost</th>
-            <th>Tied</th>
-        </tr>
-    </table>
+    <table id="leader-board"></table>
 
 
     <script src="games.js"></script>
