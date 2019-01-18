@@ -8,7 +8,7 @@ function loadData() {
     })
     .then((json) => {
         //console.log(json);
-        var myGames = json;
+        var myGames = json.games;
         console.log(myGames);
         showGames(myGames);
     })

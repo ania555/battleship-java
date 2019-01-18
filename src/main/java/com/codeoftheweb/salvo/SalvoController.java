@@ -1,11 +1,13 @@
 package com.codeoftheweb.salvo;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,16 +28,17 @@ public class SalvoController {
     private GameRepository gameRepository;
 
     @RequestMapping(value="/players", method= RequestMethod.POST)
-    public Map<String, Object> enroll(@RequestBody Player player)  {
+    public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, @RequestParam String password) {
         Map<String, Object> showCrPlayer = new LinkedHashMap<String, Object>();
-        if (playerRepository.findByUserName(player.getUserName()) == null) {
-            Player createdPlayer = new Player(player.getUserName(), player.getPassword());
-            playerRepository.save(createdPlayer);
-            showCrPlayer.put("user", player.getUserName());
-        } else {
-            showCrPlayer.put("error", "Name in use");
+        if (userName.isEmpty()) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         }
-        return showCrPlayer;
+        Player user = playerRepository.findByUserName(userName);
+        if (user != null) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Username already exists"), HttpStatus.CONFLICT);
+        }
+        Player newPlayer = playerRepository.save(new Player(userName, password));
+        return new ResponseEntity<Map<String, Object>>(makeMap("userName", newPlayer.getUserName()), HttpStatus.CREATED);
     }
 
     @RequestMapping("/leader_board")
@@ -76,32 +79,32 @@ public class SalvoController {
        return logPlayerGames;
    }
 
-   public Map<String, Object> makeLogPlayerDTO(Player player) {
+   private Map<String, Object> makeLogPlayerDTO(Player player) {
        Map<String, Object> logPlayer = new LinkedHashMap<String, Object>();
            logPlayer.put("id", player.getId());
            logPlayer.put("name", player.getUserName());
            return logPlayer;
     }
 
-    public Map<String, Object> makeEmptyDTO() {
-        Map<String, Object> emptyPlayer = new LinkedHashMap<String, Object>();
+   private Map<String, Object> makeEmptyDTO() {
+       Map<String, Object> emptyPlayer = new LinkedHashMap<String, Object>();
         emptyPlayer.put("id", null);
         emptyPlayer.put("name", null);
         return emptyPlayer;
-    }
+   }
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
 
-   public List<Object> getAllGames() {
+   private List<Object> getAllGames() {
        return gameRepository.findAll().stream()
                .map(game -> makeGameDTO(game))
                .collect(Collectors.toList());
    }
 
-   public Map<String, Object> makeGameDTO(Game game) {
+   private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> oneGame = new LinkedHashMap<String, Object>();
         oneGame.put("id", game.getId());
         oneGame.put("created", game.getCreationDate());
@@ -109,63 +112,58 @@ public class SalvoController {
         return oneGame;
    }
 
-   public List<Object> getMyGamePlayers(Game game) {
+   private List<Object> getMyGamePlayers(Game game) {
         return game.getGamePlayers().stream()
                 .map(gamePl -> makeGmPlayerDTO(gamePl))
                 .collect(Collectors.toList());
         }
 
-    public Map<String, Object> makeGmPlayerDTO(GamePlayer gamePlayer) {
+   private Map<String, Object> makeGmPlayerDTO(GamePlayer gamePlayer) {
         Map<String, Object> oneGmPlayer = new LinkedHashMap<String, Object>();
         oneGmPlayer.put("id", gamePlayer.getId());
         oneGmPlayer.put("score", showResult(gamePlayer.getScore()));
         oneGmPlayer.put("player", makePlayerDTO(gamePlayer.getPlayer()));
         return oneGmPlayer;
-    }
+   }
 
-    public Map<String, Object> makePlayerDTO(Player player) {
+   private Map<String, Object> makePlayerDTO(Player player) {
         Map<String, Object> onePlayer = new LinkedHashMap<String, Object>();
         onePlayer.put("id", player.getId());
         onePlayer.put("email", player.getUserName());
         return onePlayer;
-    }
+   }
 
-    public  Map<String, Object> makeShipsDTO(Ship ship) {
+   private  Map<String, Object> makeShipsDTO(Ship ship) {
         Map<String, Object> aoneShip = new LinkedHashMap<String, Object>();
         aoneShip.put("type", ship.getType());
         aoneShip.put("locations", ship.getLocations());
         return aoneShip;
-    }
+   }
 
-    /*public List<Object> getSalGmPlayers(id) {
-        return gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream()
-                .map(gamePl -> makeGmPlayerDTO(gamePl))
-                .collect(Collectors.toList());
-    }*/
 
-    public Map<String, Object> makeSalGmPlayerDTO(GamePlayer gamePlayer) {
-        Map<String, Object> oneSalGmPl = new LinkedHashMap<String, Object>();
-        oneSalGmPl.put("gamePlayerId", gamePlayer.getId());
-        oneSalGmPl.put("gamePlayerEmail", gamePlayer.getPlayer().getUserName());
-        oneSalGmPl.put("gamePlayerSalvoes", gamePlayer.getSalvoes().stream()
-        .map(salvo -> makeSalvoesDTO(salvo))
-        .collect(Collectors.toList()));
-        return oneSalGmPl;
-    }
+   private Map<String, Object> makeSalGmPlayerDTO(GamePlayer gamePlayer) {
+       Map<String, Object> oneSalGmPl = new LinkedHashMap<String, Object>();
+       oneSalGmPl.put("gamePlayerId", gamePlayer.getId());
+       oneSalGmPl.put("gamePlayerEmail", gamePlayer.getPlayer().getUserName());
+       oneSalGmPl.put("gamePlayerSalvoes", gamePlayer.getSalvoes().stream()
+       .map(salvo -> makeSalvoesDTO(salvo))
+       .collect(Collectors.toList()));
+       return oneSalGmPl;
+   }
 
-    public Map<String, Object> makeSalvoesDTO(Salvo salvo) {
+    private Map<String, Object> makeSalvoesDTO(Salvo salvo) {
         Map<String, Object> oneSalvo = new LinkedHashMap<String, Object>();
         oneSalvo.put("turn", salvo.getTurnNumber());
         oneSalvo.put("locations", salvo.getLocations());
         return oneSalvo;
     }
 
-    public String showResult(Score score) {
+    private String showResult(Score score) {
         if (score == null) { return "game not finished"; }
         else { return score.getResult(); }
     }
 
-    public Map<String, Object> makeLeaderBoardDTO(Player player) {
+    private Map<String, Object> makeLeaderBoardDTO(Player player) {
         Map<String, Object> onePlayer = new LinkedHashMap<String, Object>();
         onePlayer.put("id", player.getId());
         onePlayer.put("email", player.getUserName());
@@ -176,34 +174,36 @@ public class SalvoController {
         return onePlayer;
     }
 
-    public int countWins(Player player) {
+    private int countWins(Player player) {
         List<Object> wins = player.getScores().stream().filter(p -> p.getResult().equals("won")).collect(Collectors.toList());
         return wins.size();
     }
 
-    public int countLosses(Player player) {
+    private int countLosses(Player player) {
         List<Object> losses = player.getScores().stream().filter(p -> p.getResult().equals("lost")).collect(Collectors.toList());
         return losses.size();
     }
 
-    public int countTies(Player player) {
+    private int countTies(Player player) {
         List<Object> ties = player.getScores().stream().filter(p -> p.getResult().equals("tied")).collect(Collectors.toList());
         return ties.size();
     }
 
-    public double countTotalScore(Player player) {
+    private double countTotalScore(Player player) {
         //double wins = countWins(player);
         //double ties = countTies(player);
         //double total = 1 * wins + 0.5 * ties;
         return 1* countWins(player) + 0.5 * countTies(player);
     }
 
+    private Map<String, Object> makeMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
     }
 
+  }
 
-   /* public List<Object> getAllGames() {
-    return gameRepository.findAll().stream().map(a -> a.getId()).collect(Collectors.toList());
-    }*/
 
 
 

@@ -3,14 +3,19 @@ var ooo = window.location.search;
 console.log(ooo);
 
 function getParams() {
-  var obj = {};
-  var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
+  //var obj = {};
+  //var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
 
-  window.location.search.replace(reg, function(match, param, val) {
-    obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
-  });
-  console.log(obj.gp);
-  return obj.gp;
+let ppp = window.location.search;
+let last = ppp.indexOf("p") + 1;
+let size = ppp.length;
+let result = ppp.slice(last, size);
+
+ /*window.location.search.replace(reg, function(match, param, val) {
+      obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
+    });*/
+  console.log(result);
+  return result;
 }
 
 function loadData() {
