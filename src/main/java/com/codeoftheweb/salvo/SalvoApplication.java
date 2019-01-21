@@ -201,6 +201,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/**").permitAll();
 				//.anyRequest().fullyAuthenticated()
                 .antMatchers( "/web/**", "/api/games", "/api/leader_board").permitAll()
+                .antMatchers("/api/players").permitAll()
+                .antMatchers("/api/login").permitAll()
                 //.antMatchers("/rest/**").hasAuthority("ADMIN")
                 .antMatchers("/api/**", "/rest/**").hasAuthority("USER");
 
@@ -210,7 +212,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/api/login");
 
 		http.logout().logoutUrl("/api/logout")
-                //.logoutSuccessUrl("/home")
                 .invalidateHttpSession(true);
                // .addLogoutHandler(logoutHandler)
                // .deleteCookies(cookieNamesToClear)  ;

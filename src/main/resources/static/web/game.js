@@ -1,4 +1,5 @@
 loadData()
+loadPlayer()
 var ooo = window.location.search;
 console.log(ooo);
 
@@ -31,6 +32,23 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         showSalvoesGrid(myGame);
         //showShips(myGame);
         showPlayers(myGame);
+        listenLogout();
+    })
+    .catch((error) => {
+        console.log("Request failed: " + error.message)
+    })
+}
+
+function loadPlayer() {
+let url = " http://localhost:8080/api/games/";
+    fetch(url).then((response) => {
+        return response.json()
+    })
+    .then((json) => {
+        console.log(json);
+        var myPlayer = json.player;
+        console.log(myPlayer);
+        showLoggedUser(myPlayer);
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -143,4 +161,34 @@ function showShips(item) {
         oneShip.innerHTML = item.ships[i].locations;
         container.appendChild(oneShip);
     }
+}
+
+function listenLogout() {
+    console.log("listen");
+    document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
+}
+
+function logoutPlayer() {
+    console.log("logout");
+
+    fetch("/api/logout", {
+    credentials: 'include',
+    headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    method: 'POST',
+    })
+    .then(function (data) {
+    console.log('Request success: ', data);
+    window.location.assign("http://localhost:8080/web/games.html");
+    alert("You are logged out");
+    localStorage.clear();
+    })
+    .catch(function (error) {
+    console.log('Request failure: ', error);
+    });
+}
+
+function showLoggedUser(item) {
+    document.querySelector("#loggedUser").innerHTML = item.name;
 }
