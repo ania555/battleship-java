@@ -49,7 +49,7 @@ public class SalvoController {
     }
 
     @RequestMapping("/game_view/{id}")
-    public Object getGamePlayerView(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getGamePlayerView(@PathVariable Long id, Authentication authentication) {
         Map<String, Object> oneGamePlayer = new LinkedHashMap<String, Object>();
         oneGamePlayer.put("id", gamePlayerRepository.findOne(id).getGame().getId());
         oneGamePlayer.put("created", gamePlayerRepository.findOne(id).getGame().getCreationDate());
@@ -62,7 +62,11 @@ public class SalvoController {
         oneGamePlayer.put("salvoes", gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream()
         .map(gamePl -> makeSalGmPlayerDTO(gamePl))
         .collect(Collectors.toList()));
-        return oneGamePlayer;
+        if (playerRepository.findByUserName(authentication.getName()).getUserName() == gamePlayerRepository.findOne(id).getPlayer().getUserName()) {
+            return new  ResponseEntity<Map<String, Object>>(oneGamePlayer, HttpStatus.OK);
+        }
+        else {return new  ResponseEntity<Map<String, Object>>(makeMap("error", "unauthorized"), HttpStatus.UNAUTHORIZED);}
+        //return oneGamePlayer;
     }
 
    @RequestMapping("/games")

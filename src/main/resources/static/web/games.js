@@ -39,9 +39,12 @@ function showGames(item) {
     let container = document.querySelector("#output");
     container.innerHTML = " ";
     for (let i = 0; i < item.length; i++) {
+        let oneLink = document.createElement("a");
+        oneLink.setAttribute("href", findLink(item[i]));
+        container.appendChild(oneLink);
         let oneGame = document.createElement("li");
         oneGame.innerHTML = new Date(item[i].created).toUTCString() + ": "
-        container.appendChild(oneGame);
+        oneLink.appendChild(oneGame);
         for (let j = 0; j < item[i].gamePlayers.length; j++) {
             let email = document.createElement("span");
             email.innerHTML = item[i].gamePlayers[j].player.email + ", ";
@@ -200,10 +203,10 @@ function loginNow(user) {
 }
 
 window.onload = function () {
-    var showIn = localStorage.getItem('showLogin');
-    var showOut = localStorage.getItem('showLogout');
-    var showLogUser = localStorage.getItem('loggedUser');
-    var showUserName = localStorage.getItem('userName');
+    let showIn = localStorage.getItem('showLogin');
+    let showOut = localStorage.getItem('showLogout');
+    let showLogUser = localStorage.getItem('loggedUser');
+    let showUserName = localStorage.getItem('userName');
     if(showIn === 'visible'){
         document.getElementById('loginForm').style.visibility = 'visible';
     }
@@ -234,6 +237,7 @@ function logoutNow () {
     localStorage.setItem('showLogin', 'visible');
     localStorage.setItem('showLogout', 'hidden');
     localStorage.setItem('loggedUser', 'hidden');
+    localStorage.setItem('userName', null);
 }
 
 function getSignPlayer() {
@@ -304,4 +308,18 @@ function loginUser(user, password) {
     if (signStatus == 409) {alert("Username already exists"); return false;}
     else if (signStatus != 201 && signStatus != 409) { return false;}
     else if (signStatus == 201) {loginPlayer(user, password)}
+}
+
+function findLink(item) {
+
+    let showUserName = localStorage.getItem('userName');
+    console.log(showUserName);
+    if (showUserName == null) { return "games.html"}
+    else if (item.gamePlayers.length == 0) { return "games.html"}
+    else if (item.gamePlayers.length == 1 && item.gamePlayers[0].player.email == showUserName) {return "game.html?gp" + item.gamePlayers[0].id;}
+    else if (item.gamePlayers.length == 1 && item.gamePlayers[0].player.email != showUserName) { return "games.html"}
+
+    else if (item.gamePlayers.length == 2 && item.gamePlayers[0].player.email == showUserName) {return "game.html?gp" + item.gamePlayers[0].id;}
+    else if (item.gamePlayers.length == 2 && item.gamePlayers[1].player.email == showUserName) {return "game.html?gp" + item.gamePlayers[1].id;}
+    else if (item.gamePlayers.length == 2 && item.gamePlayers[0].player.email != showUserName && item.gamePlayers[1].player.email != showUserName) {return "games.html"}
 }
