@@ -7,10 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
@@ -26,6 +23,43 @@ public class SalvoController {
 
     @Autowired
     private GameRepository gameRepository;
+
+
+    @RequestMapping(value="/api/game/{id}/players", method= RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> joinGame(@RequestParam String userName, @PathVariable Long id) {
+        if (userName.isEmpty()) {
+            return new ResponseEntity<Map<String, Object>>(makeResp("error", "No name"), HttpStatus.FORBIDDEN);
+        }
+        Player user = playerRepository.findByUserName(userName);
+        if (user == null) {
+            return new ResponseEntity<Map<String, Object>>(makeResp("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+        Game thisGame = gameRepository.findOne(id);
+        if (thisGame == null) {
+            return new ResponseEntity<Map<String, Object>>(makeResp("error", "No such game"), HttpStatus.FORBIDDEN);
+        }
+        int size = thisGame.getGamePlayers().stream().collect(Collectors.toList()).size();
+        if (size > 1) {
+            return new ResponseEntity<Map<String, Object>>(makeResp("error", "game is full"), HttpStatus.FORBIDDEN);
+        }
+
+        GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(thisGame, user));
+        return new ResponseEntity<Map<String, Object>>(makeResp("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value="/games", method= RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createGame(@RequestParam String userName) {
+        if (userName.isEmpty()) {
+            return new ResponseEntity<Map<String, Object>>(makeResp("error", "No name"), HttpStatus.FORBIDDEN);
+        }
+        Player user = playerRepository.findByUserName(userName);
+        if (user == null) {
+            return new ResponseEntity<Map<String, Object>>(makeResp("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+        Game newGame = gameRepository.save(new Game(new Date()));
+        GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(newGame, user));
+        return new ResponseEntity<Map<String, Object>>(makeResp("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+    }
 
     @RequestMapping(value="/players", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, @RequestParam String password) {
@@ -204,6 +238,12 @@ public class SalvoController {
         Map<String, Object> map = new HashMap<>();
         map.put(key, value);
         return map;
+    }
+
+    private Map<String, Object> makeResp(String key, Object value) {
+        Map<String, Object> gameMap = new HashMap<>();
+        gameMap.put(key, value);
+        return gameMap;
     }
 
   }

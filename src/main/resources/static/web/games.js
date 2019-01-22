@@ -39,9 +39,16 @@ function showGames(item) {
     let container = document.querySelector("#output");
     container.innerHTML = " ";
     for (let i = 0; i < item.length; i++) {
+        let mySpan = document.createElement("span");
+        container.appendChild(mySpan);
         let oneLink = document.createElement("a");
         oneLink.setAttribute("href", findLink(item[i]));
-        container.appendChild(oneLink);
+        mySpan.appendChild(oneLink);
+        let oneButton = document.createElement("input");
+        oneButton.setAttribute("id", "game" + item[i].id);
+        oneButton.setAttribute("type", "button");
+        oneButton.setAttribute("value", "join game");
+        mySpan.appendChild(oneButton);
         let oneGame = document.createElement("li");
         oneGame.innerHTML = new Date(item[i].created).toUTCString() + ": "
         oneLink.appendChild(oneGame);
@@ -100,6 +107,7 @@ function listenLogs() {
     document.querySelector("#login").addEventListener("click", function () {findPlayer()});
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
     document.querySelector("#signin").addEventListener("click", function () {getSignPlayer()});
+    document.querySelector("#createGame").addEventListener("click", function () {createNewGame()});
 }
 
 function findPlayer() {
@@ -311,7 +319,6 @@ function loginUser(user, password) {
 }
 
 function findLink(item) {
-
     let showUserName = localStorage.getItem('userName');
     console.log(showUserName);
     if (showUserName == null) { return "games.html"}
@@ -322,4 +329,43 @@ function findLink(item) {
     else if (item.gamePlayers.length == 2 && item.gamePlayers[0].player.email == showUserName) {return "game.html?gp" + item.gamePlayers[0].id;}
     else if (item.gamePlayers.length == 2 && item.gamePlayers[1].player.email == showUserName) {return "game.html?gp" + item.gamePlayers[1].id;}
     else if (item.gamePlayers.length == 2 && item.gamePlayers[0].player.email != showUserName && item.gamePlayers[1].player.email != showUserName) {return "games.html"}
+}
+
+function createNewGame() {
+    console.log("new game");
+    let user = localStorage.getItem('userName');
+    console.log(user);
+    fetch("/api/games", {
+        credentials: 'include',
+        headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        method: 'POST',
+        body: 'userName='+ user,
+        })
+        .then(function (data) {
+        console.log('Request success: ', data);
+        let datStatus= data.status;
+        checkGameCreation(datStatus);
+        return data.json()
+        }).then(function (json) {
+        console.log(json)
+        let myId = json.gpId.toString();
+        console.log(myId);
+        loadGameView(myId);
+        })
+        .catch(function (error) {
+        console.log('Request failure: ', error);
+        });
+}
+
+function checkGameCreation(status) {
+     console.log(status);
+     if (status == 201) {alert("You have created a new game")}
+     else if (status == 401) {alert("You have to log in")}
+}
+
+function loadGameView(item) {
+    if (item != null) {window.location.assign("http://localhost:8080/web/game.html?gp" + item)}
+    //alert("You have to log in")
 }
