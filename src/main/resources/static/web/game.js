@@ -28,11 +28,13 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         //console.log(json);
         var myGame = json;
         console.log(myGame);
-        showShipsGrid(myGame);
+        //showShipsGrid(myGame);
         showSalvoesGrid(myGame);
-        //showShips(myGame);
+        showShips(myGame);
         showPlayers(myGame);
         listenLogout();
+        onlyShips(myGame);
+        onlySalvoes(myGame);
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -76,6 +78,7 @@ function showShipsGrid(item) {
                                 if (item.salvoes[m].gamePlayerId != n) {
                                     for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
                                         for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
+                                            //  && ( || item.salvoes[m].gamePlayerSalvoes[p].locations[r] == null)
                                             if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l] && String.fromCharCode(65 + i) + "" + (j + 1) != item.salvoes[m].gamePlayerSalvoes[p].locations[r]) {
                                                 column.setAttribute("class", "ship");
                                             }
@@ -130,10 +133,6 @@ function showSalvoesGrid(item) {
 }
 
 
-
-
-
-
 function showPlayers(item) {
     let container = document.querySelector("#players");
     for (let i = 0; i < item.gamePlayers.length; i++) {
@@ -148,10 +147,8 @@ function showPlayers(item) {
            container.appendChild(onePl);
        }
     }
-//    let verVer = document.createElement("span");
-//    verVer.innerHTML = "versus ";
-//    container.insertBefore(verVer, container.childNodes[1]);
 }
+
 
 function showShips(item) {
     let container = document.querySelector("#ship");
@@ -191,4 +188,74 @@ function logoutPlayer() {
 
 function showLoggedUser(item) {
     document.querySelector("#loggedUser").innerHTML = item.name;
+}
+
+
+function sendShips() {
+    console.log("create ships");
+
+    let myData = JSON.stringify([ { "type": "destroyer", "locations": ["A1", "B1", "C1"] },
+                   { "type": "patrol boat", "locations": ["H5", "H6"] },
+                   { "type": "Aircraft Carrier", "locations": ["A3", "B3", "C3", "D3", "E3"] },
+                   { "type": "Battleship", "locations": ["A8", "B8", "C8", "D8"] },
+                   { "type": "Submarine", "locations": ["A10", "B10", "C10"] }
+                 ]);
+    const url = "/api/games/players/" + getParams() + "/ships";
+
+    fetch(url, {
+    credentials: 'include',
+    headers: {
+    'Content-Type': 'application/json',
+    Accept: "application/json"
+    },
+    method: 'POST',
+    body: myData,
+    })
+    .then(function (data) {
+    console.log('Request success: ', data);
+    return data.json()
+    }).then(function (json) {
+    console.log(json)
+    location.reload();
+    })
+    .catch(function (error) {
+    console.log('Request failure: ', error);
+    });
+}
+
+function onlyShips(item) {
+    let container = document.querySelector("#grid");
+    for (let i = 0; i < 10; i++ ) {
+        let row = document.createElement("tr");
+        container.appendChild(row);
+        let firstCol = document.createElement("td");
+        firstCol.innerHTML = String.fromCharCode(65 + i);
+        row.appendChild(firstCol);
+        for (j = 0; j < 10; j++) {
+            let column = document.createElement("td");
+            column.setAttribute("id", String.fromCharCode(65 + i) + "" + (j + 1));
+            for (let k = 0; k < item.ships.length; k++) {
+                for (let l = 0; l < item.ships[k].locations.length; l++) {
+                    if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l]) {
+                       column.setAttribute("class", "ship");
+                    }
+                }
+            }
+            row.appendChild(column);
+        }
+    }
+}
+function onlySalvoes(item) {
+    let n = getParams();
+    for (let m = 0; m < item.salvoes.length; m++) {
+       if (item.salvoes[m].gamePlayerId != n) {
+           for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
+                for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
+                    if (document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).getAttribute("class") == "ship") {
+                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).innerHTML = item.salvoes[m].gamePlayerSalvoes[p].turn;
+                    }
+                }
+           }
+       }
+    }
 }

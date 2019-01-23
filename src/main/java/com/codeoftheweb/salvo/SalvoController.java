@@ -24,44 +24,75 @@ public class SalvoController {
     @Autowired
     private GameRepository gameRepository;
 
+    @Autowired
+    private ShipRepository shipRepository;
 
-    @RequestMapping(path="/game/{id}/players", method= RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long id, Authentication authentication) {
+
+    @RequestMapping(value="/games/players/{gamePlayerId}/ships", method= RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> placeShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
+        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
+        Player user = playerRepository.findByUserName(userName);
+        if (user == null) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+
+        GamePlayer thisGmPl = gamePlayerRepository.findOne(gamePlayerId);
+        if (thisGmPl == null) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+
+        String thisGmPlName = thisGmPl.getPlayer().getUserName();
+        if (user.getUserName() != thisGmPlName) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+
+        Set thisGmPlShips = thisGmPl.getShips();
+        if (thisGmPlShips.size() != 0) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Ships already placed"), HttpStatus.FORBIDDEN);
+        }
+        ships.stream().map(ship -> shipRepository.save(new Ship(ship.getType(), ship.getLocations(), thisGmPl))).collect(Collectors.toList());
+        return new ResponseEntity<Map<String, Object>>(makeMap("success", "Ships created"), HttpStatus.CREATED);
+    }
+
+
+    @RequestMapping(path="/game/{gameId}/players", method= RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long gameId, Authentication authentication) {
         String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
         /*if (userName.isEmpty()) {
-            return new ResponseEntity<Map<String, Object>>(makeResp("error", "No name"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         }*/
         Player user = playerRepository.findByUserName(userName);
         System.out.println(user);
         if (user == null) {
-            return new ResponseEntity<Map<String, Object>>(makeResp("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
-        Game thisGame = gameRepository.findOne(id);
+        Game thisGame = gameRepository.findOne(gameId);
         if (thisGame == null) {
-            return new ResponseEntity<Map<String, Object>>(makeResp("error", "No such game"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No such game"), HttpStatus.FORBIDDEN);
         }
         int size = thisGame.getGamePlayers().stream().collect(Collectors.toList()).size();
         if (size > 1) {
-            return new ResponseEntity<Map<String, Object>>(makeResp("error", "game is full"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "game is full"), HttpStatus.FORBIDDEN);
         }
 
         GamePlayer newGamePlayer = new GamePlayer(thisGame, user);
         gamePlayerRepository.save(newGamePlayer);
-        return new ResponseEntity<Map<String, Object>>(makeResp("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<Map<String, Object>>(makeMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
     }
 
     @RequestMapping(value="/games", method= RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createGame(@RequestParam String userName) {
+    public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
+        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
         if (userName.isEmpty()) {
-            return new ResponseEntity<Map<String, Object>>(makeResp("error", "No name"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         }
         Player user = playerRepository.findByUserName(userName);
         if (user == null) {
-            return new ResponseEntity<Map<String, Object>>(makeResp("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
         Game newGame = gameRepository.save(new Game(new Date()));
         GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(newGame, user));
-        return new ResponseEntity<Map<String, Object>>(makeResp("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<Map<String, Object>>(makeMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
     }
 
     @RequestMapping(value="/players", method= RequestMethod.POST)
@@ -243,11 +274,6 @@ public class SalvoController {
         return map;
     }
 
-    private Map<String, Object> makeResp(String key, Object value) {
-        Map<String, Object> gameMap = new HashMap<>();
-        gameMap.put(key, value);
-        return gameMap;
-    }
 
   }
 

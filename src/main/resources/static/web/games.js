@@ -153,7 +153,7 @@ function formValidation(user, password) {
         alert('Invalid password');
         return false;
     }
-    if (reg.test(user) == true && password.length >= 2) { alert("ok"); loginPlayer(user, password)}
+    if (reg.test(user) == true && password.length >= 2) {loginPlayer(user, password)}
 }
 
 function loginPlayer(user, password) {
@@ -169,9 +169,6 @@ function loginPlayer(user, password) {
     console.log('Request success: ', data);
     console.log("login");
     checkLogin(data, user);
-    //loginNow();
-    //location.reload();
-    //alert("You are logged in");
     })
     .catch(function (error) {
     console.log('Request failure: ', error);
@@ -285,8 +282,7 @@ function getSignPlayer() {
         alert('Invalid password');
         return false;
     }
-    //if (reg.test(user) == true && password.length >= 2) { alert("ok"); loginPlayer(user, password)}
-    if (user && password && reg.test(user) == true && password.length >= 2) {alert("ok"); signInPlayer(user, password)}
+    if (user && password && reg.test(user) == true && password.length >= 2) { signInPlayer(user, password)}
 }
 
 function signInPlayer(user, password) {
@@ -301,12 +297,8 @@ function signInPlayer(user, password) {
     .then(function (data) {
     console.log('Request success: ', data);
     checkSignIn(data);
-    //loginNow();
-    //location.reload();
-    //alert("You have signed in");
     }).then(function () {
     loginUser(user, password);
-    //loginPlayer(user, password);
     })
     .catch(function (error) {
     console.log('Request failure: ', error);
@@ -319,8 +311,6 @@ function checkSignIn(item) {
     if (item.status == 201) {
         alert("You are signed in");
     }
-    //else if (item.status == 409) {alert("Username already exists"); return false;}
-    //else if (item.status != 201 && item.status != 409) { return false;}
 }
 
 function loginUser(user, password) {
@@ -345,15 +335,14 @@ function findLink(item) {
 
 function createNewGame() {
     console.log("new game");
-    let user = localStorage.getItem('userName');
-    console.log(user);
+
     fetch("/api/games", {
         credentials: 'include',
         headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: "application/json"
         },
         method: 'POST',
-        body: 'userName='+ user,
         })
         .then(function (data) {
         console.log('Request success: ', data);
@@ -383,7 +372,6 @@ function loadGameView(item) {
 
 function joinGame(id) {
     console.log("join game");
-
     console.log(id);
     const url = "/api/game/" + id + "/players";
 
