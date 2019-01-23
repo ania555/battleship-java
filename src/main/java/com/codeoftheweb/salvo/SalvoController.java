@@ -25,12 +25,14 @@ public class SalvoController {
     private GameRepository gameRepository;
 
 
-    @RequestMapping(value="/api/game/{id}/players", method= RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> joinGame(@RequestParam String userName, @PathVariable Long id) {
-        if (userName.isEmpty()) {
+    @RequestMapping(path="/game/{id}/players", method= RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long id, Authentication authentication) {
+        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
+        /*if (userName.isEmpty()) {
             return new ResponseEntity<Map<String, Object>>(makeResp("error", "No name"), HttpStatus.FORBIDDEN);
-        }
+        }*/
         Player user = playerRepository.findByUserName(userName);
+        System.out.println(user);
         if (user == null) {
             return new ResponseEntity<Map<String, Object>>(makeResp("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
@@ -43,7 +45,8 @@ public class SalvoController {
             return new ResponseEntity<Map<String, Object>>(makeResp("error", "game is full"), HttpStatus.FORBIDDEN);
         }
 
-        GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(thisGame, user));
+        GamePlayer newGamePlayer = new GamePlayer(thisGame, user);
+        gamePlayerRepository.save(newGamePlayer);
         return new ResponseEntity<Map<String, Object>>(makeResp("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
     }
 

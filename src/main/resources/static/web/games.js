@@ -11,7 +11,7 @@ function loadData() {
         var myGames = json.games;
         console.log(myGames);
         showGames(myGames);
-
+        listenLogs(myGames);
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -28,7 +28,7 @@ function loadLeadBrd() {
        var myPlayers = json;
        console.log(myPlayers);
        showLeaders(myPlayers);
-       listenLogs();
+
    })
    .catch((error) => {
        console.log("Request failed: " + error.message)
@@ -38,17 +38,25 @@ function loadLeadBrd() {
 function showGames(item) {
     let container = document.querySelector("#output");
     container.innerHTML = " ";
+    let user = localStorage.getItem('userName');
+         console.log(user);
     for (let i = 0; i < item.length; i++) {
         let mySpan = document.createElement("span");
         container.appendChild(mySpan);
         let oneLink = document.createElement("a");
         oneLink.setAttribute("href", findLink(item[i]));
         mySpan.appendChild(oneLink);
+        let buttonSpan = document.createElement("span");
+        container.appendChild(buttonSpan);
         let oneButton = document.createElement("input");
         oneButton.setAttribute("id", "game" + item[i].id);
         oneButton.setAttribute("type", "button");
         oneButton.setAttribute("value", "join game");
-        mySpan.appendChild(oneButton);
+        oneButton.setAttribute("data-id", item[i].id);
+        buttonSpan.appendChild(oneButton);
+        let arrPlayers = item[i].gamePlayers.filter(function(x) {return (x.player.email === user)})
+        //console.log(arrPlayers);
+        if (arrPlayers.length > 0 || item[i].gamePlayers.length > 1) {buttonSpan.style.visibility = 'hidden'}
         let oneGame = document.createElement("li");
         oneGame.innerHTML = new Date(item[i].created).toUTCString() + ": "
         oneLink.appendChild(oneGame);
@@ -102,12 +110,16 @@ function showLeaders(item) {
     }
 }
 
-function listenLogs() {
+function listenLogs(item) {
     console.log("added");
     document.querySelector("#login").addEventListener("click", function () {findPlayer()});
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
     document.querySelector("#signin").addEventListener("click", function () {getSignPlayer()});
     document.querySelector("#createGame").addEventListener("click", function () {createNewGame()});
+    for (let i = 0; i < item.length; i++) {
+        let j = i + 1;
+        document.getElementById("game" + j).addEventListener("click", function () {joinGame(this.getAttribute("data-id"))});
+    }
 }
 
 function findPlayer() {
@@ -367,5 +379,40 @@ function checkGameCreation(status) {
 
 function loadGameView(item) {
     if (item != null) {window.location.assign("http://localhost:8080/web/game.html?gp" + item)}
-    //alert("You have to log in")
+}
+
+function joinGame(id) {
+    console.log("join game");
+
+    console.log(id);
+    const url = "/api/game/" + id + "/players";
+
+    fetch(url, {
+    credentials: 'include',
+    headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: "application/json"
+    },
+    method: 'POST',
+    })
+    .then(function (data) {
+    console.log('Request success: ', data);
+    let datStatus= data.status;
+    checkGameJoin(datStatus);
+    return data.json()
+    }).then(function (json) {
+    console.log(json)
+    let myId = json.gpId.toString();
+    console.log(myId);
+    loadGameView(myId);
+    })
+    .catch(function (error) {
+    console.log('Request failure: ', error);
+    });
+}
+
+function checkGameJoin(status) {
+     console.log(status);
+     if (status == 201) {alert("You have joined the game")}
+     else if (status == 401) {alert("You have to log in")}
 }
