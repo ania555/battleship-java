@@ -31,3 +31,32 @@ th, td {
 .ship {
     background-color: dodgerBlue;
 }
+#airCarrier {
+ width: 175px;
+ height: 35px;
+ background-color: green;
+}
+
+#battleship {
+ width: 140px;
+ height: 35px;
+ background-color: green;
+}
+
+#submarine {
+  width: 105px;
+  height: 35px;
+  background-color: green;
+}
+
+#destroyer {
+  width: 105px;
+  height: 35px;
+  background-color: green;
+}
+
+#patBoat {
+  width: 70px;
+  height: 35px;
+  background-color: green;
+}

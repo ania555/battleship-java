@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1> Ship Locations</h1>
-    <br><br>
+    <br>
     <div id="loggedUser"></div>
     <div id="logoutForm">
         <form >
@@ -23,7 +23,7 @@
     <div id="wrapper">
         <div>
             <h3>Ships grid</h3>
-            <table id="grid">
+            <table id="grid" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <tr>
                     <td> </td>
                     <td>1</td>
@@ -58,6 +58,31 @@
             </table>
         </div>
     </div>
+    <br>
+    <h3>Ships to place</h3>
+    <div>
+        <span>Aircraft Carrier</span>
+        <div id="airCarrier" draggable="true" ondragstart="drag(event)"></div>
+    </div>
+    <div>
+        <span>Battleship</span>
+        <div id="battleship" draggable="true"></div>
+    </div>
+    <div>
+        <span>Submarine</span>
+        <div id="submarine" draggable="true"></div>
+    </div>
+    <div>
+        <span>Destroyer</span>
+        <div id="destroyer" draggable="true"></div>
+    </div>
+    <div>
+        <span>Patrol Boat</span>
+        <div id="patBoat" draggable="true"></div>
+    </div>
+
+
+
 
 
 
