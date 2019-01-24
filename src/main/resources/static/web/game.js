@@ -270,6 +270,57 @@ function drag(ev) {
 
 function drop(ev) {
   ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
+  let data = ev.dataTransfer.getData("text");
+  if (ev.target.getAttribute("class") == "placed") {
+      alert("Location not allowed");
+      return false;
+  }
+  else if (ev.target.nextElementSibling.getAttribute("class") == "placed") {
+     alert("Location not allowed");
+     return false;
+  }
+  else if (ev.target.previousSibling.getAttribute("class") == "placed") {
+      alert("Location not allowed");
+      return false;
+  }
   ev.target.appendChild(document.getElementById(data));
+  document.getElementById(data).style.width = "35px";
+  document.getElementById(data).style.backgroundColor = "orange";
+  let start = ev.target.getAttribute("id");
+  console.log(data);
+  console.log(start);
+  //let el = start.parentElement.getAttribute("id");
+  //console.log(el);
+  placeRest(start, data);
 }
+
+function  placeRest(place, item) {
+    console.log("rest");
+    let letter = place.slice(0, 1);
+    let number = Number(place.slice(1, 3));
+    console.log(letter);
+    console.log(number);
+    console.log(letter + "" + (number + 1).toString())
+    if (item == "airCarrier") {
+        for (let i = 0; i < 4; i++) {
+            document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+        }
+    }
+    else if (item == "battleship") {
+        for (let i = 0; i < 3; i++) {
+            document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+        }
+    }
+    else if (item == "submarine" || item == "destroyer") {
+        for (let i = 0; i < 2; i++) {
+            document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+        }
+    }
+    //else if (item == "destroyer") {document.getElementById(place).nextSibling.innerHTML = "ship"; }
+    else if (item == "patBoat") {document.getElementById(place).nextSibling.setAttribute("class", "placed") }
+}
+
+/*
+for (let i = 0; i < 3; i++) {
+document.getElementById(letter + '' + number + i).nextSibling.innerHTML = "ship";
+}*/
