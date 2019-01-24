@@ -71,31 +71,22 @@ function showShipsGrid(item) {
                 for (let k = 0; k < item.ships.length; k++) {
                     for (let l = 0; l < item.ships[k].locations.length; l++) {
                         let n = getParams();
-                        //if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l]) {
-
 
                             for (let m = 0; m < item.salvoes.length; m++) {
                                 if (item.salvoes[m].gamePlayerId != n) {
                                     for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
                                         for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
-                                            //  && ( || item.salvoes[m].gamePlayerSalvoes[p].locations[r] == null)
                                             if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l] && String.fromCharCode(65 + i) + "" + (j + 1) != item.salvoes[m].gamePlayerSalvoes[p].locations[r]) {
                                                 column.setAttribute("class", "ship");
                                             }
                                             else if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l] && String.fromCharCode(65 + i) + "" + (j + 1) == item.salvoes[m].gamePlayerSalvoes[p].locations[r]) {
                                                         column.innerHTML = item.salvoes[m].gamePlayerSalvoes[p].turn;
-                                                        //String.fromCharCode(65 + i) + "" + (j + 1);
-                                                        //column.setAttribute("class", "salvo");
                                             }
                                         }
                                     }
                                 }
                             }
 
-
-
-
-                        //}
                     }
                 }
                 row.appendChild(column);
@@ -271,28 +262,127 @@ function drag(ev) {
 function drop(ev) {
   ev.preventDefault();
   let data = ev.dataTransfer.getData("text");
-  if (ev.target.getAttribute("class") == "placed") {
-      alert("Location not allowed");
-      return false;
+  let start = ev.target.getAttribute("id");
+  console.log(start);
+  let letterASC = start.charCodeAt(0);
+  console.log(letterASC);
+
+  let number = Number(start.slice(1, 3));
+  if (data == "airCarrier") {checkLocation(letterASC, number, 5)}
+  if (data == "battleship") {checkLocation(letterASC, number, 4)}
+  if (data == "submarine" || data == "destroyer") {checkLocation(letterASC, number, 3)}
+  //if (data == "patBoat") {checkLocation(letterASC, number, 2)}
+  if (data == "patBoat") {
+      if (number == 10) {
+         alert("Location not allowed");
+         return false;
+      }
+      else if (number == 9 && letterASC > 65 && letterASC < 74) {
+          for (i = 0; i < 3; i++) {
+              for (let j = 0; j < 3; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                            return false;
+                  }
+              }
+          }
+      }
+      else if (number == 1 && letterASC > 65 && letterASC < 74) {
+          for (i = 0; i < 3; i++) {
+              for (let j = 1; j < 3; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                          return false;
+                  }
+              }
+          }
+      }
+      else if (number > 1 && number < 9 && letterASC > 65 && letterASC < 74) {
+          for (i = 0; i < 3; i++) {
+              for (let j = 0; j < 4; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number > 1 && number < 9 && letterASC == 65) {
+          for (i = 1; i < 2; i++) {
+              for (let j = 0; j < 4; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number > 1 && number < 9 && letterASC == 74) {
+          for (i = 0; i < 2; i++) {
+              for (let j = 0; j < 4; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 1 && letterASC == 65) {
+          for (i = 1; i < 2; i++) {
+              for (let j = 1; j < 3; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 1 && letterASC == 74) {
+          for (i = 0; i < 2; i++) {
+              for (let j = 1; j < 3; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 9 && letterASC == 65) {
+          for (i = 1; i < 2; i++) {
+              for (let j = 0; j < 3; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 9 && letterASC == 74) {
+          for (i = 0; i < 2; i++) {
+              for (let j = 0; j < 3; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
   }
-  else if (ev.target.nextElementSibling.getAttribute("class") == "placed") {
-     alert("Location not allowed");
-     return false;
-  }
-  else if (ev.target.previousSibling.getAttribute("class") == "placed") {
-      alert("Location not allowed");
-      return false;
-  }
+
+
+
   ev.target.appendChild(document.getElementById(data));
   document.getElementById(data).style.width = "35px";
-  document.getElementById(data).style.backgroundColor = "orange";
-  let start = ev.target.getAttribute("id");
+  document.getElementById(start).setAttribute("class", "placed");
   console.log(data);
   console.log(start);
-  //let el = start.parentElement.getAttribute("id");
-  //console.log(el);
   placeRest(start, data);
 }
+
+
+
+
+
 
 function  placeRest(place, item) {
     console.log("rest");
@@ -316,11 +406,108 @@ function  placeRest(place, item) {
             document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
         }
     }
-    //else if (item == "destroyer") {document.getElementById(place).nextSibling.innerHTML = "ship"; }
     else if (item == "patBoat") {document.getElementById(place).nextSibling.setAttribute("class", "placed") }
+    let cleanCell = document.getElementById(place)
+    cleanCell.removeChild(cleanCell.childNodes[0]);
 }
 
-/*
-for (let i = 0; i < 3; i++) {
-document.getElementById(letter + '' + number + i).nextSibling.innerHTML = "ship";
-}*/
+
+
+function checkLocation(letterASC, number, x) {
+  if (number > 11 - x) {
+     alert("Location not allowed");
+     return false;
+  }
+  else if (number == 11 - x && letterASC > 65 && letterASC < 74) {
+      for (i = 0; i < 3; i++) {
+          for (let j = 0; j < x + 1; j++) {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  alert("Location not allowed");
+                  return false;
+              }
+          }
+      }
+  }
+  else if (number == 1 && letterASC > 65 && letterASC < 74) {
+          for (i = 0; i < 3; i++) {
+              for (let j = 1; j < x + 1; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                          return false;
+                  }
+              }
+          }
+      }
+      else if (number > 1 && number < 11 - x && letterASC > 65 && letterASC < 74) {
+          for (i = 0; i < 3; i++) {
+              for (let j = 0; j < x + 2; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number > 1 && number < 11 - x && letterASC == 65) {
+          for (i = 1; i < 2; i++) {
+              for (let j = 0; j < x + 2; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number > 1 && number < 11 - x && letterASC == 74) {
+          for (i = 0; i < 2; i++) {
+              for (let j = 0; j < x + 2; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 1 && letterASC == 65) {
+          for (i = 1; i < 2; i++) {
+              for (let j = 1; j < x + 1; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 1 && letterASC == 74) {
+          for (i = 0; i < 2; i++) {
+              for (let j = 1; j < x + 1; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 11 - x && letterASC == 65) {
+          for (i = 1; i < 2; i++) {
+              for (let j = 0; j < x + 1; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+      else if (number == 11 - x && letterASC == 74) {
+          for (i = 0; i < 2; i++) {
+              for (let j = 0; j < x + 1; j++) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                      alert("Location not allowed");
+                      return false;
+                  }
+              }
+          }
+      }
+  }
+
+
