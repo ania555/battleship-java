@@ -251,6 +251,15 @@ function onlySalvoes(item) {
     }
 }
 
+
+function shipHorVer(item) {
+    console.log("position")
+    let findShip = document.getElementById(item);
+    let positShip = findShip.ship.value
+    if (positShip == "horizontal") {return "horizontal"}
+    else if (positShip == "vertical") {return "vertical"}
+}
+
 function allowDrop(ev) {
   ev.preventDefault();
 }
@@ -264,13 +273,30 @@ function drop(ev) {
   let data = ev.dataTransfer.getData("text");
   let start = ev.target.getAttribute("id");
   console.log(start);
+  console.log(shipHorVer("ship5"));
   let letterASC = start.charCodeAt(0);
-  console.log(letterASC);
+  //console.log(letterASC);
   let number = Number(start.slice(1, 3));
-  if (data == "airCarrier") {if (checkLocation(letterASC, number, 5) == false) {return false}}
-  if (data == "battleship") {if (checkLocation(letterASC, number, 4) == false) {return false}}
-  if (data == "submarine" || data == "destroyer") {if (checkLocation(letterASC, number, 3) == false){return false}}
-  if (data == "patBoat") {if (checkLocation(letterASC, number, 2) == false) {return false}}
+  if (data == "airCarrier") {
+      if (shipHorVer("ship5") == "horizontal") {if (checkLocationHor(letterASC, number, 5) == false) {return false}}
+      else if (shipHorVer("ship5") == "vertical") {if (checkLocationVer(letterASC, number, 5) == false) {return false}}
+  }
+  if (data == "battleship") {
+      if (shipHorVer("ship4") == "horizontal") {if (checkLocationHor(letterASC, number, 4) == false) {return false}}
+      else if (shipHorVer("ship4") == "vertical") {if (checkLocationVer(letterASC, number, 4) == false) {return false}}
+  }
+  if (data == "submarine") {
+      if (shipHorVer("ship3sub") == "horizontal"){if (checkLocationHor(letterASC, number, 3) == false){return false}}
+      else if (shipHorVer("ship3sub") == "vertical") {if (checkLocationVer(letterASC, number, 3) == false) {return false}}
+  }
+  if (data == "destroyer") {
+      if (shipHorVer("ship3dest") == "horizontal") {if (checkLocationHor(letterASC, number, 3) == false){return false}}
+      else if (shipHorVer("ship3dest") == "vertical") {if (checkLocationVer(letterASC, number, 3) == false) {return false}}
+  }
+  if (data == "patBoat") {
+      if (shipHorVer("ship2") == "horizontal") {if (checkLocationHor(letterASC, number, 2) == false) {return false}}
+      else if (shipHorVer("ship2") == "vertical") {if (checkLocationVer(letterASC, number, 2) == false) {return false}}
+  }
   ev.target.appendChild(document.getElementById(data));
   document.getElementById(data).style.width = "35px";
   document.getElementById(start).setAttribute("class", "placed");
@@ -281,136 +307,172 @@ function drop(ev) {
 
 
 
+function checkLocationVer(letterASC, number, x) {
 
- /* if (data == "patBoat") {
-      if (number == 10) {
-         alert("Location not allowed");
-         return false;
-      }
-      else if (number == 9 && letterASC > 65 && letterASC < 74) {
-          for (i = 0; i < 3; i++) {
-              for (let j = 0; j < 3; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                            return false;
-                  }
-              }
-          }
-      }
-      else if (number == 1 && letterASC > 65 && letterASC < 74) {
-          for (i = 0; i < 3; i++) {
-              for (let j = 1; j < 3; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                          return false;
-                  }
-              }
-          }
-      }
-      else if (number > 1 && number < 9 && letterASC > 65 && letterASC < 74) {
-          for (i = 0; i < 3; i++) {
-              for (let j = 0; j < 4; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+   if (letterASC > 75 - x) {
+       alert("Location not allowed");
+       return false;
+   }
+   else if (number == 10 && letterASC > 65 && letterASC < 75 - x) {
+       for (i = 0; i < x + 2; i++) {
+           for (let j = 0; j < 2; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                       alert("Location not allowed");
                       return false;
-                  }
-              }
-          }
-      }
-      else if (number > 1 && number < 9 && letterASC == 65) {
-          for (i = 1; i < 2; i++) {
-              for (let j = 0; j < 4; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                      return false;
-                  }
-              }
-          }
-      }
-      else if (number > 1 && number < 9 && letterASC == 74) {
-          for (i = 0; i < 2; i++) {
-              for (let j = 0; j < 4; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                      return false;
-                  }
-              }
-          }
-      }
-      else if (number == 1 && letterASC == 65) {
-          for (i = 1; i < 2; i++) {
-              for (let j = 1; j < 3; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                      return false;
-                  }
-              }
-          }
-      }
-      else if (number == 1 && letterASC == 74) {
-          for (i = 0; i < 2; i++) {
-              for (let j = 1; j < 3; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                      return false;
-                  }
-              }
-          }
-      }
-      else if (number == 9 && letterASC == 65) {
-          for (i = 1; i < 2; i++) {
-              for (let j = 0; j < 3; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                      return false;
-                  }
-              }
-          }
-      }
-      else if (number == 9 && letterASC == 74) {
-          for (i = 0; i < 2; i++) {
-              for (let j = 0; j < 3; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
-                      alert("Location not allowed");
-                      return false;
-                  }
-              }
-          }
-      }
-  }*/
-
+               }
+           }
+       }
+   }
+   else if (number == 1 && letterASC > 65 && letterASC < 75 - x) {
+       for (i = 0; i < x + 2; i++) {
+           for (let j = 1; j < 3; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+   else if (number > 1 && number < 9 && letterASC > 65 && letterASC < 75 - x) {
+       for (i = 0; i < x + 2; i++) {
+           for (let j = 0; j < 3; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+   else if (number > 1 && number < 9 && letterASC == 65) {
+       for (i = 1; i < x + 2; i++) {
+           for (let j = 0; j < 3; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+   else if (number > 1 && number < 9 && letterASC == 75 - x) {
+       for (i = 0; i < x + 1; i++) {
+           for (let j = 0; j < 3; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+   else if (number == 1 && letterASC == 65) {
+       for (i = 1; i < x + 1; i++) {
+           for (let j = 1; j < 3; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+   else if (number == 1 && letterASC == 75 - x) {
+       for (i = 0; i < x + 1; i++) {
+           for (let j = 1; j < 3; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+   else if (number == 10 && letterASC == 65) {
+       for (i = 1; i < x + 2; i++) {
+           for (let j = 0; j < 2; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+   else if (number == 10 && letterASC == 75 - x) {
+       for (i = 0; i < x + 1; i++) {
+           for (let j = 0; j < 2; j++) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                   alert("Location not allowed");
+                   return false;
+               }
+           }
+       }
+   }
+}
 
 
 function  placeRest(place, item) {
     console.log("rest");
     let letter = place.slice(0, 1);
     let number = Number(place.slice(1, 3));
+    let letterASC = place.charCodeAt(0);
     console.log(letter);
     console.log(number);
     console.log(letter + "" + (number + 1).toString())
     if (item == "airCarrier") {
-        for (let i = 0; i < 4; i++) {
-            document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+        if (shipHorVer("ship5") == "horizontal") {
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+            }
+        }
+        else if (shipHorVer("ship5") == "vertical") {
+            for (let i = 1; i < 5; i++) {
+                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+            }
         }
     }
     else if (item == "battleship") {
-        for (let i = 0; i < 3; i++) {
-            document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+        if (shipHorVer("ship4") == "horizontal") {
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+            }
+        }
+        else if (shipHorVer("ship4") == "vertical") {
+            for (let i = 1; i < 4; i++) {
+                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+            }
         }
     }
-    else if (item == "submarine" || item == "destroyer") {
-        for (let i = 0; i < 2; i++) {
-            document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+    else if (item == "submarine") {
+        if (shipHorVer("ship3sub") == "horizontal") {
+            for (let i = 0; i < 2; i++) {
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+            }
+        }
+        else if (shipHorVer("ship3sub") == "vertical") {
+            for (let i = 1; i < 3; i++) {
+               document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+            }
         }
     }
-    else if (item == "patBoat") {document.getElementById(place).nextSibling.setAttribute("class", "placed") }
+    else if (item == "destroyer") {
+        if (shipHorVer("ship3dest") == "horizontal") {
+            for (let i = 0; i < 2; i++) {
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+            }
+        }
+        else if (shipHorVer("ship3dest") == "vertical") {
+            for (let i = 1; i < 3; i++) {
+                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+            }
+        }
+    }
+    else if (item == "patBoat") {
+        if (shipHorVer("ship2") == "horizontal") {document.getElementById(place).nextSibling.setAttribute("class", "placed")}
+        else if (shipHorVer("ship2") == "vertical") {document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).setAttribute("class", "placed");}
+    }
     let cleanCell = document.getElementById(place)
     cleanCell.removeChild(cleanCell.childNodes[0]);
 }
 
 
 
-function checkLocation(letterASC, number, x) {
+function checkLocationHor(letterASC, number, x) {
   if (number > 11 - x) {
      alert("Location not allowed");
      return false;
