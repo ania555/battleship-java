@@ -154,6 +154,11 @@ function showShips(item) {
 function listenLogout() {
     console.log("listen");
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
+    document.getElementById("ship5").addEventListener("click", function () {adjustPosition("ship5", "airCarrier")});
+    document.getElementById("ship4").addEventListener("click", function () {adjustPosition("ship4", "battleship")});
+    document.getElementById("ship3sub").addEventListener("click", function () {adjustPosition("ship3sub", "submarine")});
+    document.getElementById("ship3dest").addEventListener("click", function () {adjustPosition("ship3dest", "destroyer")});
+    document.getElementById("ship2").addEventListener("click", function () {adjustPosition("ship2", "patBoat")});
 }
 
 function logoutPlayer() {
@@ -569,4 +574,10 @@ function checkLocationHor(letterASC, number, x) {
       }
   }
 
-
+function adjustPosition(form, ship) {
+    let myShip = document.getElementById(ship);
+    let widTh = window.getComputedStyle(myShip, null).getPropertyValue("width");
+    let heigHt = window.getComputedStyle(myShip, null).getPropertyValue("height");
+    myShip.style.width = heigHt;
+    myShip.style.height = widTh;
+}
