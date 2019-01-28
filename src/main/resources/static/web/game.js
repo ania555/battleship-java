@@ -159,6 +159,7 @@ function listenLogout() {
     document.getElementById("ship3sub").addEventListener("click", function () {adjustPosition("ship3sub", "submarine")});
     document.getElementById("ship3dest").addEventListener("click", function () {adjustPosition("ship3dest", "destroyer")});
     document.getElementById("ship2").addEventListener("click", function () {adjustPosition("ship2", "patBoat")});
+    document.getElementById("done").addEventListener("click", function () {sendShips()});
 }
 
 function logoutPlayer() {
@@ -190,11 +191,11 @@ function showLoggedUser(item) {
 function sendShips() {
     console.log("create ships");
 
-    let myData = JSON.stringify([ { "type": "destroyer", "locations": ["A1", "B1", "C1"] },
-                   { "type": "patrol boat", "locations": ["H5", "H6"] },
-                   { "type": "Aircraft Carrier", "locations": ["A3", "B3", "C3", "D3", "E3"] },
-                   { "type": "Battleship", "locations": ["A8", "B8", "C8", "D8"] },
-                   { "type": "Submarine", "locations": ["A10", "B10", "C10"] }
+    let myData = JSON.stringify([ { "type": "destroyer", "locations": getShipLocation("placedDest") /*["A1", "B1", "C1"] */},
+                   { "type": "patrol boat", "locations": getShipLocation("placedBoat") /*["H5", "H6"] */},
+                   { "type": "Aircraft Carrier", "locations": getShipLocation("placedCarr") /*["A3", "B3", "C3", "D3", "E3"] */},
+                   { "type": "Battleship", "locations": getShipLocation("placedBattle") /*["A8", "B8", "C8", "D8"] */},
+                   { "type": "Submarine", "locations": getShipLocation("placedSub") /*["A10", "B10", "C10"] */}
                  ]);
     const url = "/api/games/players/" + getParams() + "/ships";
 
@@ -321,7 +322,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 10 && letterASC > 65 && letterASC < 75 - x) {
        for (i = 0; i < x + 2; i++) {
            for (let j = 0; j < 2; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                       alert("Location not allowed");
                       return false;
                }
@@ -331,37 +332,37 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 1 && letterASC > 65 && letterASC < 75 - x) {
        for (i = 0; i < x + 2; i++) {
            for (let j = 1; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
            }
        }
    }
-   else if (number > 1 && number < 9 && letterASC > 65 && letterASC < 75 - x) {
+   else if (number > 1 && number < 10 && letterASC > 65 && letterASC < 75 - x) {
        for (i = 0; i < x + 2; i++) {
            for (let j = 0; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
            }
        }
    }
-   else if (number > 1 && number < 9 && letterASC == 65) {
+   else if (number > 1 && number < 10 && letterASC == 65) {
        for (i = 1; i < x + 2; i++) {
            for (let j = 0; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
            }
        }
    }
-   else if (number > 1 && number < 9 && letterASC == 75 - x) {
+   else if (number > 1 && number < 10 && letterASC == 75 - x) {
        for (i = 0; i < x + 1; i++) {
            for (let j = 0; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
@@ -371,7 +372,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 1 && letterASC == 65) {
        for (i = 1; i < x + 1; i++) {
            for (let j = 1; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
@@ -381,7 +382,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 1 && letterASC == 75 - x) {
        for (i = 0; i < x + 1; i++) {
            for (let j = 1; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
@@ -391,7 +392,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 10 && letterASC == 65) {
        for (i = 1; i < x + 2; i++) {
            for (let j = 0; j < 2; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
@@ -401,7 +402,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 10 && letterASC == 75 - x) {
        for (i = 0; i < x + 1; i++) {
            for (let j = 0; j < 2; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                    alert("Location not allowed");
                    return false;
                }
@@ -422,57 +423,84 @@ function  placeRest(place, item) {
     if (item == "airCarrier") {
         if (shipHorVer("ship5") == "horizontal") {
             for (let i = 0; i < 4; i++) {
-                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedCarr";
             }
+            document.getElementById(place).className += " placedCarr";
         }
         else if (shipHorVer("ship5") == "vertical") {
             for (let i = 1; i < 5; i++) {
-                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+                //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedCarr";
             }
+            document.getElementById(place).className += " placedCarr";
         }
     }
     else if (item == "battleship") {
         if (shipHorVer("ship4") == "horizontal") {
             for (let i = 0; i < 3; i++) {
-                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedBattle";
             }
+            document.getElementById(place).className += " placedBattle";
         }
         else if (shipHorVer("ship4") == "vertical") {
             for (let i = 1; i < 4; i++) {
-                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+                //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedBattle";
             }
+            document.getElementById(place).className += " placedBattle";
         }
     }
     else if (item == "submarine") {
         if (shipHorVer("ship3sub") == "horizontal") {
             for (let i = 0; i < 2; i++) {
-                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedSub";
             }
+            document.getElementById(place).className += " placedSub";
         }
         else if (shipHorVer("ship3sub") == "vertical") {
             for (let i = 1; i < 3; i++) {
-               document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+               //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+               document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedSub";
             }
+            document.getElementById(place).className += " placedSub";
         }
     }
     else if (item == "destroyer") {
         if (shipHorVer("ship3dest") == "horizontal") {
             for (let i = 0; i < 2; i++) {
-                document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
+                document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedDest";
             }
+            document.getElementById(place).className += " placedDest";
         }
         else if (shipHorVer("ship3dest") == "vertical") {
             for (let i = 1; i < 3; i++) {
-                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+                //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
+                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedDest";
             }
+            document.getElementById(place).className += " placedDest";
         }
     }
     else if (item == "patBoat") {
-        if (shipHorVer("ship2") == "horizontal") {document.getElementById(place).nextSibling.setAttribute("class", "placed")}
-        else if (shipHorVer("ship2") == "vertical") {document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).setAttribute("class", "placed");}
+        if (shipHorVer("ship2") == "horizontal") {
+        //document.getElementById(place).nextSibling.setAttribute("class", "placed");
+        document.getElementById(place).nextSibling.className = "placed placedBoat";
+        document.getElementById(place).className += " placedBoat";
+        }
+        else if (shipHorVer("ship2") == "vertical") {
+        //document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).setAttribute("class", "placed");
+        document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).className = "placed placedBoat";
+        document.getElementById(place).className += " placedBoat";
+        }
     }
     let cleanCell = document.getElementById(place)
     cleanCell.removeChild(cleanCell.childNodes[0]);
+
+    document.getElementById("B5").classList.item(0);
+
 }
 
 
@@ -485,7 +513,7 @@ function checkLocationHor(letterASC, number, x) {
   else if (number == 11 - x && letterASC > 65 && letterASC < 74) {
       for (i = 0; i < 3; i++) {
           for (let j = 0; j < x + 1; j++) {
-              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                   alert("Location not allowed");
                   return false;
               }
@@ -495,7 +523,7 @@ function checkLocationHor(letterASC, number, x) {
   else if (number == 1 && letterASC > 65 && letterASC < 74) {
       for (i = 0; i < 3; i++) {
           for (let j = 1; j < x + 1; j++) {
-              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                   alert("Location not allowed");
                   return false;
               }
@@ -505,7 +533,7 @@ function checkLocationHor(letterASC, number, x) {
   else if (number > 1 && number < 11 - x && letterASC > 65 && letterASC < 74) {
       for (i = 0; i < 3; i++) {
           for (let j = 0; j < x + 2; j++) {
-              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                   alert("Location not allowed");
                   return false;
               }
@@ -515,7 +543,7 @@ function checkLocationHor(letterASC, number, x) {
   else if (number > 1 && number < 11 - x && letterASC == 65) {
       for (i = 1; i < 3; i++) {
           for (let j = 0; j < x + 2; j++) {
-              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed") {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                   alert("Location not allowed");
                   return false;
               }
@@ -525,7 +553,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number > 1 && number < 11 - x && letterASC == 74) {
           for (i = 0; i < 2; i++) {
               for (let j = 0; j < x + 2; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                       alert("Location not allowed");
                       return false;
                   }
@@ -535,7 +563,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 1 && letterASC == 65) {
           for (i = 1; i < 3; i++) {
               for (let j = 1; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                       alert("Location not allowed");
                       return false;
                   }
@@ -545,7 +573,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 1 && letterASC == 74) {
           for (i = 0; i < 2; i++) {
               for (let j = 1; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                       alert("Location not allowed");
                       return false;
                   }
@@ -555,7 +583,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 11 - x && letterASC == 65) {
           for (i = 1; i < 3; i++) {
               for (let j = 0; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                       alert("Location not allowed");
                       return false;
                   }
@@ -565,7 +593,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 11 - x && letterASC == 74) {
           for (i = 0; i < 2; i++) {
               for (let j = 0; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).getAttribute("class") == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
                       alert("Location not allowed");
                       return false;
                   }
@@ -580,4 +608,18 @@ function adjustPosition(form, ship) {
     let heigHt = window.getComputedStyle(myShip, null).getPropertyValue("height");
     myShip.style.width = heigHt;
     myShip.style.height = widTh;
+}
+
+function getShipLocation(item) {
+    let xxx = document.getElementById("B5").classList.item(0);
+    console.log(xxx);
+    let arrShip = [];
+    for (let i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            if (document.getElementById(String.fromCharCode(65 + i) + "" + (1 + j).toString()).classList.item(1) == item) {
+                arrShip.push(String.fromCharCode(65 + i) + "" + (1 + j).toString());
+            }
+        }
+    }
+    return arrShip;
 }
