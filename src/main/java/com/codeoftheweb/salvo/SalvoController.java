@@ -27,6 +27,39 @@ public class SalvoController {
     @Autowired
     private ShipRepository shipRepository;
 
+    @Autowired
+    private SalvoRepository salvoRepository;
+
+
+    @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method= RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, int turnNumber, Authentication authentication) {
+        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
+        Player user = playerRepository.findByUserName(userName);
+        if (user == null) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+
+        GamePlayer thisGmPl = gamePlayerRepository.findOne(gamePlayerId);
+        if (thisGmPl == null) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+
+        String thisGmPlName = thisGmPl.getPlayer().getUserName();
+        if (user.getUserName() != thisGmPlName) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
+        }
+
+        //Set thisGmPlSalvoes = thisGmPl.getSalvoes();
+        Salvo currentTurn = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == turnNumber).findAny().orElse(null);
+        //List<Object> ties = player.getScores().stream().filter(p -> p.getResult().equals("tied")).collect(Collectors.toList());
+        if (currentTurn != null) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Salvoes for this turn shot"), HttpStatus.FORBIDDEN);
+        }
+
+        salvoRepository.save(new Salvo(salvo.getTurnNumber(), thisGmPl, salvo.getLocations()));
+        return new ResponseEntity<Map<String, Object>>(makeMap("success", "Salvo created"), HttpStatus.CREATED);
+
+    }
 
     @RequestMapping(value="/games/players/{gamePlayerId}/ships", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> placeShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
