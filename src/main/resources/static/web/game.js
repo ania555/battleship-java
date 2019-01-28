@@ -35,6 +35,7 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         listenLogout();
         onlyShips(myGame);
         onlySalvoes(myGame);
+        displayShipPlacement(myGame);
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -159,7 +160,7 @@ function listenLogout() {
     document.getElementById("ship3sub").addEventListener("click", function () {adjustPosition("ship3sub", "submarine")});
     document.getElementById("ship3dest").addEventListener("click", function () {adjustPosition("ship3dest", "destroyer")});
     document.getElementById("ship2").addEventListener("click", function () {adjustPosition("ship2", "patBoat")});
-    document.getElementById("done").addEventListener("click", function () {sendShips()});
+    document.getElementById("done").addEventListener("click", function () {checkShipsPlacement()});
 }
 
 function logoutPlayer() {
@@ -622,4 +623,18 @@ function getShipLocation(item) {
         }
     }
     return arrShip;
+}
+
+function displayShipPlacement(item) {
+    if (item.ships.length < 5) {document.getElementById("shipPlacement").style.visibility = 'visible';}
+    else if (item.ships.length == 5 && item.ships[0].locations.length > 1 && item.ships[1].locations.length > 1) {document.getElementById("shipPlacement").style.visibility = 'hidden';}
+}
+
+function checkShipsPlacement() {
+    if (document.getElementById("airCarrier") == null
+        && document.getElementById("battleship") == null
+        && document.getElementById("submarine") == null
+        && document.getElementById("destroyer") == null
+        && document.getElementById("patBoat") == null) {sendShips()}
+    else {alert("Place all ships"); return false;}
 }
