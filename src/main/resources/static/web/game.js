@@ -656,10 +656,12 @@ function setShot(item) {
     let myShot = document.getElementById(item);
     let shotList = document.querySelectorAll(".shot");
     console.log(shotList.length);
-    if (myShot.getAttribute("class") != "salvo" && shotList.length < 3) {myShot.setAttribute("class", "shot")}
+    if (myShot.getAttribute("class") == "shot") {myShot.removeAttribute("class")}
+    else if (myShot.getAttribute("class") != "salvo" && shotList.length < 3) {myShot.setAttribute("class", "shot")}
     else if (myShot.getAttribute("class") != "salvo" && shotList.length >= 3) {alert("You have already fired all shots for this turn"); return false;}
     else if (myShot.getAttribute("class") == "salvo" && shotList.length < 3) {alert("This location has already been shot"); return false;}
     else if (myShot.getAttribute("class") == "salvo" && shotList.length >= 3) {alert("You have already fired all shots for this turn"); return false;}
+
 }
 
 function getSalvoLocations() {

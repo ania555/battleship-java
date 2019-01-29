@@ -48,11 +48,11 @@ public class SalvoController {
         if (user.getUserName() != thisGmPlName) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
-/*
+
         Salvo currentTurn = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == turnNumber).findAny().orElse(null);
         if (currentTurn != null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Salvoes for this turn shot"), HttpStatus.FORBIDDEN);
-        }*/
+        }
 
         salvoRepository.save(new Salvo(salvo.getTurnNumber(), thisGmPl, salvo.getLocations()));
         return new ResponseEntity<Map<String, Object>>(makeMap("success", "Salvo created"), HttpStatus.CREATED);
