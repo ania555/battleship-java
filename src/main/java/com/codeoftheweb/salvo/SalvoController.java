@@ -32,7 +32,7 @@ public class SalvoController {
 
 
     @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method= RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, int turnNumber, Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Integer turnNumber, Authentication authentication) {
         String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
         Player user = playerRepository.findByUserName(userName);
         if (user == null) {
@@ -48,13 +48,11 @@ public class SalvoController {
         if (user.getUserName() != thisGmPlName) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
-
-        //Set thisGmPlSalvoes = thisGmPl.getSalvoes();
+/*
         Salvo currentTurn = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == turnNumber).findAny().orElse(null);
-        //List<Object> ties = player.getScores().stream().filter(p -> p.getResult().equals("tied")).collect(Collectors.toList());
         if (currentTurn != null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Salvoes for this turn shot"), HttpStatus.FORBIDDEN);
-        }
+        }*/
 
         salvoRepository.save(new Salvo(salvo.getTurnNumber(), thisGmPl, salvo.getLocations()));
         return new ResponseEntity<Map<String, Object>>(makeMap("success", "Salvo created"), HttpStatus.CREATED);

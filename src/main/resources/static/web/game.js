@@ -36,6 +36,7 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         onlyShips(myGame);
         onlySalvoes(myGame);
         displayShipPlacement(myGame);
+        listenSalvoes();
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -58,7 +59,7 @@ let url = " http://localhost:8080/api/games/";
     })
 }
 
-function showShipsGrid(item) {
+/*function showShipsGrid(item) {
     let container = document.querySelector("#grid");
         for (let i = 0; i < 10; i++ ) {
             let row = document.createElement("tr");
@@ -93,7 +94,7 @@ function showShipsGrid(item) {
                 row.appendChild(column);
             }
         }
-}
+}*/
 
 function showSalvoesGrid(item) {
     let container = document.querySelector("#mySalvoes");
@@ -105,7 +106,8 @@ function showSalvoesGrid(item) {
         row.appendChild(firstCol);
         for (j = 0; j < 10; j++) {
             let column = document.createElement("td");
-            column.setAttribute("id", String.fromCharCode(65 + i) + "" + (j + 1));
+            column.setAttribute("id", String.fromCharCode(65 + i) + "" + (j + 1) + "salvo");
+            column.setAttribute("data-id", String.fromCharCode(65 + i) + "" + (j + 1));
             let n = getParams();
             for (let k = 0; k < item.salvoes.length; k++) {
                 if (item.salvoes[k].gamePlayerId == n) {
@@ -223,7 +225,7 @@ function sendShips() {
 
 function onlyShips(item) {
     let container = document.querySelector("#grid");
-    for (let i = 0; i < 10; i++ ) {
+    for (let i = 0; i < 10; i++) {
         let row = document.createElement("tr");
         container.appendChild(row);
         let firstCol = document.createElement("td");
@@ -323,7 +325,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 10 && letterASC > 65 && letterASC < 75 - x) {
        for (i = 0; i < x + 2; i++) {
            for (let j = 0; j < 2; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed") {
                       alert("Location not allowed");
                       return false;
                }
@@ -333,7 +335,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 1 && letterASC > 65 && letterASC < 75 - x) {
        for (i = 0; i < x + 2; i++) {
            for (let j = 1; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -343,7 +345,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number > 1 && number < 10 && letterASC > 65 && letterASC < 75 - x) {
        for (i = 0; i < x + 2; i++) {
            for (let j = 0; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -353,7 +355,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number > 1 && number < 10 && letterASC == 65) {
        for (i = 1; i < x + 2; i++) {
            for (let j = 0; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -363,7 +365,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number > 1 && number < 10 && letterASC == 75 - x) {
        for (i = 0; i < x + 1; i++) {
            for (let j = 0; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -373,7 +375,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 1 && letterASC == 65) {
        for (i = 1; i < x + 1; i++) {
            for (let j = 1; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -383,7 +385,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 1 && letterASC == 75 - x) {
        for (i = 0; i < x + 1; i++) {
            for (let j = 1; j < 3; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -393,7 +395,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 10 && letterASC == 65) {
        for (i = 1; i < x + 2; i++) {
            for (let j = 0; j < 2; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -403,7 +405,7 @@ function checkLocationVer(letterASC, number, x) {
    else if (number == 10 && letterASC == 75 - x) {
        for (i = 0; i < x + 1; i++) {
            for (let j = 0; j < 2; j++) {
-               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                    alert("Location not allowed");
                    return false;
                }
@@ -514,7 +516,7 @@ function checkLocationHor(letterASC, number, x) {
   else if (number == 11 - x && letterASC > 65 && letterASC < 74) {
       for (i = 0; i < 3; i++) {
           for (let j = 0; j < x + 1; j++) {
-              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed") {
                   alert("Location not allowed");
                   return false;
               }
@@ -524,7 +526,7 @@ function checkLocationHor(letterASC, number, x) {
   else if (number == 1 && letterASC > 65 && letterASC < 74) {
       for (i = 0; i < 3; i++) {
           for (let j = 1; j < x + 1; j++) {
-              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).classList.item(0) == "placed") {
                   alert("Location not allowed");
                   return false;
               }
@@ -534,7 +536,7 @@ function checkLocationHor(letterASC, number, x) {
   else if (number > 1 && number < 11 - x && letterASC > 65 && letterASC < 74) {
       for (i = 0; i < 3; i++) {
           for (let j = 0; j < x + 2; j++) {
-              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+              if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed") {
                   alert("Location not allowed");
                   return false;
               }
@@ -554,7 +556,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number > 1 && number < 11 - x && letterASC == 74) {
           for (i = 0; i < 2; i++) {
               for (let j = 0; j < x + 2; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                       alert("Location not allowed");
                       return false;
                   }
@@ -564,7 +566,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 1 && letterASC == 65) {
           for (i = 1; i < 3; i++) {
               for (let j = 1; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed") {
                       alert("Location not allowed");
                       return false;
                   }
@@ -574,7 +576,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 1 && letterASC == 74) {
           for (i = 0; i < 2; i++) {
               for (let j = 1; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed") {
                       alert("Location not allowed");
                       return false;
                   }
@@ -584,7 +586,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 11 - x && letterASC == 65) {
           for (i = 1; i < 3; i++) {
               for (let j = 0; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                       alert("Location not allowed");
                       return false;
                   }
@@ -594,7 +596,7 @@ function checkLocationHor(letterASC, number, x) {
       else if (number == 11 - x && letterASC == 74) {
           for (i = 0; i < 2; i++) {
               for (let j = 0; j < x + 1; j++) {
-                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed" || document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()) == null) {
+                  if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
                       alert("Location not allowed");
                       return false;
                   }
@@ -637,4 +639,64 @@ function checkShipsPlacement() {
         && document.getElementById("destroyer") == null
         && document.getElementById("patBoat") == null) {sendShips()}
     else {alert("Place all ships"); return false;}
+}
+
+
+function listenSalvoes() {
+    console.log("listen salvoes");
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+            document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").addEventListener("click", function () {setShot(this.getAttribute("id"))});
+        }
+    }
+    document.getElementById("salvoDone").addEventListener("click", function () {sendSalvo()});
+}
+
+function setShot(item) {
+    let myShot = document.getElementById(item);
+    let shotList = document.querySelectorAll(".shot");
+    console.log(shotList.length);
+    if (myShot.getAttribute("class") != "salvo" && shotList.length < 3) {myShot.setAttribute("class", "shot")}
+    else if (myShot.getAttribute("class") != "salvo" && shotList.length >= 3) {alert("You have already fired all shots for this turn"); return false;}
+    else if (myShot.getAttribute("class") == "salvo" && shotList.length < 3) {alert("This location has already been shot"); return false;}
+    else if (myShot.getAttribute("class") == "salvo" && shotList.length >= 3) {alert("You have already fired all shots for this turn"); return false;}
+}
+
+function getSalvoLocations() {
+    let arrSalvo = [];
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+            if (document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").getAttribute("class") == "shot") {
+                arrSalvo.push(String.fromCharCode(65 + i) + "" + (j + 1));
+            }
+        }
+    }
+    return arrSalvo;
+
+}
+
+
+function sendSalvo() {
+    let myData = JSON.stringify({ "turnNumber": 2, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
+    const url = "/api/games/players/" + getParams() + "/salvoes";
+
+    fetch(url, {
+    credentials: 'include',
+    headers: {
+    'Content-Type': 'application/json',
+    Accept: "application/json"
+    },
+    method: 'POST',
+    body: myData,
+    })
+    .then(function (data) {
+    console.log('Request success: ', data);
+    return data.json()
+    }).then(function (json) {
+    console.log(json)
+    location.reload();
+    })
+    .catch(function (error) {
+    console.log('Request failure: ', error);
+    });
 }
