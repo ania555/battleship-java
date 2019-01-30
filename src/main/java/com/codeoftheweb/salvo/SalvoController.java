@@ -321,18 +321,14 @@ public class SalvoController {
     }
 
     private Map<String, Object> makeHitsAndSinksDTO(Salvo salvo, String userName) {
-
-        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
-        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
-        Set<Ship> oponentShips = oponent.getShips();
-
-        List<Ship> hitShips = oponentShips.stream().filter(ship -> salvo.getLocations().stream().anyMatch(loc -> ship.getLocations().contains(loc))).collect(Collectors.toList());
+        //GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
+        //GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
+        //Set<Ship> oponentShips = oponent.getShips();
 
         Map<String, Object> oneTurnHitsSinks = new LinkedHashMap<String, Object>();
         oneTurnHitsSinks.put("turn", salvo.getTurnNumber());
         oneTurnHitsSinks.put("hits", makeHitsDTO(salvo, userName));
         oneTurnHitsSinks.put("sinks", makeSinksDTO(salvo, userName));
-        oneTurnHitsSinks.put("left", 3);
 
         return oneTurnHitsSinks;
     }
@@ -392,13 +388,27 @@ public class SalvoController {
         List<String> allHitsDestroyer = allSalvoes.stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> destroyer.getLocations().contains(l)).collect(Collectors.toList());
         List<String> allHitsBoat = allSalvoes.stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> boat.getLocations().contains(l)).collect(Collectors.toList());
 
+        int statusCarrier, statusBattleship, statusSubmarine, statusDestroyer, statusBoat;
+        if (checkIfSunk(5, allHitsCarrier.size()) == "sunk")  statusCarrier = 0;
+        else  statusCarrier = 1;
+        if (checkIfSunk(4, allHitsBattleship.size()) == "sunk") statusBattleship = 0;
+        else statusBattleship = 1;
+        if (checkIfSunk(3, allHitsSubmarine.size()) == "sunk") statusSubmarine = 0;
+        else statusSubmarine = 1;
+        if (checkIfSunk(3, allHitsDestroyer.size()) == "sunk") statusDestroyer = 0;
+        else statusDestroyer = 1;
+        if (checkIfSunk(2, allHitsBoat.size()) == "sunk") statusBoat = 0;
+        else statusBoat = 1;
+
+        int left = statusCarrier + statusBattleship + statusSubmarine + statusDestroyer + statusBoat;
+
         Map<String, Object> oneTurnSinks = new LinkedHashMap<String, Object>();
         oneTurnSinks.put("Aircraft Carrier", checkIfSunk(5, allHitsCarrier.size()));
         oneTurnSinks.put("Battleship", checkIfSunk(4, allHitsBattleship.size()));
         oneTurnSinks.put("Submarine", checkIfSunk(3, allHitsSubmarine.size()));
         oneTurnSinks.put("Destroyer", checkIfSunk(3, allHitsDestroyer.size()));
         oneTurnSinks.put("Patrol Boat", checkIfSunk(2, allHitsBoat.size()));
-
+        oneTurnSinks.put("left", left);
         return oneTurnSinks;
     }
 
