@@ -118,10 +118,10 @@ public class SalvoApplication {
 			shipRepository.save(S15);
 
 			Salvo Sav1 = new Salvo(1, GP1, new ArrayList<String>(asList("A9", "A10")));
-			Salvo Sav2 = new Salvo(2, GP1, new ArrayList<String>(asList("B7", "B8")));
-			Salvo Sav3 = new Salvo(3, GP1, new ArrayList<String>(asList("C1", "C2")));
+			Salvo Sav2 = new Salvo(2, GP1, new ArrayList<String>(asList("C4", "C5")));
+			Salvo Sav3 = new Salvo(3, GP1, new ArrayList<String>(asList("C2", "C3")));
 			Salvo Sav4 = new Salvo(4, GP1, new ArrayList<String>(asList("E5", "E6")));
-			Salvo Sav5 = new Salvo(5, GP1, new ArrayList<String>(asList("G3", "G4")));
+			Salvo Sav5 = new Salvo(5, GP1, new ArrayList<String>(asList("C6", "B5")));
 
 			Salvo Sav11 = new Salvo(1, GP2, new ArrayList<String>(asList("D9", "D10")));
 			Salvo Sav12 = new Salvo(2, GP2, new ArrayList<String>(asList("F5", "F6")));

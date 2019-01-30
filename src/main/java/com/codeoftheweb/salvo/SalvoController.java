@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public class SalvoController {
 
 
     @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method= RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Integer turnNumber, Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
         String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
         Player user = playerRepository.findByUserName(userName);
         if (user == null) {
@@ -49,7 +50,7 @@ public class SalvoController {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
 
-        Salvo currentTurn = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == turnNumber).findAny().orElse(null);
+        Salvo currentTurn = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == salvo.getTurnNumber()).findAny().orElse(null);
         if (currentTurn != null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Salvoes for this turn shot"), HttpStatus.FORBIDDEN);
         }
@@ -160,6 +161,9 @@ public class SalvoController {
         .collect(Collectors.toList()));
         oneGamePlayer.put("salvoes", gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream()
         .map(gamePl -> makeSalGmPlayerDTO(gamePl))
+        .collect(Collectors.toList()));
+        oneGamePlayer.put("history", gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream()
+        .map(gamePl -> makeHitsAndSinksGmPlayerDTO(gamePl))
         .collect(Collectors.toList()));
         if (playerRepository.findByUserName(authentication.getName()).getUserName() == gamePlayerRepository.findOne(id).getPlayer().getUserName()) {
             return new  ResponseEntity<Map<String, Object>>(oneGamePlayer, HttpStatus.OK);
@@ -303,6 +307,106 @@ public class SalvoController {
         Map<String, Object> map = new HashMap<>();
         map.put(key, value);
         return map;
+    }
+
+    private Map<String, Object> makeHitsAndSinksGmPlayerDTO(GamePlayer gamePlayer) {
+        Map<String, Object> oneGamePlHistory = new LinkedHashMap<String, Object>();
+        String thisGmPUser = gamePlayer.getPlayer().getUserName();
+        oneGamePlHistory.put("gamePlayerId", gamePlayer.getId());
+        oneGamePlHistory.put("gamePlayerEmail", gamePlayer.getPlayer().getUserName());
+        oneGamePlHistory.put("gamePlayerHitsSinks", gamePlayer.getSalvoes().stream()
+                .map(salvo -> makeHitsAndSinksDTO(salvo, thisGmPUser))
+                .collect(Collectors.toList()));
+        return oneGamePlHistory;
+    }
+
+    private Map<String, Object> makeHitsAndSinksDTO(Salvo salvo, String userName) {
+
+        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
+        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
+        Set<Ship> oponentShips = oponent.getShips();
+
+        List<Ship> hitShips = oponentShips.stream().filter(ship -> salvo.getLocations().stream().anyMatch(loc -> ship.getLocations().contains(loc))).collect(Collectors.toList());
+
+        Map<String, Object> oneTurnHitsSinks = new LinkedHashMap<String, Object>();
+        oneTurnHitsSinks.put("turn", salvo.getTurnNumber());
+        oneTurnHitsSinks.put("hits", makeHitsDTO(salvo, userName));
+        oneTurnHitsSinks.put("sinks", makeSinksDTO(salvo, userName));
+        oneTurnHitsSinks.put("left", 3);
+
+        return oneTurnHitsSinks;
+    }
+
+    private Map<String, Object> makeHitsDTO(Salvo salvo, String userName) {
+        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
+        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
+        Set<Ship> oponentShips = oponent.getShips();
+
+        Ship carrier = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().get();
+        Ship battleship = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().get();
+        Ship submarine = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().get();
+        Ship destroyer = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
+        Ship boat = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
+
+        List<String> hitsCarrier = carrier.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> hitsBattleship = battleship.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> hitsSubmarine = submarine.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> hitsDestroyer = destroyer.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> hitsBoat = boat.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHits = new ArrayList<>();
+        allHits.addAll(hitsCarrier);
+        allHits.addAll(hitsBattleship);
+        allHits.addAll(hitsSubmarine);
+        allHits.addAll(hitsDestroyer);
+        allHits.addAll(hitsBoat);
+
+        Map<String, Object> oneTurnHits = new LinkedHashMap<String, Object>();
+        oneTurnHits.put("hitsLocations", allHits);
+        oneTurnHits.put("Aircraft Carrier", hitsCarrier.size());
+        oneTurnHits.put("Battleship", hitsBattleship.size());
+        oneTurnHits.put("Submarine", hitsSubmarine.size());
+        oneTurnHits.put("Destroyer", hitsDestroyer.size());
+        oneTurnHits.put("Patrol Boat", hitsBoat.size());
+
+        return oneTurnHits;
+    }
+
+    private Map<String, Object> makeSinksDTO(Salvo salvo, String userName) {
+        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
+        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
+        Set<Ship> oponentShips = oponent.getShips();
+
+        Ship carrier = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().get();
+        Ship battleship = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().get();
+        Ship submarine = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().get();
+        Ship destroyer = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
+        Ship boat = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
+
+        int thisTurnNumber = salvo.getTurnNumber();
+        Set<Salvo> allSalvoes = me.getSalvoes().stream().filter(s -> s.getTurnNumber() < thisTurnNumber).collect(Collectors.toSet());
+        allSalvoes.add(salvo);
+
+        List<String> allHitsCarrier = allSalvoes.stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> carrier.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsBattleship = allSalvoes.stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> battleship.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsSubmarine = allSalvoes.stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> submarine.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsDestroyer = allSalvoes.stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> destroyer.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsBoat = allSalvoes.stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> boat.getLocations().contains(l)).collect(Collectors.toList());
+
+        Map<String, Object> oneTurnSinks = new LinkedHashMap<String, Object>();
+        oneTurnSinks.put("Aircraft Carrier", checkIfSunk(5, allHitsCarrier.size()));
+        oneTurnSinks.put("Battleship", checkIfSunk(4, allHitsBattleship.size()));
+        oneTurnSinks.put("Submarine", checkIfSunk(3, allHitsSubmarine.size()));
+        oneTurnSinks.put("Destroyer", checkIfSunk(3, allHitsDestroyer.size()));
+        oneTurnSinks.put("Patrol Boat", checkIfSunk(2, allHitsBoat.size()));
+
+        return oneTurnSinks;
+    }
+
+    private String checkIfSunk(int shipLength, int allHitsSize) {
+        String state;
+        if (allHitsSize == shipLength)  state = "sunk";
+        else state = "left";
+        return state;
     }
 
 

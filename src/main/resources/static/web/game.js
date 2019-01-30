@@ -679,7 +679,7 @@ function getSalvoLocations() {
 
 
 function sendSalvo() {
-    let myData = JSON.stringify({ "turnNumber": 2, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
+    let myData = JSON.stringify({ "turnNumber": 8, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
     const url = "/api/games/players/" + getParams() + "/salvoes";
 
     fetch(url, {
