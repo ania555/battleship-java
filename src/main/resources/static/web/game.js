@@ -33,10 +33,11 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         showPlayers(myGame);
         listenLogout();
         onlyShips(myGame);
-        onlySalvoes(myGame);
+        onlySalvoesOnMe(myGame);
         displayShipPlacement(myGame);
         listenSalvoes();
         makeTurnsTable(myGame);
+        showHitsOnOpponent(myGame);
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -88,6 +89,21 @@ function showSalvoesGrid(item) {
     }
 }
 
+function showHitsOnOpponent(item) {
+    let n = getParams();
+    for (let i = 0; i < item.history.length; i++) {
+        if (item.history[i].gamePlayerId == n) {
+            for (let j = 0; j < item.history[i].gamePlayerHitsSinks.length; j++) {
+                for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations.length; k++)  {
+                    if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").getAttribute("class") == "salvo") {
+                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").innerHTML = item.history[i].gamePlayerHitsSinks[j].turn;
+                    }
+                }
+            }
+        }
+    }
+
+}
 
 function showPlayers(item) {
     let container = document.querySelector("#players");
@@ -207,7 +223,7 @@ function onlyShips(item) {
         }
     }
 }
-function onlySalvoes(item) {
+function onlySalvoesOnMe(item) {
     let n = getParams();
     for (let m = 0; m < item.salvoes.length; m++) {
        if (item.salvoes[m].gamePlayerId != n) {
@@ -667,6 +683,8 @@ function makeTurnsTable(item) {
     }
     console.log(me.gamePlayerId);
     console.log(opponent.gamePlayerId);
+    let meGmPlHitsSinksSorted = me.gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
+    let oppGmPlHitsSinksSorted = opponent.gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
     for (let i = 0; i < item.history[0].gamePlayerHitsSinks.length; i++) {
         let row = document.createElement("tr");
         container.appendChild(row);
@@ -677,25 +695,47 @@ function makeTurnsTable(item) {
         let oppLeft = row.insertCell();
         hitsOnMe.setAttribute("class", "hitsCells") ;
         hitsOnOpp.setAttribute("class", "hitsCells");
-        arrMeHits = [];
-        arrOppHits = [];
-        arrSinks = [];
-        if (me.gamePlayerHitsSinks[i].hits.AircraftCarrier != 0) {arrMeHits.push("Aircraft Carrier: " + me.gamePlayerHitsSinks[i].hits.AircraftCarrier + ", ")};
-        if (me.gamePlayerHitsSinks[i].hits.Battleship != 0) {arrMeHits.push("Battleship: " + me.gamePlayerHitsSinks[i].hits.Battleship + ", ")};
-        if (me.gamePlayerHitsSinks[i].hits.Destroyer != 0) {arrMeHits.push("Destroyer: " + me.gamePlayerHitsSinks[i].hits.Destroyer + ", ")};
-        if (me.gamePlayerHitsSinks[i].hits.Submarine != 0) {arrMeHits.push("Submarine: " + me.gamePlayerHitsSinks[i].hits.Submarine + ", ")};
-        if (me.gamePlayerHitsSinks[i].hits.PatrolBoat != 0) {arrMeHits.push("Patrol Boat: " + me.gamePlayerHitsSinks[i].hits.PatrolBoat + ", ")};
+        //arrShips = ["AircraftCarrier", "Battleship", "Destroyer", "Submarine", "PatrolBoat"];
+        //arrParShips = [];
+        let arrMeHits = [];
+        let arrOppHits = [];
+        let arrSinksMe = [];
+        let arrSinksOpp = [];
+       /* for (let i = 0; i < arrShips.length; i++) {
+            arrParShips.push(arrShips[i].slice(1, -1));
+        }
+        for (let m = 0; m < arrParShips.length; m++) {
+            if (me.gamePlayerHitsSinks[i].hits.arrParShips[m] != 0) {arrMeHits.push(arrParShips[m] + ": " + me.gamePlayerHitsSinks[i].hits.arrParShips[m] + ", ")}
+        }
+*/
+        if (meGmPlHitsSinksSorted[i].hits.AircraftCarrier != 0) {arrMeHits.push("Aircraft Carrier: " + meGmPlHitsSinksSorted[i].hits.AircraftCarrier + ", ")};
+        if (meGmPlHitsSinksSorted[i].hits.Battleship != 0) {arrMeHits.push("Battleship: " + meGmPlHitsSinksSorted[i].hits.Battleship + ", ")};
+        if (meGmPlHitsSinksSorted[i].hits.Destroyer != 0) {arrMeHits.push("Destroyer: " + meGmPlHitsSinksSorted[i].hits.Destroyer + ", ")};
+        if (meGmPlHitsSinksSorted[i].hits.Submarine != 0) {arrMeHits.push("Submarine: " + meGmPlHitsSinksSorted[i].hits.Submarine + ", ")};
+        if (meGmPlHitsSinksSorted[i].hits.PatrolBoat != 0) {arrMeHits.push("Patrol Boat: " + meGmPlHitsSinksSorted[i].hits.PatrolBoat + ", ")};
 
-        if (opponent.gamePlayerHitsSinks[i].hits.AircraftCarrier != 0) {arrOppHits.push("Aircraft Carrier: " + opponent.gamePlayerHitsSinks[i].hits.AircraftCarrier + ", ")};
-        if (opponent.gamePlayerHitsSinks[i].hits.Battleship != 0) {arrOppHits.push("Battleship: " + opponent.gamePlayerHitsSinks[i].hits.Battleship + ", ")};
-        if (opponent.gamePlayerHitsSinks[i].hits.Destroyer != 0) {arrOppHits.push("Destroyer: " + opponent.gamePlayerHitsSinks[i].hits.Destroyer + ", ")};
-        if (opponent.gamePlayerHitsSinks[i].hits.Submarine != 0) {arrOppHits.push("Submarine: " + opponent.gamePlayerHitsSinks[i].hits.Submarine + ", ")};
-        if (opponent.gamePlayerHitsSinks[i].hits.PatrolBoat != 0) {arrOppHits.push("Patrol Boat: " + opponent.gamePlayerHitsSinks[i].hits.PatrolBoat + ", ")};
+        if (oppGmPlHitsSinksSorted[i].hits.AircraftCarrier != 0) {arrOppHits.push("Aircraft Carrier: " + oppGmPlHitsSinksSorted[i].hits.AircraftCarrier + ", ")};
+        if (oppGmPlHitsSinksSorted[i].hits.Battleship != 0) {arrOppHits.push("Battleship: " + oppGmPlHitsSinksSorted[i].hits.Battleship + ", ")};
+        if (oppGmPlHitsSinksSorted[i].hits.Destroyer != 0) {arrOppHits.push("Destroyer: " + oppGmPlHitsSinksSorted[i].hits.Destroyer + ", ")};
+        if (oppGmPlHitsSinksSorted[i].hits.Submarine != 0) {arrOppHits.push("Submarine: " + oppGmPlHitsSinksSorted[i].hits.Submarine + ", ")};
+        if (oppGmPlHitsSinksSorted[i].hits.PatrolBoat != 0) {arrOppHits.push("Patrol Boat: " + oppGmPlHitsSinksSorted[i].hits.PatrolBoat + ", ")};
 
-        turn.innerHTML = item.history[0].gamePlayerHitsSinks[i].turn;
-        hitsOnMe.innerHTML = arrOppHits;
+        if (meGmPlHitsSinksSorted[i].sinks.AircraftCarrier == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Aircraft Carrier sunk")}
+        if (meGmPlHitsSinksSorted[i].sinks.Battleship == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Battleship sunk")}
+        if (meGmPlHitsSinksSorted[i].sinks.Destroyer == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Destroyer sunk")}
+        if (meGmPlHitsSinksSorted[i].sinks.Submarine == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Submarine sunk")}
+        if (meGmPlHitsSinksSorted[i].sinks.PatrolBoat == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Patrol Boa sunk")}
+
+        if (oppGmPlHitsSinksSorted[i].sinks.AircraftCarrier == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Aircraft Carrier sunk")}
+        if (oppGmPlHitsSinksSorted[i].sinks.Battleship == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Battleship sunk")}
+        if (oppGmPlHitsSinksSorted[i].sinks.Destroyer == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Destroyer sunk")}
+        if (oppGmPlHitsSinksSorted[i].sinks.Submarine == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Submarine sunk")}
+        if (oppGmPlHitsSinksSorted[i].sinks.PatrolBoat == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Patrol Boa sunk")}
+
+        turn.innerHTML = meGmPlHitsSinksSorted[i].turn;
+        hitsOnMe.innerHTML = arrOppHits + arrSinksOpp;
         myLeft.innerHTML = opponent.gamePlayerHitsSinks[i].sinks.left;
-        hitsOnOpp.innerHTML = arrMeHits;
+        hitsOnOpp.innerHTML = arrMeHits + arrSinksMe;
         oppLeft.innerHTML = me.gamePlayerHitsSinks[i].sinks.left;
     }
 }

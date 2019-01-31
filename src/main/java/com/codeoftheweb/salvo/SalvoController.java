@@ -297,9 +297,6 @@ public class SalvoController {
     }
 
     private double countTotalScore(Player player) {
-        //double wins = countWins(player);
-        //double ties = countTies(player);
-        //double total = 1 * wins + 0.5 * ties;
         return 1* countWins(player) + 0.5 * countTies(player);
     }
 
@@ -321,15 +318,10 @@ public class SalvoController {
     }
 
     private Map<String, Object> makeHitsAndSinksDTO(Salvo salvo, String userName) {
-        //GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
-        //GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
-        //Set<Ship> oponentShips = oponent.getShips();
-
         Map<String, Object> oneTurnHitsSinks = new LinkedHashMap<String, Object>();
         oneTurnHitsSinks.put("turn", salvo.getTurnNumber());
         oneTurnHitsSinks.put("hits", makeHitsDTO(salvo, userName));
         oneTurnHitsSinks.put("sinks", makeSinksDTO(salvo, userName));
-
         return oneTurnHitsSinks;
     }
 
@@ -363,7 +355,6 @@ public class SalvoController {
         oneTurnHits.put("Submarine", hitsSubmarine.size());
         oneTurnHits.put("Destroyer", hitsDestroyer.size());
         oneTurnHits.put("PatrolBoat", hitsBoat.size());
-
         return oneTurnHits;
     }
 
