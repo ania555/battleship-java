@@ -88,3 +88,24 @@ th, td {
 .shot {
  background-color: red;
 }
+
+#grid-container {
+  display: grid;
+  grid-template-columns: 300px  auto 100px;
+}
+
+#shipPlacemen {
+  grid-column: 1;
+}
+
+#gameHistory {
+  grid-column: 2;
+}
+
+.noLine {
+ border-right-color: white;
+}
+
+.hitsCells{
+  width: 350px;
+}

@@ -358,11 +358,11 @@ public class SalvoController {
 
         Map<String, Object> oneTurnHits = new LinkedHashMap<String, Object>();
         oneTurnHits.put("hitsLocations", allHits);
-        oneTurnHits.put("Aircraft Carrier", hitsCarrier.size());
+        oneTurnHits.put("AircraftCarrier", hitsCarrier.size());
         oneTurnHits.put("Battleship", hitsBattleship.size());
         oneTurnHits.put("Submarine", hitsSubmarine.size());
         oneTurnHits.put("Destroyer", hitsDestroyer.size());
-        oneTurnHits.put("Patrol Boat", hitsBoat.size());
+        oneTurnHits.put("PatrolBoat", hitsBoat.size());
 
         return oneTurnHits;
     }
@@ -403,11 +403,11 @@ public class SalvoController {
         int left = statusCarrier + statusBattleship + statusSubmarine + statusDestroyer + statusBoat;
 
         Map<String, Object> oneTurnSinks = new LinkedHashMap<String, Object>();
-        oneTurnSinks.put("Aircraft Carrier", checkIfSunk(5, allHitsCarrier.size()));
+        oneTurnSinks.put("AircraftCarrier", checkIfSunk(5, allHitsCarrier.size()));
         oneTurnSinks.put("Battleship", checkIfSunk(4, allHitsBattleship.size()));
         oneTurnSinks.put("Submarine", checkIfSunk(3, allHitsSubmarine.size()));
         oneTurnSinks.put("Destroyer", checkIfSunk(3, allHitsDestroyer.size()));
-        oneTurnSinks.put("Patrol Boat", checkIfSunk(2, allHitsBoat.size()));
+        oneTurnSinks.put("PatrolBoat", checkIfSunk(2, allHitsBoat.size()));
         oneTurnSinks.put("left", left);
         return oneTurnSinks;
     }

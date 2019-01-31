@@ -28,15 +28,15 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         //console.log(json);
         var myGame = json;
         console.log(myGame);
-        //showShipsGrid(myGame);
         showSalvoesGrid(myGame);
-        showShips(myGame);
+        //showShips(myGame);
         showPlayers(myGame);
         listenLogout();
         onlyShips(myGame);
         onlySalvoes(myGame);
         displayShipPlacement(myGame);
         listenSalvoes();
+        makeTurnsTable(myGame);
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -59,43 +59,6 @@ let url = " http://localhost:8080/api/games/";
     })
 }
 
-/*function showShipsGrid(item) {
-    let container = document.querySelector("#grid");
-        for (let i = 0; i < 10; i++ ) {
-            let row = document.createElement("tr");
-            container.appendChild(row);
-            let firstCol = document.createElement("td");
-            firstCol.innerHTML = String.fromCharCode(65 + i);
-            row.appendChild(firstCol);
-            for (j = 0; j < 10; j++) {
-                let column = document.createElement("td");
-                column.setAttribute("id", String.fromCharCode(65 + i) + "" + (j + 1));
-                for (let k = 0; k < item.ships.length; k++) {
-                    for (let l = 0; l < item.ships[k].locations.length; l++) {
-                        let n = getParams();
-
-                            for (let m = 0; m < item.salvoes.length; m++) {
-                                if (item.salvoes[m].gamePlayerId != n) {
-                                    for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
-                                        for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
-                                            if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l] && String.fromCharCode(65 + i) + "" + (j + 1) != item.salvoes[m].gamePlayerSalvoes[p].locations[r]) {
-                                                column.setAttribute("class", "ship");
-                                            }
-                                            else if (String.fromCharCode(65 + i) + "" + (j + 1) == item.ships[k].locations[l] && String.fromCharCode(65 + i) + "" + (j + 1) == item.salvoes[m].gamePlayerSalvoes[p].locations[r]) {
-                                                        column.innerHTML = item.salvoes[m].gamePlayerSalvoes[p].turn;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                    }
-                }
-                row.appendChild(column);
-            }
-        }
-}*/
-
 function showSalvoesGrid(item) {
     let container = document.querySelector("#mySalvoes");
     for (let i = 0; i < 10; i++ ) {
@@ -114,7 +77,6 @@ function showSalvoesGrid(item) {
                     for (let l = 0; l < item.salvoes[k].gamePlayerSalvoes.length; l++) {
                         for (let m = 0; m < item.salvoes[k].gamePlayerSalvoes[l].locations.length; m++) {
                             if (String.fromCharCode(65 + i) + "" + (j + 1) == item.salvoes[k].gamePlayerSalvoes[l].locations[m]) {
-                                //column.innerHTML = "slv"
                                 column.setAttribute("class", "salvo");
                             }
                         }
@@ -433,7 +395,6 @@ function  placeRest(place, item) {
         }
         else if (shipHorVer("ship5") == "vertical") {
             for (let i = 1; i < 5; i++) {
-                //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
                 document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedCarr";
             }
             document.getElementById(place).className += " placedCarr";
@@ -442,14 +403,12 @@ function  placeRest(place, item) {
     else if (item == "battleship") {
         if (shipHorVer("ship4") == "horizontal") {
             for (let i = 0; i < 3; i++) {
-                //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
                 document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedBattle";
             }
             document.getElementById(place).className += " placedBattle";
         }
         else if (shipHorVer("ship4") == "vertical") {
             for (let i = 1; i < 4; i++) {
-                //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
                 document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedBattle";
             }
             document.getElementById(place).className += " placedBattle";
@@ -458,14 +417,12 @@ function  placeRest(place, item) {
     else if (item == "submarine") {
         if (shipHorVer("ship3sub") == "horizontal") {
             for (let i = 0; i < 2; i++) {
-                //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
                 document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedSub";
             }
             document.getElementById(place).className += " placedSub";
         }
         else if (shipHorVer("ship3sub") == "vertical") {
             for (let i = 1; i < 3; i++) {
-               //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedSub";
             }
             document.getElementById(place).className += " placedSub";
@@ -474,14 +431,12 @@ function  placeRest(place, item) {
     else if (item == "destroyer") {
         if (shipHorVer("ship3dest") == "horizontal") {
             for (let i = 0; i < 2; i++) {
-                //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
                 document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedDest";
             }
             document.getElementById(place).className += " placedDest";
         }
         else if (shipHorVer("ship3dest") == "vertical") {
             for (let i = 1; i < 3; i++) {
-                //document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).setAttribute("class", "placed");
                 document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedDest";
             }
             document.getElementById(place).className += " placedDest";
@@ -489,12 +444,10 @@ function  placeRest(place, item) {
     }
     else if (item == "patBoat") {
         if (shipHorVer("ship2") == "horizontal") {
-        //document.getElementById(place).nextSibling.setAttribute("class", "placed");
         document.getElementById(place).nextSibling.className = "placed placedBoat";
         document.getElementById(place).className += " placedBoat";
         }
         else if (shipHorVer("ship2") == "vertical") {
-        //document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).setAttribute("class", "placed");
         document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).className = "placed placedBoat";
         document.getElementById(place).className += " placedBoat";
         }
@@ -701,4 +654,48 @@ function sendSalvo() {
     .catch(function (error) {
     console.log('Request failure: ', error);
     });
+}
+
+function makeTurnsTable(item) {
+    let container = document.getElementById("historyTable");
+    let n = getParams();
+    let me;
+    let opponent;
+    for (let j = 0; j < 2; j++) {
+       if (item.history[j].gamePlayerId == n)  me = item.history[j];
+       if (item.history[j].gamePlayerId != n) opponent = item.history[j];
+    }
+    console.log(me.gamePlayerId);
+    console.log(opponent.gamePlayerId);
+    for (let i = 0; i < item.history[0].gamePlayerHitsSinks.length; i++) {
+        let row = document.createElement("tr");
+        container.appendChild(row);
+        let turn = row.insertCell();
+        let hitsOnMe = row.insertCell();
+        let myLeft = row.insertCell();
+        let hitsOnOpp = row.insertCell();
+        let oppLeft = row.insertCell();
+        hitsOnMe.setAttribute("class", "hitsCells") ;
+        hitsOnOpp.setAttribute("class", "hitsCells");
+        arrMeHits = [];
+        arrOppHits = [];
+        arrSinks = [];
+        if (me.gamePlayerHitsSinks[i].hits.AircraftCarrier != 0) {arrMeHits.push("Aircraft Carrier: " + me.gamePlayerHitsSinks[i].hits.AircraftCarrier + ", ")};
+        if (me.gamePlayerHitsSinks[i].hits.Battleship != 0) {arrMeHits.push("Battleship: " + me.gamePlayerHitsSinks[i].hits.Battleship + ", ")};
+        if (me.gamePlayerHitsSinks[i].hits.Destroyer != 0) {arrMeHits.push("Destroyer: " + me.gamePlayerHitsSinks[i].hits.Destroyer + ", ")};
+        if (me.gamePlayerHitsSinks[i].hits.Submarine != 0) {arrMeHits.push("Submarine: " + me.gamePlayerHitsSinks[i].hits.Submarine + ", ")};
+        if (me.gamePlayerHitsSinks[i].hits.PatrolBoat != 0) {arrMeHits.push("Patrol Boat: " + me.gamePlayerHitsSinks[i].hits.PatrolBoat + ", ")};
+
+        if (opponent.gamePlayerHitsSinks[i].hits.AircraftCarrier != 0) {arrOppHits.push("Aircraft Carrier: " + opponent.gamePlayerHitsSinks[i].hits.AircraftCarrier + ", ")};
+        if (opponent.gamePlayerHitsSinks[i].hits.Battleship != 0) {arrOppHits.push("Battleship: " + opponent.gamePlayerHitsSinks[i].hits.Battleship + ", ")};
+        if (opponent.gamePlayerHitsSinks[i].hits.Destroyer != 0) {arrOppHits.push("Destroyer: " + opponent.gamePlayerHitsSinks[i].hits.Destroyer + ", ")};
+        if (opponent.gamePlayerHitsSinks[i].hits.Submarine != 0) {arrOppHits.push("Submarine: " + opponent.gamePlayerHitsSinks[i].hits.Submarine + ", ")};
+        if (opponent.gamePlayerHitsSinks[i].hits.PatrolBoat != 0) {arrOppHits.push("Patrol Boat: " + opponent.gamePlayerHitsSinks[i].hits.PatrolBoat + ", ")};
+
+        turn.innerHTML = item.history[0].gamePlayerHitsSinks[i].turn;
+        hitsOnMe.innerHTML = arrOppHits;
+        myLeft.innerHTML = opponent.gamePlayerHitsSinks[i].sinks.left;
+        hitsOnOpp.innerHTML = arrMeHits;
+        oppLeft.innerHTML = me.gamePlayerHitsSinks[i].sinks.left;
+    }
 }
