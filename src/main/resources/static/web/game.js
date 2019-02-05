@@ -39,6 +39,7 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         showOppHits(myGame);
         showOppSinks(myGame);
         sinksOnMe(myGame);
+        displayGameState(myGame);
         hitsSinksTable(myGame);
         //makeTurnsTable(myGame);
 
@@ -614,8 +615,17 @@ function getShipLocation(item) {
 }
 
 function displayShipPlacement(item) {
-    if (item.ships.length < 5) {document.getElementById("shipPlacement").style.visibility = 'visible';}
-    else if (item.ships.length == 5 && item.ships[0].locations.length > 1 && item.ships[1].locations.length > 1) {document.getElementById("shipPlacement").style.visibility = 'hidden';}
+    if (item.ships.length < 5) {
+        document.getElementById("shipPlacement").style.visibility = 'visible';
+        document.getElementById("salvoesSubmission").style.visibility = 'hidden';
+        document.getElementById("gameHistory").style.visibility = 'hidden';
+        document.getElementById("statusMessage").innerHTML = "Place your ships"
+        }
+    else if (item.ships.length == 5 && item.ships[0].locations.length > 1 && item.ships[1].locations.length > 1) {
+        document.getElementById("shipPlacement").style.visibility = 'hidden';
+        document.getElementById("salvoesSubmission").style.visibility = 'visible';
+        document.getElementById("gameHistory").style.visibility = 'visible';
+    }
 }
 
 function checkShipsPlacement() {
@@ -870,5 +880,35 @@ function showOppSinks(item) {
                 }
             }
         }
+    }
+}
+
+function displayGameState(item) {
+    if (item.gameState == "WaitForOpponentSalvo") {
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").disabled = true;
+            }
+        }
+        document.getElementById("salvoDone").style.visibility = 'hidden';
+        document.getElementById("statusMessage").innerHTML = "Waiting for other player to fire salvo";
+    }
+    else if (item.gameState == "EnterSalvo") {
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").disabled = false;
+            }
+        }
+        document.getElementById("salvoDone").style.visibility = 'visible';
+        document.getElementById("statusMessage").innerHTML = "Enter your salvo";
+    }
+    else if (item.gameState == "GameOver") {
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").disabled = true;
+            }
+        }
+        document.getElementById("salvoDone").style.visibility = 'hidden';
+        document.getElementById("statusMessage").innerHTML = "Game over"
     }
 }
