@@ -36,8 +36,12 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         onlySalvoesOnMe(myGame);
         displayShipPlacement(myGame);
         listenSalvoes();
-        makeTurnsTable(myGame);
-        showHitsOnOpponent(myGame);
+        showOppHits(myGame);
+        showOppSinks(myGame);
+        sinksOnMe(myGame);
+        hitsSinksTable(myGame);
+        //makeTurnsTable(myGame);
+
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -89,21 +93,6 @@ function showSalvoesGrid(item) {
     }
 }
 
-function showHitsOnOpponent(item) {
-    let n = getParams();
-    for (let i = 0; i < item.history.length; i++) {
-        if (item.history[i].gamePlayerId == n) {
-            for (let j = 0; j < item.history[i].gamePlayerHitsSinks.length; j++) {
-                for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations.length; k++)  {
-                    if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").getAttribute("class") == "salvo") {
-                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").innerHTML = item.history[i].gamePlayerHitsSinks[j].turn;
-                    }
-                }
-            }
-        }
-    }
-
-}
 
 function showPlayers(item) {
     let container = document.querySelector("#players");
@@ -235,6 +224,34 @@ function onlySalvoesOnMe(item) {
                 }
            }
        }
+    }
+}
+
+
+function sinksOnMe(item) {
+    let allOppSalvLocs = [];
+    let n = getParams();
+    for (let m = 0; m < item.salvoes.length; m++) {
+        if (item.salvoes[m].gamePlayerId != n) {
+            for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
+                for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
+                    allOppSalvLocs.push(item.salvoes[m].gamePlayerSalvoes[p].locations[r]);
+                }
+            }
+        }
+    }
+    //console.log(allOppSalvLocs);
+    let arrShip = [];
+    for (let i = 0; i < item.ships.length; i++) {
+        for (let j = 0; j < item.ships[i].locations.length; j++) {
+            if (allOppSalvLocs.includes(item.ships[i].locations[j])) {arrShip.push(item.ships[i].locations[j])}
+        }
+        if (arrShip.length == item.ships[i].locations.length) {
+            for (let j = 0; j < item.ships[i].locations.length; j++) {
+            document.getElementById(item.ships[i].locations[j]).style.backgroundColor = "grey";
+        }
+        }
+        arrShip = [];
     }
 }
 
@@ -648,7 +665,7 @@ function getSalvoLocations() {
 
 
 function sendSalvo() {
-    let myData = JSON.stringify({ "turnNumber": 8, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
+    let myData = JSON.stringify({ "turnNumber": 10, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
     const url = "/api/games/players/" + getParams() + "/salvoes";
 
     fetch(url, {
@@ -685,7 +702,7 @@ function makeTurnsTable(item) {
     console.log(opponent.gamePlayerId);
     let meGmPlHitsSinksSorted = me.gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
     let oppGmPlHitsSinksSorted = opponent.gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
-    for (let i = 0; i < item.history[0].gamePlayerHitsSinks.length; i++) {
+    for (let i = 0; i < 5; i++) {
         let row = document.createElement("tr");
         container.appendChild(row);
         let turn = row.insertCell();
@@ -695,19 +712,11 @@ function makeTurnsTable(item) {
         let oppLeft = row.insertCell();
         hitsOnMe.setAttribute("class", "hitsCells") ;
         hitsOnOpp.setAttribute("class", "hitsCells");
-        //arrShips = ["AircraftCarrier", "Battleship", "Destroyer", "Submarine", "PatrolBoat"];
-        //arrParShips = [];
         let arrMeHits = [];
         let arrOppHits = [];
         let arrSinksMe = [];
         let arrSinksOpp = [];
-       /* for (let i = 0; i < arrShips.length; i++) {
-            arrParShips.push(arrShips[i].slice(1, -1));
-        }
-        for (let m = 0; m < arrParShips.length; m++) {
-            if (me.gamePlayerHitsSinks[i].hits.arrParShips[m] != 0) {arrMeHits.push(arrParShips[m] + ": " + me.gamePlayerHitsSinks[i].hits.arrParShips[m] + ", ")}
-        }
-*/
+
         if (meGmPlHitsSinksSorted[i].hits.AircraftCarrier != 0) {arrMeHits.push("Aircraft Carrier: " + meGmPlHitsSinksSorted[i].hits.AircraftCarrier + ", ")};
         if (meGmPlHitsSinksSorted[i].hits.Battleship != 0) {arrMeHits.push("Battleship: " + meGmPlHitsSinksSorted[i].hits.Battleship + ", ")};
         if (meGmPlHitsSinksSorted[i].hits.Destroyer != 0) {arrMeHits.push("Destroyer: " + meGmPlHitsSinksSorted[i].hits.Destroyer + ", ")};
@@ -720,22 +729,146 @@ function makeTurnsTable(item) {
         if (oppGmPlHitsSinksSorted[i].hits.Submarine != 0) {arrOppHits.push("Submarine: " + oppGmPlHitsSinksSorted[i].hits.Submarine + ", ")};
         if (oppGmPlHitsSinksSorted[i].hits.PatrolBoat != 0) {arrOppHits.push("Patrol Boat: " + oppGmPlHitsSinksSorted[i].hits.PatrolBoat + ", ")};
 
-        if (meGmPlHitsSinksSorted[i].sinks.AircraftCarrier == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Aircraft Carrier sunk")}
-        if (meGmPlHitsSinksSorted[i].sinks.Battleship == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Battleship sunk")}
-        if (meGmPlHitsSinksSorted[i].sinks.Destroyer == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Destroyer sunk")}
-        if (meGmPlHitsSinksSorted[i].sinks.Submarine == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Submarine sunk")}
-        if (meGmPlHitsSinksSorted[i].sinks.PatrolBoat == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Patrol Boa sunk")}
+        if (meGmPlHitsSinksSorted[i].sinks.AircraftCarrier == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Aircraft Carrier sunk")};
+        if (meGmPlHitsSinksSorted[i].sinks.Battleship == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.Battleship != "sunk") {arrSinksMe.push(" | Battleship sunk")};
+        if (meGmPlHitsSinksSorted[i].sinks.Destroyer == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.Destroyer != "sunk") {arrSinksMe.push(" | Destroyer sunk")};
+        if (meGmPlHitsSinksSorted[i].sinks.Submarine == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.Submarine != "sunk") {arrSinksMe.push(" | Submarine sunk")};
+        if (meGmPlHitsSinksSorted[i].sinks.PatrolBoat == "sunk" && meGmPlHitsSinksSorted[i - 1].sinks.PatrolBoat != "sunk") {arrSinksMe.push(" | Patrol Boat sunk")};
 
-        if (oppGmPlHitsSinksSorted[i].sinks.AircraftCarrier == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Aircraft Carrier sunk")}
-        if (oppGmPlHitsSinksSorted[i].sinks.Battleship == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Battleship sunk")}
-        if (oppGmPlHitsSinksSorted[i].sinks.Destroyer == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Destroyer sunk")}
-        if (oppGmPlHitsSinksSorted[i].sinks.Submarine == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Submarine sunk")}
-        if (oppGmPlHitsSinksSorted[i].sinks.PatrolBoat == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Patrol Boa sunk")}
+        if (oppGmPlHitsSinksSorted[i].sinks.AircraftCarrier == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksOpp.push(" | Aircraft Carrier sunk")};
+        if (oppGmPlHitsSinksSorted[i].sinks.Battleship == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.Battleship != "sunk") {arrSinksOpp.push(" | Battleship sunk")};
+        if (oppGmPlHitsSinksSorted[i].sinks.Destroyer == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.Destroyer != "sunk") {arrSinksOpp.push(" | Destroyer sunk")};
+        if (oppGmPlHitsSinksSorted[i].sinks.Submarine == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.Submarine != "sunk") {arrSinksOpp.push(" | Submarine sunk")};
+        if (oppGmPlHitsSinksSorted[i].sinks.PatrolBoat == "sunk" && oppGmPlHitsSinksSorted[i - 1].sinks.PatrolBoat != "sunk") {arrSinksOpp.push(" | Patrol Boat sunk")};
 
         turn.innerHTML = meGmPlHitsSinksSorted[i].turn;
         hitsOnMe.innerHTML = arrOppHits + arrSinksOpp;
         myLeft.innerHTML = opponent.gamePlayerHitsSinks[i].sinks.left;
         hitsOnOpp.innerHTML = arrMeHits + arrSinksMe;
         oppLeft.innerHTML = me.gamePlayerHitsSinks[i].sinks.left;
+    }
+}
+
+
+function hitsSinksTable(item) {
+    let container = document.getElementById("historyTable");
+    let n = getParams();
+    for (let i = 0; i < 5; i++) {
+        let arrMeHits = [];
+        let arrOppHits = [];
+        let arrSinksMe = [];
+        let arrSinksOpp = [];
+        let meShipsLeft = [];
+        let oppShipsLeft = [];
+        let row = document.createElement("tr");
+        container.appendChild(row);
+        let turn = row.insertCell();
+        let hitsOnMe = row.insertCell();
+        let myLeft = row.insertCell();
+        let hitsOnOpp = row.insertCell();
+        let oppLeft = row.insertCell();
+        hitsOnMe.setAttribute("class", "hitsCells") ;
+        hitsOnOpp.setAttribute("class", "hitsCells");
+
+        for (let j = 0; j < 2; j++) {
+            if (item.history[j].gamePlayerId == n) {
+                let sortMeTurns = item.history[j].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
+                if (sortMeTurns[i].hits.AircraftCarrier != 0) {arrMeHits.push("Aircraft Carrier: " + sortMeTurns[i].hits.AircraftCarrier + ", ")};
+                if (sortMeTurns[i].hits.Battleship != 0) {arrMeHits.push("Battleship: " + sortMeTurns[i].hits.Battleship + ", ")};
+                if (sortMeTurns[i].hits.Destroyer != 0) {arrMeHits.push("Destroyer: " + sortMeTurns[i].hits.Destroyer + ", ")};
+                if (sortMeTurns[i].hits.Submarine != 0) {arrMeHits.push("Submarine: " + sortMeTurns[i].hits.Submarine + ", ")};
+                if (sortMeTurns[i].hits.PatrolBoat != 0) {arrMeHits.push("Patrol Boat: " + sortMeTurns[i].hits.PatrolBoat + ", ")};
+
+                if (sortMeTurns[i].sinks.AircraftCarrier == "sunk" && sortMeTurns[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksMe.push(" | Aircraft Carrier sunk")};
+                if (sortMeTurns[i].sinks.Battleship == "sunk" && sortMeTurns[i - 1].sinks.Battleship != "sunk") {arrSinksMe.push(" | Battleship sunk")};
+                if (sortMeTurns[i].sinks.Destroyer == "sunk" && sortMeTurns[i - 1].sinks.Destroyer != "sunk") {arrSinksMe.push(" | Destroyer sunk")};
+                if (sortMeTurns[i].sinks.Submarine == "sunk" && sortMeTurns[i - 1].sinks.Submarine != "sunk") {arrSinksMe.push(" | Submarine sunk")};
+                if (sortMeTurns[i].sinks.PatrolBoat == "sunk" && sortMeTurns[i - 1].sinks.PatrolBoat != "sunk") {arrSinksMe.push(" | Patrol Boat sunk")};
+                meShipsLeft.push(sortMeTurns[i].sinks.left);
+            }
+            if (item.history[j].gamePlayerId != n) {
+                let sortOppTurns = item.history[j].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
+                if (sortOppTurns[i].hits.AircraftCarrier != 0) {arrOppHits.push("Aircraft Carrier: " + sortOppTurns[i].hits.AircraftCarrier + ", ")};
+                if (sortOppTurns[i].hits.Battleship != 0) {arrOppHits.push("Battleship: " + sortOppTurns[i].hits.Battleship + ", ")};
+                if (sortOppTurns[i].hits.Destroyer != 0) {arrOppHits.push("Destroyer: " + sortOppTurns[i].hits.Destroyer + ", ")};
+                if (sortOppTurns[i].hits.Submarine != 0) {arrOppHits.push("Submarine: " + sortOppTurns[i].hits.Submarine + ", ")};
+                if (sortOppTurns[i].hits.PatrolBoat != 0) {arrOppHits.push("Patrol Boat: " + sortOppTurns[i].hits.PatrolBoat + ", ")};
+
+                if (sortOppTurns[i].sinks.AircraftCarrier == "sunk" && sortOppTurns[i - 1].sinks.AircraftCarrier != "sunk") {arrSinksOpp.push(" | Aircraft Carrier sunk")};
+                if (sortOppTurns[i].sinks.Battleship == "sunk" && sortOppTurns[i - 1].sinks.Battleship != "sunk") {arrSinksOpp.push(" | Battleship sunk")};
+                if (sortOppTurns[i].sinks.Destroyer == "sunk" && sortOppTurns[i - 1].sinks.Destroyer != "sunk") {arrSinksOpp.push(" | Destroyer sunk")};
+                if (sortOppTurns[i].sinks.Submarine == "sunk" && sortOppTurns[i - 1].sinks.Submarine != "sunk") {arrSinksOpp.push(" | Submarine sunk")};
+                if (sortOppTurns[i].sinks.PatrolBoat == "sunk" && sortOppTurns[i - 1].sinks.PatrolBoat != "sunk") {arrSinksOpp.push(" | Patrol Boat sunk")};
+                oppShipsLeft.push(sortOppTurns[i].sinks.left);
+            }
+        }
+        turn.innerHTML = i + 1;
+        hitsOnMe.innerHTML = arrOppHits + arrSinksOpp;
+        myLeft.innerHTML = oppShipsLeft;
+        hitsOnOpp.innerHTML = arrMeHits + arrSinksMe;
+        oppLeft.innerHTML = meShipsLeft;
+    }
+}
+
+
+function showOppHits(item) {
+console.log("hiiits");
+    let n = getParams();
+    for (let i = 0; i < 2; i++) {
+        if (item.history[i].gamePlayerId == n) {
+            for (let j = 0; j <item.history[i].gamePlayerHitsSinks.length; j++) {
+                for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations.length; k++) {
+                    if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").getAttribute("class") == "salvo") {
+                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").innerHTML = item.history[i].gamePlayerHitsSinks[j].turn;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+function showOppSinks(item) {
+    let n = getParams();
+    for (let i = 0; i < 2; i++) {
+        if (item.history[i].gamePlayerId == n) {
+            for (let j = 0; j < item.history[i].gamePlayerHitsSinks.length; j++) {
+                if (item.history[i].gamePlayerHitsSinks[j].sinks.AircraftCarrier == "sunk") {
+                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc.length; k++) {
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").getAttribute("class") == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.backgroundColor = "grey";
+                        }
+                    }
+                }
+                if (item.history[i].gamePlayerHitsSinks[j].sinks.Battleship == "sunk") {
+                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc.length; k++) {
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").getAttribute("class") == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").style.backgroundColor = "grey";
+                        }
+                    }
+                }
+                if (item.history[i].gamePlayerHitsSinks[j].sinks.Submarine == "sunk") {
+                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc.length; k++) {
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").getAttribute("class") == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").style.backgroundColor = "grey";
+                        }
+                    }
+                }
+                if (item.history[i].gamePlayerHitsSinks[j].sinks.Destroyer == "sunk") {
+                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.Destloc.length; k++) {
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").getAttribute("class") == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").style.backgroundColor = "grey";
+                        }
+                    }
+                }
+                if (item.history[i].gamePlayerHitsSinks[j].sinks.PatrolBoat == "sunk") {
+                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc.length; k++) {
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").getAttribute("class") == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").style.backgroundColor = "grey";
+                        }
+                    }
+                }
+            }
+        }
     }
 }

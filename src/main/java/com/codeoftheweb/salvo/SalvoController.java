@@ -31,6 +31,9 @@ public class SalvoController {
     @Autowired
     private SalvoRepository salvoRepository;
 
+    @Autowired
+    private ScoreRepository scoreRepository;
+
 
     @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
@@ -50,9 +53,28 @@ public class SalvoController {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
 
+        Set<Ship> gmPlShips = thisGmPl.getShips();
+        if (gmPlShips.size() < 5) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Ships not placed"), HttpStatus.FORBIDDEN);
+        }
+
         Salvo currentTurn = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == salvo.getTurnNumber()).findAny().orElse(null);
         if (currentTurn != null) {
-            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Salvoes for this turn shot"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Salvo for this turn shot"), HttpStatus.FORBIDDEN);
+        }
+
+        int thisTurnNumb = salvo.getTurnNumber();
+        Salvo previousSalvo = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == thisTurnNumb - 1).findAny().orElse(null);
+        if (previousSalvo == null) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "False turn number"), HttpStatus.FORBIDDEN);
+        }
+
+        if (salvo.getLocations().size() > 5) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "To many shots"), HttpStatus.FORBIDDEN);
+        }
+
+        if (checkIfgameOver(gamePlayerId) != "continue") {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Game over"), HttpStatus.FORBIDDEN);
         }
 
         salvoRepository.save(new Salvo(salvo.getTurnNumber(), thisGmPl, salvo.getLocations()));
@@ -165,6 +187,7 @@ public class SalvoController {
         oneGamePlayer.put("history", gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream()
         .map(gamePl -> makeHitsAndSinksGmPlayerDTO(gamePl))
         .collect(Collectors.toList()));
+        oneGamePlayer.put("gameState", showGameState(id));
         if (playerRepository.findByUserName(authentication.getName()).getUserName() == gamePlayerRepository.findOne(id).getPlayer().getUserName()) {
             return new  ResponseEntity<Map<String, Object>>(oneGamePlayer, HttpStatus.OK);
         }
@@ -400,6 +423,11 @@ public class SalvoController {
         oneTurnSinks.put("Destroyer", checkIfSunk(3, allHitsDestroyer.size()));
         oneTurnSinks.put("PatrolBoat", checkIfSunk(2, allHitsBoat.size()));
         oneTurnSinks.put("left", left);
+        if (statusCarrier == 0) {oneTurnSinks.put("AirCarLoc", carrier.getLocations());}
+        if (statusBattleship == 0) {oneTurnSinks.put("BattleshipLoc", battleship.getLocations());}
+        if (statusSubmarine == 0) {oneTurnSinks.put("SubmarLoc", submarine.getLocations());}
+        if (statusDestroyer == 0) {oneTurnSinks.put("Destloc", destroyer.getLocations());}
+        if (statusBoat == 0) {oneTurnSinks.put("PatBoatLoc", boat.getLocations());}
         return oneTurnSinks;
     }
 
@@ -410,8 +438,105 @@ public class SalvoController {
         return state;
     }
 
+    private String showGameState(Long id) {
+        GamePlayer meGamePl = gamePlayerRepository.findOne(id);
+        GamePlayer opponentGmPl =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().get();
+        //int currentTurnNumMe = meGamePl.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
+        //int currentTurnNumOpp = opponentGmPl.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
 
-  }
+        if (meGamePl.getShips().size() == 0) {return "PlaceShips";}
+        if (meGamePl.getSalvoes().size() > opponentGmPl.getSalvoes().size()) {return "WaitForOpponentSalvo";}
+        if (meGamePl.getSalvoes().size() < opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
+       // if (meGamePl.getSalvoes().size() == opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
+        if (checkIfgameOver(id) != "continue" && meGamePl.getSalvoes().size() == opponentGmPl.getSalvoes().size()) {updateScores(id); return "GameOver";}
+        return "EnterSalvo";
+    }
+
+    private String checkIfgameOver(Long id) {
+        GamePlayer me = gamePlayerRepository.findOne(id);
+        GamePlayer oponent =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().get();
+
+        //int currentTurnNumMe = me.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
+        //int currentTurnNumOpp = oponent.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
+
+        Set<Ship> oponentShips = oponent.getShips();
+        Ship carrierOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().get();
+        Ship battleshipOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().get();
+        Ship submarineOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().get();
+        Ship destroyerOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
+        Ship boatOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
+
+        /*int thisTurnNumber = salvo.getTurnNumber();
+        Set<Salvo> allSalvoes = me.getSalvoes().stream().filter(s -> s.getTurnNumber() < thisTurnNumber).collect(Collectors.toSet());
+        allSalvoes.add(salvo);*/
+
+        List<String> allHitsCarrierOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> carrierOpp.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsBattleshipOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> battleshipOpp.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsSubmarineOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> submarineOpp.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsDestroyerOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> destroyerOpp.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsBoatOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> boatOpp.getLocations().contains(l)).collect(Collectors.toList());
+
+        int statusCarrierOpp, statusBattleshipOpp, statusSubmarineOpp, statusDestroyerOpp, statusBoatOpp;
+        if (checkIfSunk(5, allHitsCarrierOpp.size()) == "sunk")  statusCarrierOpp = 0;
+        else  statusCarrierOpp = 1;
+        if (checkIfSunk(4, allHitsBattleshipOpp.size()) == "sunk") statusBattleshipOpp = 0;
+        else statusBattleshipOpp = 1;
+        if (checkIfSunk(3, allHitsSubmarineOpp.size()) == "sunk") statusSubmarineOpp = 0;
+        else statusSubmarineOpp = 1;
+        if (checkIfSunk(3, allHitsDestroyerOpp.size()) == "sunk") statusDestroyerOpp = 0;
+        else statusDestroyerOpp = 1;
+        if (checkIfSunk(2, allHitsBoatOpp.size()) == "sunk") statusBoatOpp = 0;
+        else statusBoatOpp = 1;
+        int leftOpp = statusCarrierOpp + statusBattleshipOpp + statusSubmarineOpp + statusDestroyerOpp + statusBoatOpp;
+
+        Set<Ship> meShips = me.getShips();
+        Ship carrierMe = meShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().get();
+        Ship battleshipMe = meShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().get();
+        Ship submarineMe = meShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().get();
+        Ship destroyerMe = meShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
+        Ship boatMe = meShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
+
+        List<String> allHitsCarrierMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> carrierMe.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsBattleshipMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> battleshipMe.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsSubmarineMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> submarineMe.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsDestroyerMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> destroyerMe.getLocations().contains(l)).collect(Collectors.toList());
+        List<String> allHitsBoatMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> boatMe.getLocations().contains(l)).collect(Collectors.toList());
+
+        int statusCarrierMe, statusBattleshipMe, statusSubmarineMe, statusDestroyerMe, statusBoatMe;
+        if (checkIfSunk(5, allHitsCarrierMe.size()) == "sunk")  statusCarrierMe = 0;
+        else  statusCarrierMe = 1;
+        if (checkIfSunk(4, allHitsBattleshipMe.size()) == "sunk") statusBattleshipMe = 0;
+        else statusBattleshipMe = 1;
+        if (checkIfSunk(3, allHitsSubmarineMe.size()) == "sunk") statusSubmarineMe = 0;
+        else statusSubmarineMe = 1;
+        if (checkIfSunk(3, allHitsDestroyerMe.size()) == "sunk") statusDestroyerMe = 0;
+        else statusDestroyerMe = 1;
+        if (checkIfSunk(2, allHitsBoatMe.size()) == "sunk") statusBoatMe = 0;
+        else statusBoatMe = 1;
+        int leftMe = statusCarrierMe + statusBattleshipMe + statusSubmarineMe + statusDestroyerMe + statusBoatMe;
+
+        String result;
+        if (leftMe > 0 && leftOpp > 0)  result = "continue";
+        else if (leftMe > 0 && leftOpp == 0) result = "game over meWon";
+        else if (leftMe == 0 && leftOpp == 0) result = "game over meTied";
+        else result = "game over meLost";
+        return result;
+    }
+
+    private void updateScores(Long id) {
+        GamePlayer meGamePl = gamePlayerRepository.findOne(id);
+        //GamePlayer opponentGmPl =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().get();
+        Game thisGame = meGamePl.getGame();
+        Player mePlayer = meGamePl.getPlayer();
+        String myResult;
+        if (checkIfgameOver(id) == "continue") myResult = null;
+        else if (checkIfgameOver(id) == "game over meWon") myResult = "won";
+        else if (checkIfgameOver(id) == "game over meTied") myResult = "tied";
+        else  myResult = "lost";
+
+        if (myResult != null) {scoreRepository.save(new Score(new Date(), myResult, mePlayer, thisGame));}
+    }
+}
 
 
 
