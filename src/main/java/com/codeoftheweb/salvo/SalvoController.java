@@ -65,7 +65,7 @@ public class SalvoController {
 
         int thisTurnNumb = salvo.getTurnNumber();
         Salvo previousSalvo = thisGmPl.getSalvoes().stream().filter(s ->  s.getTurnNumber() == thisTurnNumb - 1).findAny().orElse(null);
-        if (previousSalvo == null) {
+        if (salvo.getTurnNumber() > 1 && previousSalvo == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "False turn number"), HttpStatus.FORBIDDEN);
         }
 
@@ -105,7 +105,7 @@ public class SalvoController {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Ships already placed"), HttpStatus.FORBIDDEN);
         }
 
-        if (ships.size() < 5) {
+        if (ships.size() != 5) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Not all ships sent"), HttpStatus.FORBIDDEN);
         }
         ships.stream().map(ship -> shipRepository.save(new Ship(ship.getType(), ship.getLocations(), thisGmPl))).collect(Collectors.toList());
@@ -353,15 +353,17 @@ public class SalvoController {
     }
 
     private Map<String, Object> makeHitsDTO(Salvo salvo, String userName) {
-        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
-        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
+        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().orElse(null);
+        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().orElse(null);
+        if (oponent == null) {return null;}
+        if (oponent.getShips().size() == 0) {return null;}
         Set<Ship> oponentShips = oponent.getShips();
 
-        Ship carrier = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().get();
-        Ship battleship = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().get();
-        Ship submarine = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().get();
-        Ship destroyer = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
-        Ship boat = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
+        Ship carrier = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().orElse(null);
+        Ship battleship = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().orElse(null);
+        Ship submarine = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().orElse(null);
+        Ship destroyer = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().orElse(null);
+        Ship boat = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().orElse(null);
 
         List<String> hitsCarrier = carrier.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
         List<String> hitsBattleship = battleship.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
@@ -386,15 +388,17 @@ public class SalvoController {
     }
 
     private Map<String, Object> makeSinksDTO(Salvo salvo, String userName) {
-        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().get();
-        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().get();
+        GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().orElse(null);
+        GamePlayer oponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().orElse(null);
+        if (oponent == null) {return null;}
+        if (oponent.getShips().size() == 0) {return null;}
         Set<Ship> oponentShips = oponent.getShips();
 
-        Ship carrier = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().get();
-        Ship battleship = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().get();
-        Ship submarine = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().get();
-        Ship destroyer = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
-        Ship boat = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
+        Ship carrier = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().orElse(null);
+        Ship battleship = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().orElse(null);
+        Ship submarine = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().orElse(null);
+        Ship destroyer = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().orElse(null);
+        Ship boat = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().orElse(null);
 
         int thisTurnNumber = salvo.getTurnNumber();
         Set<Salvo> allSalvoes = me.getSalvoes().stream().filter(s -> s.getTurnNumber() < thisTurnNumber).collect(Collectors.toSet());
@@ -444,25 +448,27 @@ public class SalvoController {
 
     private String showGameState(Long id) {
         GamePlayer meGamePl = gamePlayerRepository.findOne(id);
-        GamePlayer opponentGmPl =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().get();
-        //int currentTurnNumMe = meGamePl.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
-        //int currentTurnNumOpp = opponentGmPl.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
+        GamePlayer opponentGmPl =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().orElse(null);
 
         if (meGamePl.getShips().size() == 0) {return "PlaceShips";}
-        if (meGamePl.getSalvoes().size() > opponentGmPl.getSalvoes().size()) {return "WaitForOpponentSalvo";}
-        if (meGamePl.getSalvoes().size() < opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
-       // if (meGamePl.getSalvoes().size() == opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
-        if (checkIfgameOver(id) != "continue" && meGamePl.getSalvoes().size() == opponentGmPl.getSalvoes().size()) {updateScores(id); return "GameOver";}
-        return "EnterSalvo";
+        if (opponentGmPl == null && meGamePl.getSalvoes().size() == 0) {return "EnterSalvo";}
+        if (opponentGmPl == null && meGamePl.getSalvoes().size() > 0) {return "WaitForOpponentSalvo";}
+        if (meGamePl.getShips().size() == 5 && opponentGmPl != null && checkIfgameOver(id) == "continue" && meGamePl.getSalvoes().size() > opponentGmPl.getSalvoes().size()) {return "WaitForOpponentSalvo";}
+        if (meGamePl.getShips().size() == 5 && opponentGmPl != null && checkIfgameOver(id) == "continue" && meGamePl.getSalvoes().size() < opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
+        if (meGamePl.getShips().size() == 5 && opponentGmPl != null && checkIfgameOver(id) != "continue" && meGamePl.getSalvoes().size() < opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
+        if (meGamePl.getShips().size() == 5 && opponentGmPl != null && checkIfgameOver(id) != "continue" && meGamePl.getSalvoes().size() > opponentGmPl.getSalvoes().size()) {return "WaitForOpponentSalvo";}
+        System.out.println(opponentGmPl);
+        if (meGamePl.getShips().size() == 5 && opponentGmPl != null && checkIfgameOver(id) != "continue" && meGamePl.getSalvoes().size() == opponentGmPl.getSalvoes().size()) {updateScores(id); return "GameOver";}
+       return "EnterSalvo";
     }
 
     private String checkIfgameOver(Long id) {
         GamePlayer me = gamePlayerRepository.findOne(id);
-        GamePlayer oponent =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().get();
-
+        GamePlayer oponent =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().orElse(null);
+        if (oponent == null) {return "continue";}
         //int currentTurnNumMe = me.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
         //int currentTurnNumOpp = oponent.getSalvoes().stream().mapToInt(sal -> sal.getTurnNumber()).max().orElse(-1);
-
+        if (oponent.getShips().size() == 0) {return "continue";}
         Set<Ship> oponentShips = oponent.getShips();
         Ship carrierOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().get();
         Ship battleshipOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().get();
@@ -470,10 +476,7 @@ public class SalvoController {
         Ship destroyerOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
         Ship boatOpp = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
 
-        /*int thisTurnNumber = salvo.getTurnNumber();
-        Set<Salvo> allSalvoes = me.getSalvoes().stream().filter(s -> s.getTurnNumber() < thisTurnNumber).collect(Collectors.toSet());
-        allSalvoes.add(salvo);*/
-
+        if (me.getSalvoes().size() == 0) {return "continue";}
         List<String> allHitsCarrierOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> carrierOpp.getLocations().contains(l)).collect(Collectors.toList());
         List<String> allHitsBattleshipOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> battleshipOpp.getLocations().contains(l)).collect(Collectors.toList());
         List<String> allHitsSubmarineOpp = me.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> submarineOpp.getLocations().contains(l)).collect(Collectors.toList());
@@ -500,6 +503,7 @@ public class SalvoController {
         Ship destroyerMe = meShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().get();
         Ship boatMe = meShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().get();
 
+        if (oponent.getSalvoes().size() == 0) {return "continue";}
         List<String> allHitsCarrierMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> carrierMe.getLocations().contains(l)).collect(Collectors.toList());
         List<String> allHitsBattleshipMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> battleshipMe.getLocations().contains(l)).collect(Collectors.toList());
         List<String> allHitsSubmarineMe = oponent.getSalvoes().stream().flatMap(sal -> sal.getLocations().stream()).filter(l -> submarineMe.getLocations().contains(l)).collect(Collectors.toList());
@@ -520,10 +524,11 @@ public class SalvoController {
         int leftMe = statusCarrierMe + statusBattleshipMe + statusSubmarineMe + statusDestroyerMe + statusBoatMe;
 
         String result;
-        if (leftMe > 0 && leftOpp > 0)  result = "continue";
+        if (leftOpp == 0 && leftMe == 0) result = "game over tied";
         else if (leftMe > 0 && leftOpp == 0) result = "game over meWon";
-        else if (leftMe == 0 && leftOpp == 0) result = "game over meTied";
-        else result = "game over meLost";
+        else if (leftMe == 0 && leftOpp > 0) result = "game over meLost";
+        else result = "continue";
+
         return result;
     }
 
@@ -535,7 +540,7 @@ public class SalvoController {
         String myResult;
         if (checkIfgameOver(id) == "continue") myResult = null;
         else if (checkIfgameOver(id) == "game over meWon") myResult = "won";
-        else if (checkIfgameOver(id) == "game over meTied") myResult = "tied";
+        else if (checkIfgameOver(id) == "game over tied") myResult = "tied";
         else  myResult = "lost";
 
         if (myResult != null) {scoreRepository.save(new Score(new Date(), myResult, mePlayer, thisGame));}

@@ -35,11 +35,11 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         onlyShips(myGame);
         onlySalvoesOnMe(myGame);
         displayShipPlacement(myGame);
-        listenSalvoes();
+        listenSalvoes(myGame);
+        displayGameState(myGame);
         showOppHits(myGame);
         showOppSinks(myGame);
         sinksOnMe(myGame);
-        displayGameState(myGame);
         hitsSinksTable(myGame);
         //makeTurnsTable(myGame);
 
@@ -111,7 +111,7 @@ function showPlayers(item) {
     }
 }
 
-
+/*
 function showShips(item) {
     let container = document.querySelector("#ship");
     for (let i = 0; i < item.ships.length; i++) {
@@ -120,7 +120,7 @@ function showShips(item) {
         oneShip.innerHTML = item.ships[i].locations;
         container.appendChild(oneShip);
     }
-}
+}*/
 
 function listenLogout() {
     console.log("listen");
@@ -162,8 +162,8 @@ function showLoggedUser(item) {
 function sendShips() {
     console.log("create ships");
 
-    let myData = JSON.stringify([ { "type": "destroyer", "locations": getShipLocation("placedDest") /*["A1", "B1", "C1"] */},
-                   { "type": "patrol boat", "locations": getShipLocation("placedBoat") /*["H5", "H6"] */},
+    let myData = JSON.stringify([ { "type": "Destroyer", "locations": getShipLocation("placedDest") /*["A1", "B1", "C1"] */},
+                   { "type": "Patrol Boat", "locations": getShipLocation("placedBoat") /*["H5", "H6"] */},
                    { "type": "Aircraft Carrier", "locations": getShipLocation("placedCarr") /*["A3", "B3", "C3", "D3", "E3"] */},
                    { "type": "Battleship", "locations": getShipLocation("placedBattle") /*["A8", "B8", "C8", "D8"] */},
                    { "type": "Submarine", "locations": getShipLocation("placedSub") /*["A10", "B10", "C10"] */}
@@ -638,14 +638,14 @@ function checkShipsPlacement() {
 }
 
 
-function listenSalvoes() {
+function listenSalvoes(item) {
     console.log("listen salvoes");
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
             document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").addEventListener("click", function () {setShot(this.getAttribute("id"))});
         }
     }
-    document.getElementById("salvoDone").addEventListener("click", function () {sendSalvo()});
+    document.getElementById("salvoDone").addEventListener("click", function () {sendSalvo(item)});
 }
 
 function setShot(item) {
@@ -674,8 +674,14 @@ function getSalvoLocations() {
 }
 
 
-function sendSalvo() {
-    let myData = JSON.stringify({ "turnNumber": 10, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
+function sendSalvo(item) {
+    let n = getParams();
+    let me;
+    for (let i = 0; i < item.history.length; i++) {
+        if (item.history[i].gamePlayerId == n)  me = item.history[i];
+    }
+
+    let myData = JSON.stringify({ "turnNumber": me.gamePlayerHitsSinks.length + 1, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
     const url = "/api/games/players/" + getParams() + "/salvoes";
 
     fetch(url, {
@@ -763,7 +769,7 @@ function makeTurnsTable(item) {
 function hitsSinksTable(item) {
     let container = document.getElementById("historyTable");
     let n = getParams();
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < item.history[0].gamePlayerHitsSinks.length; i++) {
         let arrMeHits = [];
         let arrOppHits = [];
         let arrSinksMe = [];
@@ -883,32 +889,46 @@ function showOppSinks(item) {
     }
 }
 
+
+
+
 function displayGameState(item) {
+    document.getElementById("statusMessage").innerHTML = "";
+    let timerId;
+    function startReloading() {
+        let  timerId = setTimeout(function() { location.reload(); startReloading(); }, 5000);
+    }
+    function stopReloading() {
+         clearTimeout(timerId);
+    }
     if (item.gameState == "WaitForOpponentSalvo") {
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").disabled = true;
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "none";
             }
         }
         document.getElementById("salvoDone").style.visibility = 'hidden';
         document.getElementById("statusMessage").innerHTML = "Waiting for other player to fire salvo";
+        startReloading()
     }
     else if (item.gameState == "EnterSalvo") {
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").disabled = false;
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "auto";
             }
         }
         document.getElementById("salvoDone").style.visibility = 'visible';
         document.getElementById("statusMessage").innerHTML = "Enter your salvo";
+        stopReloading()
     }
     else if (item.gameState == "GameOver") {
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").disabled = true;
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "none";
             }
         }
         document.getElementById("salvoDone").style.visibility = 'hidden';
         document.getElementById("statusMessage").innerHTML = "Game over"
+        stopReloading()
     }
 }
