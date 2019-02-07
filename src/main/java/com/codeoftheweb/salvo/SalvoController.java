@@ -534,7 +534,6 @@ public class SalvoController {
 
     private void updateScores(Long id) {
         GamePlayer meGamePl = gamePlayerRepository.findOne(id);
-        //GamePlayer opponentGmPl =  gamePlayerRepository.findOne(id).getGame().getGamePlayers().stream().filter(gpl -> gpl.getId() != id).findAny().get();
         Game thisGame = meGamePl.getGame();
         Player mePlayer = meGamePl.getPlayer();
         String myResult;

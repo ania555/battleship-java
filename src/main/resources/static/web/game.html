@@ -6,8 +6,7 @@
     <title>Game</title>
 </head>
 <body>
-    <h1> Ship Locations</h1>
-    <br>
+
     <div id="loggedUser"></div>
     <div id="logoutForm">
         <form >
@@ -21,8 +20,7 @@
 
     <div id="wrapper">
         <div>
-            <br>
-            <h3>Ships grid</h3>
+            <h3>Your board</h3>
             <table id="grid" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <tr>
                     <td> </td>
@@ -40,10 +38,7 @@
             </table>
         </div>
         <div id="salvoesSubmission">
-            <form>
-                <input id="salvoDone" type="button" value="send salvo">
-            </form>
-            <h3>Salvoes grid</h3>
+            <h3>Opponent's board</h3>
             <table id="mySalvoes">
                 <tr>
                     <td> </td>
@@ -59,6 +54,10 @@
                     <td>10</td>
                 </tr>
             </table>
+            <br>
+            <form>
+                <input id="salvoDone" type="button" value="send salvo">
+            </form>
         </div>
     </div>
     <br>
@@ -69,7 +68,7 @@
                 <input id="done" type="button" value="done">
             </form>
             <br>
-            <div>
+            <div id="airCarrierDiv">
                 <form id="ship5">
                     <input type="radio" name="ship"  value="horizontal" checked> Horizontal
                     <input type="radio" name="ship" value="vertical"> Vertical<br>
@@ -77,7 +76,7 @@
                 <span>Aircraft Carrier</span>
                 <div id="airCarrier" draggable="true" ondragstart="drag(event)"></div>
             </div>
-            <div>
+            <div id="battleshipDiv">
                 <form id="ship4">
                     <input type="radio" name="ship"  value="horizontal" checked> Horizontal
                     <input type="radio" name="ship" value="vertical"> Vertical<br>
@@ -85,7 +84,7 @@
                 <span>Battleship</span>
                 <div id="battleship" draggable="true" ondragstart="drag(event)"></div>
             </div>
-            <div>
+            <div id="submarineDiv">
                 <form id="ship3sub">
                     <input type="radio" name="ship"  value="horizontal" checked> Horizontal
                     <input type="radio" name="ship" value="vertical"> Vertical<br>
@@ -93,7 +92,7 @@
                 <span>Submarine</span>
                 <div id="submarine" draggable="true" ondragstart="drag(event)"></div>
             </div>
-            <div>
+            <div id="destroyerDiv">
                 <form id="ship3dest">
                     <input type="radio" name="ship"  value="horizontal" checked> Horizontal
                     <input type="radio" name="ship" value="vertical"> Vertical<br>
@@ -101,7 +100,7 @@
                 <span>Destroyer</span>
                 <div id="destroyer" draggable="true" ondragstart="drag(event)"></div>
             </div>
-            <div>
+            <div id="patBoatDiv">
                 <form id="ship2">
                     <input type="radio" name="ship"  value="horizontal" checked> Horizontal
                     <input type="radio" name="ship" value="vertical"> Vertical<br>

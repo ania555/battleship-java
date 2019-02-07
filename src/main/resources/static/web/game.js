@@ -29,11 +29,11 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         var myGame = json;
         console.log(myGame);
         showSalvoesGrid(myGame);
-        //showShips(myGame);
         showPlayers(myGame);
         listenLogout();
         onlyShips(myGame);
         onlySalvoesOnMe(myGame);
+        listenShipsGrid(myGame);
         displayShipPlacement(myGame);
         listenSalvoes(myGame);
         displayGameState(myGame);
@@ -42,7 +42,6 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         sinksOnMe(myGame);
         hitsSinksTable(myGame);
         //makeTurnsTable(myGame);
-
     })
     .catch((error) => {
         console.log("Request failed: " + error.message)
@@ -111,16 +110,6 @@ function showPlayers(item) {
     }
 }
 
-/*
-function showShips(item) {
-    let container = document.querySelector("#ship");
-    for (let i = 0; i < item.ships.length; i++) {
-        console.log("ship");
-        let oneShip = document.createElement("p");
-        oneShip.innerHTML = item.ships[i].locations;
-        container.appendChild(oneShip);
-    }
-}*/
 
 function listenLogout() {
     console.log("listen");
@@ -241,7 +230,6 @@ function sinksOnMe(item) {
             }
         }
     }
-    //console.log(allOppSalvLocs);
     let arrShip = [];
     for (let i = 0; i < item.ships.length; i++) {
         for (let j = 0; j < item.ships[i].locations.length; j++) {
@@ -635,6 +623,68 @@ function checkShipsPlacement() {
         && document.getElementById("destroyer") == null
         && document.getElementById("patBoat") == null) {sendShips()}
     else {alert("Place all ships"); return false;}
+}
+
+function listenShipsGrid(item) {
+    console.log("listen ships");
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+            document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).addEventListener("click", function () {removeShip(this.getAttribute("id"))});
+        }
+    }
+}
+
+function removeShip(idItem) {
+    console.log("removing");
+    let myShip = document.getElementById(idItem).getAttribute("class");
+    console.log(myShip);
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+            if (document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).getAttribute("class") == myShip) {
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).removeAttribute("class");
+            }
+        }
+    }
+    if (myShip == "placed placedCarr") {
+        let container = document.getElementById("airCarrierDiv");
+        let thisShip = document.createElement("div");
+        thisShip.setAttribute("id", "airCarrier");
+        thisShip.setAttribute("draggable", "true");
+        thisShip.setAttribute("ondragstart", "drag(event)");
+        container.appendChild(thisShip);
+    }
+    if (myShip == "placed placedBattle") {
+        let container = document.getElementById("battleshipDiv");
+        let thisShip = document.createElement("div");
+        thisShip.setAttribute("id", "battleship");
+        thisShip.setAttribute("draggable", "true");
+        thisShip.setAttribute("ondragstart", "drag(event)");
+        container.appendChild(thisShip);
+    }
+    if (myShip == "placed placedSub") {
+        let container = document.getElementById("submarineDiv");
+        let thisShip = document.createElement("div");
+        thisShip.setAttribute("id", "submarine");
+        thisShip.setAttribute("draggable", "true");
+        thisShip.setAttribute("ondragstart", "drag(event)");
+        container.appendChild(thisShip);
+}
+    if (myShip == "placed placedDest") {
+        let container = document.getElementById("destroyerDiv");
+        let thisShip = document.createElement("div");
+        thisShip.setAttribute("id", "destroyer");
+        thisShip.setAttribute("draggable", "true");
+        thisShip.setAttribute("ondragstart", "drag(event)");
+        container.appendChild(thisShip);
+    }
+    if (myShip == "placed placedBoat") {
+        let container = document.getElementById("patBoatDiv");
+        let thisShip = document.createElement("div");
+        thisShip.setAttribute("id", "patBoat");
+        thisShip.setAttribute("draggable", "true");
+        thisShip.setAttribute("ondragstart", "drag(event)");
+        container.appendChild(thisShip);
+    }
 }
 
 
