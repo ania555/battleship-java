@@ -7,129 +7,143 @@
 </head>
 <body>
 
-    <div id="loggedUser"></div>
-    <div id="logoutForm">
-        <form >
-            <input id="logout" type="button" value="logout"></input>
-        </form>
-    </div>
-    <br>
-    <div id="players"></div>
-    <br>
-    <div id="statusMessage"></div>
-
-    <div id="wrapper">
-        <div>
-            <h3>Your board</h3>
-            <table id="grid" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <tr>
-                    <td> </td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                </tr>
-            </table>
-        </div>
-        <div id="salvoesSubmission">
-            <h3>Opponent's board</h3>
-            <table id="mySalvoes">
-                <tr>
-                    <td> </td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                </tr>
-            </table>
-            <br>
-            <form>
-                <input id="salvoDone" type="button" value="send salvo">
+    <header id="headContainer">
+        <h1>Battleship</h1>
+        <div id="loggedUser"></div>
+        <div id="logoutForm">
+            <form >
+                <input id="logout" type="button" value="logout"></input>
             </form>
         </div>
-    </div>
-    <br>
-    <div id="grid-container">
-        <div id="shipPlacement">
-            <h3>Ships to place</h3>
-            <form>
-                <input id="done" type="button" value="done">
-            </form>
-            <br>
-            <div id="airCarrierDiv">
-                <form id="ship5">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
-                <span>Aircraft Carrier</span>
-                <div id="airCarrier" draggable="true" ondragstart="drag(event)"></div>
-            </div>
-            <div id="battleshipDiv">
-                <form id="ship4">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
-                <span>Battleship</span>
-                <div id="battleship" draggable="true" ondragstart="drag(event)"></div>
-            </div>
-            <div id="submarineDiv">
-                <form id="ship3sub">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
-                <span>Submarine</span>
-                <div id="submarine" draggable="true" ondragstart="drag(event)"></div>
-            </div>
-            <div id="destroyerDiv">
-                <form id="ship3dest">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
-                <span>Destroyer</span>
-                <div id="destroyer" draggable="true" ondragstart="drag(event)"></div>
-            </div>
-            <div id="patBoatDiv">
-                <form id="ship2">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
-                <span>Patrol Boat</span>
-                <div id="patBoat" draggable="true" ondragstart="drag(event)"></div>
+    </header>
+    <br><br>
+    <div id="gridContainer">
+        <br>
+        <div id="statusMessage"></div>
+        <div id="players">
+            <h3>Players</h3>
+            <div id="playersNames">
+                <div>
+                    <span id="you"></span>
+                </div>
+                <div>
+                    <span id="opponent"></span>
+                </div>
             </div>
         </div>
-        <div id="gameHistory">
-            <h3>Game history</h3>
-            <table id="historyTable">
-                <tr>
-                    <th></th>
-                    <th class="noLine">Hits on you</th>
-                    <th></th>
-                    <th class="noLine">Hits on opponent</th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <th>Turn</th>
-                    <th>Hits</th>
-                    <th>Left</th>
-                    <th>Hits</th>
-                    <th>Left</th>
-                </tr>
-            </table>
-        </div>
-    </div>
 
+        <div id="wrapper">
+            <div>
+                <h2>Your board</h2>
+                <table id="grid" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <tr>
+                        <td> </td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                        <td>8</td>
+                        <td>9</td>
+                        <td>10</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="salvoesSubmission">
+                <h2>Opponent's board</h2>
+                <table id="mySalvoes">
+                    <tr>
+                        <td> </td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                        <td>8</td>
+                        <td>9</td>
+                        <td>10</td>
+                    </tr>
+                </table>
+                <br>
+                <form>
+                    <input id="salvoDone" type="button" value="send salvo">
+                </form>
+            </div>
+        </div>
+        <br>
+        <div id="grid-container">
+            <div id="shipPlacement">
+                <h3>Ships to place</h3>
+                <form>
+                    <input id="done" type="button" value="done">
+                </form>
+                <br>
+                <div id="airCarrierDiv">
+                    <form id="ship5">
+                        <input type="radio" name="ship"  value="horizontal" checked> Horizontal
+                        <input type="radio" name="ship" value="vertical"> Vertical<br>
+                    </form>
+                    <span>Aircraft Carrier</span>
+                    <div id="airCarrier" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <div id="battleshipDiv">
+                    <form id="ship4">
+                        <input type="radio" name="ship"  value="horizontal" checked> Horizontal
+                        <input type="radio" name="ship" value="vertical"> Vertical<br>
+                    </form>
+                    <span>Battleship</span>
+                    <div id="battleship" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <div id="submarineDiv">
+                    <form id="ship3sub">
+                        <input type="radio" name="ship"  value="horizontal" checked> Horizontal
+                        <input type="radio" name="ship" value="vertical"> Vertical<br>
+                    </form>
+                    <span>Submarine</span>
+                    <div id="submarine" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <div id="destroyerDiv">
+                    <form id="ship3dest">
+                        <input type="radio" name="ship"  value="horizontal" checked> Horizontal
+                        <input type="radio" name="ship" value="vertical"> Vertical<br>
+                    </form>
+                    <span>Destroyer</span>
+                    <div id="destroyer" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <div id="patBoatDiv">
+                    <form id="ship2">
+                        <input type="radio" name="ship"  value="horizontal" checked> Horizontal
+                        <input type="radio" name="ship" value="vertical"> Vertical<br>
+                    </form>
+                    <span>Patrol Boat</span>
+                    <div id="patBoat" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+            </div>
+            <div id="gameHistory">
+                <h3>Game history</h3>
+                <table id="historyTable">
+                    <tr>
+                        <th></th>
+                        <th class="noLine">Hits on you</th>
+                        <th></th>
+                        <th class="noLine">Hits on opponent</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>Turn</th>
+                        <th>Hits</th>
+                        <th>Left</th>
+                        <th>Hits</th>
+                        <th>Left</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 
 
 

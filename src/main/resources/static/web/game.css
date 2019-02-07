@@ -1,36 +1,135 @@
-
 body {
-   margin-left: 100px;
+margin: 0px;
+font-family: sans-serif;
+background-color: rgb(0, 21, 46);
+color: rgb(230, 230, 230);
+}
+
+#headContainer {
+ display: grid;
+ grid-template-columns: 100px  auto 150px 50px 100px;
+ background-color: rgb(80, 80, 80);
+ color: rgb(234, 234, 225);
+}
+
+h1 {
+ grid-column: 2;
+}
+
+#loggedUser {
+grid-column: 3;
+padding: 25px;
+}
+
+
+#logoutForm {
+ grid-column: 4;
+ padding: 25px;
+}
+
+#gridContainer {
+  display: grid;
+  grid-template-columns: 100px 50px 200px auto 200px 50px 100px;
+}
+
+#players {
+ grid-column: 6;
+}
+
+#playersNames{
+ margin-top: -12px;
+}
+
+#statusMessage {
+  grid-column: 4;
+  height: 40px;
+  padding-top: 15px;
+  padding-left: 15px;
+  background-color: rgb(255, 190, 40);
+  color: rgb(0, 53, 102);
+  font-size: 20px;
+  border-radius: 5px
+}
+
+#wrapper {
+  grid-column: 3/span 3;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: -20px;
 }
 
 table {
   border-collapse: collapse;
-  }
+  margin-top: -10px;
+  background-color: rgb(0, 53, 102);
+  color: rgb(230, 230, 230);
+
+}
 
 table, th, td {
   border: 1px solid black;
+  border-color: rgb(0, 79, 153);
 }
 
 th, td {
- width: 35px;
- height: 35px;
+ width: 33px;
+ height: 33px;
  text-align: center;
  font-size: 20px;
 }
 
-#wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-}
-
 .salvo {
- background-color: red;
+ background-image: radial-gradient(circle closest-side, white 5%, #003566 25%, #003566 20%, #003566 50%);
 }
 
 .ship {
-    background-color: dodgerBlue;
+  background-color: #5c8a8a;
+  border-color: #527a7a;
 }
+
+.placed {
+ background-color: orange;
+}
+
+.placedCarr {
+  background-color: orange;
+}
+
+.placedBattle {
+ background-color: orange;
+}
+
+.placedSub {
+ background-color: orange;
+}
+
+.placedDest {
+ background-color: orange;
+}
+
+.placedBoat {
+ background-color: orange;
+}
+
+.shot {
+ background-color: rgb(0, 79, 153);
+ border-color: rgb(0, 53, 102);
+}
+
+
+
+#grid-container {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: 300px  auto 100px;
+}
+
+
+#shipPlacemen {
+  grid-column: 1;
+}
+
 #airCarrier {
  width: 175px;
  height: 35px;
@@ -61,51 +160,13 @@ th, td {
   background-color: green;
 }
 
-.placed {
- background-color: orange;
-}
-
-.placedCarr {
-  background-color: orange;
-}
-
-.placedBattle {
- background-color: orange;
-}
-
-.placedSub {
- background-color: orange;
-}
-
-.placedDest {
- background-color: orange;
-}
-
-.placedBoat {
- background-color: orange;
-}
-
-.shot {
- background-color: red;
-}
-
-#grid-container {
-  display: grid;
-  grid-template-columns: 300px  auto 100px;
-}
-
-#shipPlacemen {
-  grid-column: 1;
-}
 
 #gameHistory {
   grid-column: 2;
 }
-
 .noLine {
  border-right-color: white;
 }
-
 .hitsCells{
   width: 350px;
 }
