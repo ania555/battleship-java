@@ -42,26 +42,30 @@ function showGames(item) {
          console.log(user);
     for (let i = 0; i < item.length; i++) {
         let mySpan = document.createElement("span");
+        mySpan.setAttribute("class", "form-inline");
         container.appendChild(mySpan);
         let oneLink = document.createElement("a");
         oneLink.setAttribute("href", findLink(item[i]));
         mySpan.appendChild(oneLink);
         let buttonSpan = document.createElement("span");
-        container.appendChild(buttonSpan);
+        mySpan.appendChild(buttonSpan);
         let oneButton = document.createElement("input");
         oneButton.setAttribute("id", "game" + item[i].id);
         oneButton.setAttribute("type", "button");
         oneButton.setAttribute("value", "join game");
         oneButton.setAttribute("data-id", item[i].id);
+        oneButton.setAttribute("class", "btn mx-sm-3 mb-1");
         buttonSpan.appendChild(oneButton);
         let arrPlayers = item[i].gamePlayers.filter(function(x) {return (x.player.email === user)})
         //console.log(arrPlayers);
         if (arrPlayers.length > 0 || item[i].gamePlayers.length > 1) {buttonSpan.style.visibility = 'hidden'}
         let oneGame = document.createElement("li");
-        oneGame.innerHTML = new Date(item[i].created).toUTCString() + ": "
+        oneGame.innerHTML = new Date(item[i].created).toUTCString().slice(4,22) + " | ";
+        oneGame.setAttribute("class", "list-group-item list-group-item-action myList");
         oneLink.appendChild(oneGame);
         for (let j = 0; j < item[i].gamePlayers.length; j++) {
             let email = document.createElement("span");
+            email.setAttribute("class", "mySpan");
             email.innerHTML = item[i].gamePlayers[j].player.email + ", ";
             oneGame.appendChild(email);
         }
@@ -69,21 +73,8 @@ function showGames(item) {
 }
 
 function showLeaders(item) {
-    let container = document.querySelector("#leader-board");
+    let container = document.querySelector("#leadTBody");
     container.innerHTML = "";
-    let firstRow = document.createElement("tr");
-    container.appendChild(firstRow);
-    let nameH = firstRow.insertCell();
-    let totalH = firstRow.insertCell();
-    let winsH = firstRow.insertCell();
-    let lossesH = firstRow.insertCell();
-    let tiesH = firstRow.insertCell();
-    nameH.innerHTML = "Name";
-    totalH.innerHTML = "Total";
-    winsH.innerHTML = "Won";
-    lossesH.innerHTML = "Lost";
-    tiesH.innerHTML = "Tied";
-    nameH.setAttribute("class", "to_left");
     let sortedItems = item.sort(function(a, b) {
         if (b.totalScore !== a.totalScore) {
             return  b.totalScore - a.totalScore

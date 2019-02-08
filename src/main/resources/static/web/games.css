@@ -1,31 +1,90 @@
-
-table {
-  border-collapse: collapse;
-  }
-
-table, th, td {
-  border: 1px solid black;
+body {
+margin: 0px;
+font-family: sans-serif;
 }
 
-th, td {
- height: 40px;
- width: 50px;
- text-align: center;
- font-size: 20px;
-}
-.to_left {
-  width: 250px;
-  text-align: left;
+#headContainer {
+ display: grid;
+ grid-template-columns: 100px  auto 150px 50px 100px;
+ background-color: rgb(80, 80, 80);
+ color: rgb(234, 234, 225);
 }
 
-#loginForm {
-     visibility: visible;
-}
-
-#logoutForm {
-     visibility: hidden;
+h1 {
+ grid-column: 2;
+ padding: 20px;
+ margin: 0px;
 }
 
 #loggedUser {
-     visibility: hidden;
+  grid-column: 3;
+  margin-top: 32px;
+  visibility: hidden;
 }
+
+#logoutForm {
+ grid-column: 4;
+ margin-top: 29px;
+ visibility: hidden;
+}
+
+
+#gridContainer {
+  display: grid;
+  grid-template-columns: 70px 400px 100px auto 70px;
+  grid-template-rows: auto auto auto auto;
+}
+
+#loginForm {
+   visibility: visible;
+   grid-column: 2/span 3;
+   grid-row: 1;
+}
+
+#lead {
+ grid-column: 2;
+ grid-row: 2;
+ margin-top: 40px;
+ margin-bottom: 10px;
+}
+
+#games {
+  grid-column: 4;
+  grid-row: 2;
+  margin-top: 40px;
+  padding-left: 30px;
+}
+
+#output {
+  grid-column: 4/span 2;
+  grid-row: 3;
+}
+
+.myList {
+  width: 520px;
+}
+
+a:hover{
+  text-decoration: none;
+}
+
+.mySpan {
+  padding-left: 15px;
+}
+
+#newGame {
+  grid-column: 4;
+  grid-row: 4;
+  padding-left: 45px;
+}
+
+
+#leader-board {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.to_left {
+  text-align: left;
+}
+
