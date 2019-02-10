@@ -202,7 +202,7 @@ function onlySalvoesOnMe(item) {
            for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
                 for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
                     if (document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).getAttribute("class") == "ship") {
-                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).style.backgroundImage = "radial-gradient(circle, red 10%, #5c8a8a 60%, #5c8a8a 30%)";
+                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).style.backgroundImage = "radial-gradient(circle, red 10%, #5c8a8a 50%, #5c8a8a 40%)";
                         //innerHTML = item.salvoes[m].gamePlayerSalvoes[p].turn;
                     }
                 }
@@ -879,7 +879,8 @@ console.log("hiiits");
             for (let j = 0; j <item.history[i].gamePlayerHitsSinks.length; j++) {
                 for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations.length; k++) {
                     if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").getAttribute("class") == "salvo") {
-                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #003566 60%, #003566 30%)";
+                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #003566 80%, #003566 10%)";
+                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundSize = "20px 20px";
                         //innerHTML = item.history[i].gamePlayerHitsSinks[j].turn;
                     }
                 }
@@ -898,6 +899,7 @@ function showOppSinks(item) {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc.length; k++) {
                         if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").getAttribute("class") == "salvo") {
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.backgroundSize = "33px 33px";
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
                         }
                     }
@@ -906,6 +908,7 @@ function showOppSinks(item) {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc.length; k++) {
                         if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").getAttribute("class") == "salvo") {
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").style.backgroundSize = "33px 33px";
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
                         }
                     }
@@ -914,6 +917,7 @@ function showOppSinks(item) {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc.length; k++) {
                         if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").getAttribute("class") == "salvo") {
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").style.backgroundSize = "33px 33px";
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
                         }
                     }
@@ -922,6 +926,7 @@ function showOppSinks(item) {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.Destloc.length; k++) {
                         if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").getAttribute("class") == "salvo") {
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").style.backgroundSize = "33px 33px";
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
                         }
                     }
@@ -930,6 +935,7 @@ function showOppSinks(item) {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc.length; k++) {
                         if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").getAttribute("class") == "salvo") {
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").style.backgroundSize = "33px 33px";
                             document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
                         }
                     }
