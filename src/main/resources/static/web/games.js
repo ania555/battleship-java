@@ -54,7 +54,7 @@ function showGames(item) {
         oneButton.setAttribute("type", "button");
         oneButton.setAttribute("value", "join game");
         oneButton.setAttribute("data-id", item[i].id);
-        oneButton.setAttribute("class", "btn mx-sm-3 mb-1");
+        oneButton.setAttribute("class", "btn btn-secondary mx-sm-3 mb-1");
         buttonSpan.appendChild(oneButton);
         let arrPlayers = item[i].gamePlayers.filter(function(x) {return (x.player.email === user)})
         //console.log(arrPlayers);

@@ -31,13 +31,17 @@ h1 {
 
 #gridContainer {
   display: grid;
-  grid-template-columns: 70px 400px 100px auto 70px;
-  grid-template-rows: auto auto auto auto;
+  grid-template-columns: 70px 460px 100px auto 290px 70px;
+  grid-template-rows: 70px auto auto auto;
+  background-image: url(omaha.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 100% 55%;
 }
 
 #loginForm {
    visibility: visible;
-   grid-column: 2/span 3;
+   grid-column: 2/span 4;
    grid-row: 1;
 }
 
@@ -56,12 +60,15 @@ h1 {
 }
 
 #output {
-  grid-column: 4/span 2;
+  grid-column: 4/span 4;
   grid-row: 3;
 }
 
 .myList {
-  width: 520px;
+  width: 540px;
+  /*background-color: rgba(0, 34, 51, 0.3);*/
+  background-color: rgba(23, 26, 28, 0.4);
+  color: white;
 }
 
 a:hover{
@@ -73,18 +80,27 @@ a:hover{
 }
 
 #newGame {
-  grid-column: 4;
-  grid-row: 4;
-  padding-left: 45px;
+  grid-column: 5;
+  grid-row: 2;
+  padding-left: 50px;
+  margin-top: 40px;
 }
 
 
 #leader-board {
   grid-column: 2;
   grid-row: 3;
+  background-color: rgba(250, 250, 250, 0.5);
+  background-size: cover;
+  border-radius: 5px;
 }
 
 .to_left {
   text-align: left;
+}
+
+#item {
+grid-column: 1/span 5;
+grid-row: 4;
 }
 
