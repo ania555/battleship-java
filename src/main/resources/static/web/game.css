@@ -191,7 +191,7 @@ th, td {
 }
 
 #gameHistory {
-  grid-column: 2/span 4;
+  grid-column: 2/span 5;
   margin-top: -130px;
 
 }
