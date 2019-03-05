@@ -1,6 +1,22 @@
 import { getParams } from "./game.js"
 
 
+export function adjustPosition(form, ship) {
+    let myShip = document.getElementById(ship);
+    let widTh = window.getComputedStyle(myShip, null).getPropertyValue("width");
+    let heigTh = window.getComputedStyle(myShip, null).getPropertyValue("height");
+    myShip.style.width = heigTh;
+    myShip.style.height = widTh;
+
+}
+
+
+export function shipHorVer(item) {
+    let check = document.getElementById(item).checked;
+    if (check == true) {return "vertical"}
+    else if (check == false) {return "horizontal"}
+}
+
 export function drag (ev) {
   ev.dataTransfer.setData("text", ev.target.id);
 }
@@ -13,30 +29,30 @@ export function drop(ev) {
   ev.preventDefault();
   let data = ev.dataTransfer.getData("text");
   let start = ev.target.getAttribute("id");
-  console.log(start);
-  console.log(shipHorVer("ship5"));
+  //console.log(start);
+  //console.log(shipHorVer("ship5"));
   let letterASC = start.charCodeAt(0);
   //console.log(letterASC);
   let number = Number(start.slice(1, 3));
   if (data == "airCarrier") {
-      if (shipHorVer("ship5") == "horizontal") {if (checkLocationHor(letterASC, number, 5) == false) {return false}}
-      else if (shipHorVer("ship5") == "vertical") {if (checkLocationVer(letterASC, number, 5) == false) {return false}}
+      if (shipHorVer("ship5Pos") == "horizontal") {if (checkLocationHor(letterASC, number, 5) == false) {return false}}
+      else if (shipHorVer("ship5Pos") == "vertical") {if (checkLocationVer(letterASC, number, 5) == false) {return false}}
   }
   if (data == "battleship") {
-      if (shipHorVer("ship4") == "horizontal") {if (checkLocationHor(letterASC, number, 4) == false) {return false}}
-      else if (shipHorVer("ship4") == "vertical") {if (checkLocationVer(letterASC, number, 4) == false) {return false}}
+      if (shipHorVer("ship4Pos") == "horizontal") {if (checkLocationHor(letterASC, number, 4) == false) {return false}}
+      else if (shipHorVer("ship4Pos") == "vertical") {if (checkLocationVer(letterASC, number, 4) == false) {return false}}
   }
   if (data == "submarine") {
-      if (shipHorVer("ship3sub") == "horizontal"){if (checkLocationHor(letterASC, number, 3) == false){return false}}
-      else if (shipHorVer("ship3sub") == "vertical") {if (checkLocationVer(letterASC, number, 3) == false) {return false}}
+      if (shipHorVer("ship3SubPos") == "horizontal"){if (checkLocationHor(letterASC, number, 3) == false){return false}}
+      else if (shipHorVer("ship3SubPos") == "vertical") {if (checkLocationVer(letterASC, number, 3) == false) {return false}}
   }
   if (data == "destroyer") {
-      if (shipHorVer("ship3dest") == "horizontal") {if (checkLocationHor(letterASC, number, 3) == false){return false}}
-      else if (shipHorVer("ship3dest") == "vertical") {if (checkLocationVer(letterASC, number, 3) == false) {return false}}
+      if (shipHorVer("ship3DestPos") == "horizontal") {if (checkLocationHor(letterASC, number, 3) == false){return false}}
+      else if (shipHorVer("ship3DestPos") == "vertical") {if (checkLocationVer(letterASC, number, 3) == false) {return false}}
   }
   if (data == "patBoat") {
-      if (shipHorVer("ship2") == "horizontal") {if (checkLocationHor(letterASC, number, 2) == false) {return false}}
-      else if (shipHorVer("ship2") == "vertical") {if (checkLocationVer(letterASC, number, 2) == false) {return false}}
+      if (shipHorVer("ship2Pos") == "horizontal") {if (checkLocationHor(letterASC, number, 2) == false) {return false}}
+      else if (shipHorVer("ship2Pos") == "vertical") {if (checkLocationVer(letterASC, number, 2) == false) {return false}}
   }
   ev.target.appendChild(document.getElementById(data));
   document.getElementById(data).style.width = "35px";
@@ -46,13 +62,6 @@ export function drop(ev) {
   placeRest(start, data);
 }
 
-export function shipHorVer(item) {
-    console.log("position")
-    let findShip = document.getElementById(item);
-    let positShip = findShip.ship.value
-    if (positShip == "horizontal") {return "horizontal"}
-    else if (positShip == "vertical") {return "vertical"}
-}
 
 export function checkLocationVer(letterASC, number, x) {
 
@@ -260,14 +269,14 @@ export function  placeRest(place, item) {
     console.log(number);
     console.log(letter + "" + (number + 1).toString())
     if (item == "airCarrier") {
-        if (shipHorVer("ship5") == "horizontal") {
+        if (shipHorVer("ship5Pos") == "horizontal") {
             for (let i = 0; i < 4; i++) {
                 //document.getElementById(letter + "" + (number + i).toString()).nextSibling.setAttribute("class", "placed");
                 document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedCarr";
             }
             document.getElementById(place).className += " placedCarr";
         }
-        else if (shipHorVer("ship5") == "vertical") {
+        else if (shipHorVer("ship5Pos") == "vertical") {
             for (let i = 1; i < 5; i++) {
                 document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedCarr";
             }
@@ -275,13 +284,13 @@ export function  placeRest(place, item) {
         }
     }
     else if (item == "battleship") {
-        if (shipHorVer("ship4") == "horizontal") {
+        if (shipHorVer("ship4Pos") == "horizontal") {
             for (let i = 0; i < 3; i++) {
                 document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedBattle";
             }
             document.getElementById(place).className += " placedBattle";
         }
-        else if (shipHorVer("ship4") == "vertical") {
+        else if (shipHorVer("ship4Pos") == "vertical") {
             for (let i = 1; i < 4; i++) {
                 document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedBattle";
             }
@@ -289,13 +298,13 @@ export function  placeRest(place, item) {
         }
     }
     else if (item == "submarine") {
-        if (shipHorVer("ship3sub") == "horizontal") {
+        if (shipHorVer("ship3SubPos") == "horizontal") {
             for (let i = 0; i < 2; i++) {
                 document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedSub";
             }
             document.getElementById(place).className += " placedSub";
         }
-        else if (shipHorVer("ship3sub") == "vertical") {
+        else if (shipHorVer("ship3SubPos") == "vertical") {
             for (let i = 1; i < 3; i++) {
                document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedSub";
             }
@@ -303,13 +312,13 @@ export function  placeRest(place, item) {
         }
     }
     else if (item == "destroyer") {
-        if (shipHorVer("ship3dest") == "horizontal") {
+        if (shipHorVer("ship3DestPos") == "horizontal") {
             for (let i = 0; i < 2; i++) {
                 document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedDest";
             }
             document.getElementById(place).className += " placedDest";
         }
-        else if (shipHorVer("ship3dest") == "vertical") {
+        else if (shipHorVer("ship3DestPos") == "vertical") {
             for (let i = 1; i < 3; i++) {
                 document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedDest";
             }
@@ -317,11 +326,11 @@ export function  placeRest(place, item) {
         }
     }
     else if (item == "patBoat") {
-        if (shipHorVer("ship2") == "horizontal") {
+        if (shipHorVer("ship2Pos") == "horizontal") {
         document.getElementById(place).nextSibling.className = "placed placedBoat";
         document.getElementById(place).className += " placedBoat";
         }
-        else if (shipHorVer("ship2") == "vertical") {
+        else if (shipHorVer("ship2Pos") == "vertical") {
         document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).className = "placed placedBoat";
         document.getElementById(place).className += " placedBoat";
         }
@@ -333,13 +342,6 @@ export function  placeRest(place, item) {
 
 }
 
-export function adjustPosition(form, ship) {
-    let myShip = document.getElementById(ship);
-    let widTh = window.getComputedStyle(myShip, null).getPropertyValue("width");
-    let heigHt = window.getComputedStyle(myShip, null).getPropertyValue("height");
-    myShip.style.width = heigHt;
-    myShip.style.height = widTh;
-}
 
 export function getShipLocation(item) {
     let xxx = document.getElementById("B5").classList.item(0);
@@ -403,6 +405,7 @@ export function displayShipPlacement(item) {
         document.getElementById("shipPlacement").style.visibility = 'visible';
         document.getElementById("salvoesSubmission").style.visibility = 'hidden';
         document.getElementById("gameHistory").style.visibility = 'hidden';
+        document.getElementById("salvoDone").style.visibility = 'hidden';
         document.getElementById("statusMessage").innerHTML = "Place your ships"
         }
     else if (item.ships.length == 5 && item.ships[0].locations.length > 1 && item.ships[1].locations.length > 1) {
@@ -440,6 +443,8 @@ export function removeShip(idItem) {
         thisShip.setAttribute("draggable", "true");
         thisShip.setAttribute("ondragstart", "drag(event)");
         container.appendChild(thisShip);
+        let toggle = document.getElementById("ship5Pos");
+        toggle.checked = false;
     }
     if (myShip == "placed placedBattle") {
         let container = document.getElementById("battleshipDiv");
@@ -448,6 +453,8 @@ export function removeShip(idItem) {
         thisShip.setAttribute("draggable", "true");
         thisShip.setAttribute("ondragstart", "drag(event)");
         container.appendChild(thisShip);
+        let toggle = document.getElementById("ship4Pos");
+        toggle.checked = false;
     }
     if (myShip == "placed placedSub") {
         let container = document.getElementById("submarineDiv");
@@ -456,6 +463,8 @@ export function removeShip(idItem) {
         thisShip.setAttribute("draggable", "true");
         thisShip.setAttribute("ondragstart", "drag(event)");
         container.appendChild(thisShip);
+        let toggle = document.getElementById("ship3SubPos");
+        toggle.checked = false;
 }
     if (myShip == "placed placedDest") {
         let container = document.getElementById("destroyerDiv");
@@ -464,6 +473,8 @@ export function removeShip(idItem) {
         thisShip.setAttribute("draggable", "true");
         thisShip.setAttribute("ondragstart", "drag(event)");
         container.appendChild(thisShip);
+        let toggle = document.getElementById("ship3DestPos");
+        toggle.checked = false;
     }
     if (myShip == "placed placedBoat") {
         let container = document.getElementById("patBoatDiv");
@@ -472,5 +483,7 @@ export function removeShip(idItem) {
         thisShip.setAttribute("draggable", "true");
         thisShip.setAttribute("ondragstart", "drag(event)");
         container.appendChild(thisShip);
+        let toggle = document.getElementById("ship2Pos");
+        toggle.checked = false;
     }
 }

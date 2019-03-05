@@ -58,20 +58,17 @@ h1 {
 #statusMessage {
   grid-column: 4;
   height: 50px;
-  padding: 10px 0px 15px 15px;
-  /*background-color: rgb(255, 190, 40);*/
+  padding: 10px 0px 15px 0px;
   background-color: rgb(200, 200, 200);
   color: rgb(0, 21, 46);
   font-size: 20px;
+  text-align: center;
   border-radius: 5px;
 }
 
 #salvoForm {
   grid-column: 5;
   margin-left: 100px;
-}
-
-#salvoDone {
 }
 
 #wrapper {
@@ -101,7 +98,6 @@ h1 {
   border-color: rgb(0, 79, 153);
 }
 
-
 th, td {
  width: 33px;
  height: 33px;
@@ -110,13 +106,11 @@ th, td {
 }
 
 .salvo {
- /*background-image: radial-gradient(circle closest-side, white 5%, #003566 25%, #003566 20%, #003566 50%);*/
- background-image: radial-gradient(circle closest-side, white 20%, #003566 80%);
+ background-image: radial-gradient(circle closest-side, white 10%, white 1%, rgba(15, 52, 87, 0) 98%);
  background-repeat: no-repeat;
  background-size: contain;
- background-size: 15px 15px;
+ background-size: 11px 11px;
  background-position: center;
-
 }
 
 .ship {
@@ -161,38 +155,125 @@ th, td {
 }
 
 #airCarrier {
- width: 165px;
- height: 33px;
- background-color: green;
+ width: 160px;
+ height: 30px;
+ background-color: #498aca;
 }
 
 #battleship {
- width: 132px;
- height: 33px;
- background-color: green;
+ width: 128px;
+ height: 30px;
+ background-color: #498aca;
 }
 
 #submarine {
-  width: 99px;
-  height: 33px;
-  background-color: green;
+  width: 96px;
+  height: 30px;
+  background-color: #498aca;
 }
 
 #destroyer {
-  width: 99px;
-  height: 33px;
-  background-color: green;
+  width: 96px;
+  height: 30px;
+  background-color: #498aca;
 }
 
 #patBoat {
-  width: 66px;
-  height: 33px;
-  background-color: green;
+  width: 64px;
+  height: 30px;
+  background-color: #498aca;
 }
 
 #gameHistory {
   grid-column: 2/span 5;
-  margin-top: -130px;
+  margin-top: -60px;
+}
+
+#historyTable {
+  margin-top: 30px;
+}
+
+#historyTable th, td {
+    font-size: 15px;
+}
+
+
+.you {
+    background-color: rgba(0, 53, 102, 0.5)
+}
+
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 20px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2db300;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "H";
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  text-justify: center;
+  color: black;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #ff6900;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+  content: "V";
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  color: black;
 
 }
 
+/* Rounded sliders */
+.slider.round {
+  border-radius: 20px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

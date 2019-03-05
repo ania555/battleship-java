@@ -43,52 +43,52 @@
             <h5>SHIPS TO PLACE</h5>
             <br>
             <div id="airCarrierDiv">
-                <form id="ship5">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
                 <span>Aircraft Carrier</span>
+                <label class="switch">
+                    <input type="checkbox" id="ship5Pos">
+                    <span class="slider round"></span>
+                </label>
                 <div id="airCarrier" draggable="true" ondragstart="drag(event)"></div>
             </div>
             <br>
             <div id="battleshipDiv">
-                <form id="ship4">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
                 <span>Battleship</span>
+                <label class="switch">
+                    <input type="checkbox" id="ship4Pos">
+                    <span class="slider round"></span>
+                </label>
                 <div id="battleship" draggable="true" ondragstart="drag(event)"></div>
             </div>
             <br>
             <div id="submarineDiv">
-                <form id="ship3sub">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
                 <span>Submarine</span>
+                <label class="switch">
+                    <input type="checkbox" id="ship3SubPos">
+                    <span class="slider round"></span>
+                </label>
                 <div id="submarine" draggable="true" ondragstart="drag(event)"></div>
             </div>
             <br>
             <div id="destroyerDiv">
-                <form id="ship3dest">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
                 <span>Destroyer</span>
+                <label class="switch">
+                    <input type="checkbox" id="ship3DestPos">
+                    <span class="slider round"></span>
+                </label>
                 <div id="destroyer" draggable="true" ondragstart="drag(event)"></div>
             </div>
             <br>
             <div id="patBoatDiv">
-                <form id="ship2">
-                    <input type="radio" name="ship"  value="horizontal" checked> Horizontal
-                    <input type="radio" name="ship" value="vertical"> Vertical<br>
-                </form>
                 <span>Patrol Boat</span>
+                <label class="switch">
+                    <input type="checkbox" id="ship2Pos">
+                    <span class="slider round"></span>
+                </label>
                 <div id="patBoat" draggable="true" ondragstart="drag(event)"></div>
             </div>
             <br>
             <form>
-                <input id="done" type="button" value="done" class="btn btn-sm btn-light">
+                <input id="done" type="button" value="send ships" class="btn btn-sm">
             </form>
         </div>
 
@@ -136,18 +136,18 @@
 
             <div id="gameHistory">
                 <h3>Game history</h3>
-                <table id="historyTable" class="table">
+                <table id="historyTable" class="table table-sm">
                     <tr>
                         <th></th>
-                        <th class="noLine">Hits on you</th>
-                        <th></th>
-                        <th class="noLine">Hits on opponent</th>
-                        <th></th>
+                        <th class="you">Hits on you</th>
+                        <th class="you"></th>
+                        <th class="opponent">Hits on opponent</th>
+                        <th class="opponent"></th>
                     </tr>
                     <tr>
                         <th>Turn</th>
-                        <th>Hits</th>
-                        <th>Left</th>
+                        <th class="you">Hits</th>
+                        <th class="you">Left</th>
                         <th>Hits</th>
                         <th>Left</th>
                     </tr>

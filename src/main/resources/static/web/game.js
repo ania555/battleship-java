@@ -134,11 +134,11 @@ function showShipsGrid(item) {
 function listenMyEvents() {
     console.log("listen");
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
-    document.getElementById("ship5").addEventListener("click", function () {adjustPosition("ship5", "airCarrier")});
-    document.getElementById("ship4").addEventListener("click", function () {adjustPosition("ship4", "battleship")});
-    document.getElementById("ship3sub").addEventListener("click", function () {adjustPosition("ship3sub", "submarine")});
-    document.getElementById("ship3dest").addEventListener("click", function () {adjustPosition("ship3dest", "destroyer")});
-    document.getElementById("ship2").addEventListener("click", function () {adjustPosition("ship2", "patBoat")});
+    document.getElementById("ship5Pos").addEventListener("change", function () {adjustPosition("ship5", "airCarrier")});
+    document.getElementById("ship4Pos").addEventListener("change", function () {adjustPosition("ship4", "battleship")});
+    document.getElementById("ship3SubPos").addEventListener("change", function () {adjustPosition("ship3sub", "submarine")});
+    document.getElementById("ship3DestPos").addEventListener("change", function () {adjustPosition("ship3dest", "destroyer")});
+    document.getElementById("ship2Pos").addEventListener("change", function () {adjustPosition("ship2", "patBoat")});
     document.getElementById("done").addEventListener("click", function () {checkShipsPlacement()});
 }
 
@@ -176,7 +176,7 @@ function showHitsOnMe(item) {
            for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
                 for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
                     if (document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).getAttribute("class") == "ship") {
-                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).style.backgroundImage = "radial-gradient(circle, red 10%, #5c8a8a 50%, #5c8a8a 40%)";
+                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).style.backgroundImage = "radial-gradient(circle, red 4%, #5c8a8a 41%, #5c8a8a 55%)";
                         //innerHTML = item.salvoes[m].gamePlayerSalvoes[p].turn;
                     }
                 }
@@ -227,11 +227,11 @@ function hitsSinksTable(item) {
         container.appendChild(row);
         let turn = row.insertCell();
         let hitsOnMe = row.insertCell();
+        hitsOnMe.setAttribute("class", "you");
         let myLeft = row.insertCell();
+        myLeft.setAttribute("class", "you");
         let hitsOnOpp = row.insertCell();
         let oppLeft = row.insertCell();
-        hitsOnMe.setAttribute("class", "hitsCells") ;
-        hitsOnOpp.setAttribute("class", "hitsCells");
 
         for (let j = 0; j < 2; j++) {
             if (item.history[j].gamePlayerId == n) {
@@ -282,8 +282,8 @@ console.log("hiiits");
             for (let j = 0; j <item.history[i].gamePlayerHitsSinks.length; j++) {
                 for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations.length; k++) {
                     if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").getAttribute("class") == "salvo") {
-                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #003566 80%, #003566 10%)";
-                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundSize = "20px 20px";
+                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 12%, rgba(15, 52, 87, 0) 68%, rgba(15, 52, 87, 0) 20%)";
+                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundSize = "21px 21px";
                         //innerHTML = item.history[i].gamePlayerHitsSinks[j].turn;
                     }
                 }
@@ -349,8 +349,6 @@ function showOppSinks(item) {
 }
 
 
-
-
 function displayGameState(item) {
     document.getElementById("statusMessage").innerHTML = "";
     let timerId;
@@ -360,14 +358,17 @@ function displayGameState(item) {
     function stopReloading() {
          clearTimeout(timerId);
     }
-    if (item.gameState == "WaitForOpponentSalvo") {
+    if (item.gameState == "PlaceShips") {
+        document.getElementById("statusMessage").innerHTML = "Place your ships"
+    }
+    else if (item.gameState == "WaitForOpponentSalvo") {
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
                 document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "none";
             }
         }
         document.getElementById("salvoDone").style.visibility = 'hidden';
-        document.getElementById("statusMessage").innerHTML = "Waiting for other player to fire salvo";
+        document.getElementById("statusMessage").innerHTML = "Waite for the opponent to fire salvo";
         startReloading()
     }
     else if (item.gameState == "EnterSalvo") {
