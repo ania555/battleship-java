@@ -11,7 +11,7 @@ export function adjustPosition(form, ship) {
 }
 
 
-export function shipHorVer(item) {
+function shipHorVer(item) {
     let check = document.getElementById(item).checked;
     if (check == true) {return "vertical"}
     else if (check == false) {return "horizontal"}
@@ -63,7 +63,7 @@ export function drop(ev) {
 }
 
 
-export function checkLocationVer(letterASC, number, x) {
+function checkLocationVer(letterASC, number, x) {
 
    if (letterASC > 75 - x) {
        alert("Location not allowed");
@@ -162,7 +162,7 @@ export function checkLocationVer(letterASC, number, x) {
 }
 
 
-export function checkLocationHor(letterASC, number, x) {
+function checkLocationHor(letterASC, number, x) {
   if (number > 11 - x) {
      alert("Location not allowed");
      return false;
@@ -260,7 +260,7 @@ export function checkLocationHor(letterASC, number, x) {
   }
 
 
-export function  placeRest(place, item) {
+function  placeRest(place, item) {
     console.log("rest");
     let letter = place.slice(0, 1);
     let number = Number(place.slice(1, 3));
@@ -343,7 +343,7 @@ export function  placeRest(place, item) {
 }
 
 
-export function getShipLocation(item) {
+function getShipLocation(item) {
     let xxx = document.getElementById("B5").classList.item(0);
     console.log(xxx);
     let arrShip = [];
@@ -367,7 +367,7 @@ export function checkShipsPlacement() {
 }
 
 
-export function sendShips() {
+function sendShips() {
     console.log("create ships");
 
     let myData = JSON.stringify([ { "type": "Destroyer", "locations": getShipLocation("placedDest") /*["A1", "B1", "C1"] */},
@@ -425,7 +425,7 @@ export function listenShipsGrid(item) {
     }
 }
 
-export function removeShip(idItem) {
+function removeShip(idItem) {
     console.log("removing");
     let myShip = document.getElementById(idItem).getAttribute("class");
     console.log(myShip);

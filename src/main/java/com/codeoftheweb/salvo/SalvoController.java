@@ -37,8 +37,8 @@ public class SalvoController {
 
     @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
-        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
-        Player user = playerRepository.findByUserName(userName);
+        //String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
+        Player user = playerRepository.findByUserName(authentication.getName());
         if (user == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }

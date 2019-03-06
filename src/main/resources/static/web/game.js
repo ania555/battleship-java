@@ -1,5 +1,5 @@
-import { adjustPosition, drag, allowDrop, drop, shipHorVer, checkLocationVer, checkLocationHor, placeRest, getShipLocation, checkShipsPlacement, sendShips, displayShipPlacement, listenShipsGrid, removeShip } from "./placeShips.js"
-import { listenSalvoes, setShot, getSalvoLocations, sendSalvo } from "./sendingSalvo.js"
+import { adjustPosition, drag, allowDrop, drop, checkShipsPlacement, listenShipsGrid, displayShipPlacement} from "./placeShips.js"
+import { listenSalvoes } from "./sendingSalvo.js"
 
 loadData()
 loadPlayer()

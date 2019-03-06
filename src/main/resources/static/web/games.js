@@ -1,5 +1,5 @@
-import { findPlayer, formValidation, loginPlayer, checkLogin, loginNow, logoutPlayer, logoutNow, getSignPlayer, signInPlayer, checkSignIn, loginUser }  from "./login.js";
-import { createNewGame, checkGameCreation, loadGameView, joinGame, checkGameJoin} from "./crateNewGame.js";
+import { findPlayer,  logoutPlayer, getSignPlayer}  from "./login.js";
+import { createNewGame, joinGame} from "./crateNewGame.js";
 
 loadData()
 loadLeaderBoard()

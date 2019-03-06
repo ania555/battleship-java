@@ -11,7 +11,7 @@ export function listenSalvoes(item) {
     document.getElementById("salvoDone").addEventListener("click", function () {sendSalvo(item)});
 }
 
-export function setShot(item) {
+function setShot(item) {
     let myShot = document.getElementById(item);
     let shotList = document.querySelectorAll(".shot");
     console.log(shotList.length);
@@ -23,7 +23,7 @@ export function setShot(item) {
 
 }
 
-export function getSalvoLocations() {
+function getSalvoLocations() {
     let arrSalvo = [];
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
@@ -37,7 +37,7 @@ export function getSalvoLocations() {
 }
 
 
-export function sendSalvo(item) {
+function sendSalvo(item) {
     let n = getParams();
     let me;
     for (let i = 0; i < item.history.length; i++) {

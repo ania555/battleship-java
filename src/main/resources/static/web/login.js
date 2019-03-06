@@ -14,7 +14,7 @@ export function findPlayer() {
     if (user && password) {formValidation(user, password)}
 }
 
-export function formValidation(user, password) {
+function formValidation(user, password) {
     //var reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w {2, 3})+$/;
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     //var regpass = /^(?=.[A-Z])(?=.[a-z])(?=.[0-9])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,16}$/;
@@ -32,7 +32,7 @@ export function formValidation(user, password) {
     if (reg.test(user) == true && password.length >= 2) {loginPlayer(user, password)}
 }
 
-export function loginPlayer(user, password) {
+function loginPlayer(user, password) {
     fetch("/api/login", {
     credentials: 'include',
     headers: {
@@ -51,7 +51,7 @@ export function loginPlayer(user, password) {
     });
 }
 
-export function checkLogin(item, user) {
+function checkLogin(item, user) {
     if (item.status == 200) {
         console.log(user);
         loginNow(user);
@@ -61,7 +61,7 @@ export function checkLogin(item, user) {
     else {alert("Invalid email or password"); return false;}
 }
 
-export function loginNow(user) {
+function loginNow(user) {
     document.getElementById('loginForm').style.visibility = 'hidden';
     document.getElementById('logoutForm').style.visibility = 'visible';
     document.getElementById('loggedUser').style.visibility = 'visible';
@@ -93,7 +93,7 @@ export function logoutPlayer() {
     });
 }
 
-export function logoutNow () {
+function logoutNow () {
     document.getElementById('logoutForm').style.visibility = 'hidden'
     document.getElementById('loginForm').style.visibility = 'visible'
     document.getElementById('loggedUser').style.visibility = 'hidden';
@@ -131,7 +131,7 @@ export function getSignPlayer() {
     if (user && password && reg.test(user) == true && password.length >= 2) { signInPlayer(user, password)}
 }
 
-export function signInPlayer(user, password) {
+function signInPlayer(user, password) {
     fetch("/api/players", {
     credentials: 'include',
     headers: {
@@ -151,7 +151,7 @@ export function signInPlayer(user, password) {
     });
 }
 
-export function checkSignIn(item) {
+function checkSignIn(item) {
     let myStatus = item.status.toString();
     localStorage.setItem('status', myStatus);
     if (item.status == 201) {
@@ -159,8 +159,7 @@ export function checkSignIn(item) {
     }
 }
 
-
-export function loginUser(user, password) {
+function loginUser(user, password) {
     let signStatus = localStorage.getItem('status');
     if (signStatus == 409) {alert("Username already exists"); return false;}
     else if (signStatus != 201 && signStatus != 409) { return false;}
