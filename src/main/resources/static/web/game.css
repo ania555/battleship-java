@@ -113,9 +113,28 @@ th, td {
  background-position: center;
 }
 
+.oppHit {
+ background-image: radial-gradient(circle, red 12%, rgba(15, 52, 87, 0) 68%, rgba(15, 52, 87, 0) 20%) !important;
+ background-size: 21px 21px !important;
+}
+
+.oppSink {
+  background-image: radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%) !important;
+  background-size: 33px 33px !important;
+  border-color: rgb(0, 53, 102);
+}
+
 .ship {
   background-color: #5c8a8a;
   border-color: #527a7a;
+}
+
+.myHit {
+  background-image: radial-gradient(circle, red 4%, #5c8a8a 41%, #5c8a8a 55%);
+}
+
+.mySink {
+  background-image:radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%);
 }
 
 .placed {

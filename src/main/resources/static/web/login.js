@@ -1,5 +1,4 @@
 export function findPlayer() {
-    console.log("result");
     let findUser = document.querySelector("#user");
     let findPassword = document.querySelector("#password");
     let user = findUser.value;
@@ -15,10 +14,7 @@ export function findPlayer() {
 }
 
 function formValidation(user, password) {
-    //var reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w {2, 3})+$/;
-    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-    //var regpass = /^(?=.[A-Z])(?=.[a-z])(?=.[0-9])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,16}$/;
-    console.log("validation");
+    let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
     if (reg.test(user) == false) {
         document.querySelector("#user").style.borderColor = "red";
         alert('Invalid email address');
@@ -41,19 +37,17 @@ function loginPlayer(user, password) {
     method: 'POST',
     body: 'userName='+ user + '&password='+ password,
     })
-    .then(function (data) {
-    console.log('Request success: ', data);
-    console.log("login");
-    checkLogin(data, user);
+    .then((data) => {
+        console.log('Request success: ', data);
+        checkLogin(data, user);
     })
-    .catch(function (error) {
-    console.log('Request failure: ', error);
+    .catch((error) => {
+        console.log('Request failure: ', error);
     });
 }
 
 function checkLogin(item, user) {
     if (item.status == 200) {
-        console.log(user);
         loginNow(user);
         location.reload();
         alert("You are logged in");
@@ -82,15 +76,15 @@ export function logoutPlayer() {
     },
     method: 'POST',
     })
-    .then(function (data) {
-    console.log('Request success: ', data);
-    location.reload();
-    logoutNow();
-    alert("You are logged out");
+    .then((data) => {
+        console.log('Request success: ', data);
+        location.reload();
+        logoutNow();
+        alert("You are logged out");
     })
-    .catch(function (error) {
-    console.log('Request failure: ', error);
-    });
+    .catch((error) => {
+        console.log('Request failure: ', error);
+    })
 }
 
 function logoutNow () {
@@ -140,14 +134,14 @@ function signInPlayer(user, password) {
     method: 'POST',
     body: 'userName='+ user + '&password='+ password,
     })
-    .then(function (data) {
-    console.log('Request success: ', data);
-    checkSignIn(data);
-    }).then(function () {
-    loginUser(user, password);
+    .then((data) => {
+        console.log('Request success: ', data);
+        checkSignIn(data);
+    }).then(() => {
+        loginUser(user, password);
     })
-    .catch(function (error) {
-    console.log('Request failure: ', error);
+    .catch((error) => {
+        console.log('Request failure: ', error);
     });
 }
 

@@ -14,7 +14,6 @@ export function listenSalvoes(item) {
 function setShot(item) {
     let myShot = document.getElementById(item);
     let shotList = document.querySelectorAll(".shot");
-    console.log(shotList.length);
     if (myShot.getAttribute("class") == "shot") {myShot.removeAttribute("class")}
     else if (myShot.getAttribute("class") != "salvo" && shotList.length < 3) {myShot.setAttribute("class", "shot")}
     else if (myShot.getAttribute("class") != "salvo" && shotList.length >= 3) {alert("You have already fired all shots for this turn"); return false;}
@@ -43,7 +42,6 @@ function sendSalvo(item) {
     for (let i = 0; i < item.history.length; i++) {
         if (item.history[i].gamePlayerId == n)  me = item.history[i];
     }
-
     let myData = JSON.stringify({ "turnNumber": me.gamePlayerHitsSinks.length + 1, "locations": getSalvoLocations() /*["A1", "B1", "C1"] */});
     const url = "/api/games/players/" + getParams() + "/salvoes";
 
@@ -56,14 +54,15 @@ function sendSalvo(item) {
     method: 'POST',
     body: myData,
     })
-    .then(function (data) {
-    console.log('Request success: ', data);
-    return data.json()
-    }).then(function (json) {
-    console.log(json)
-    location.reload();
+    .then((data) => {
+        console.log('Request success: ', data);
+        return data.json()
     })
-    .catch(function (error) {
-    console.log('Request failure: ', error);
-    });
+    .then((json) => {
+        console.log(json)
+        location.reload();
+    })
+    .catch((error) => {
+        console.log('Request failure: ', error);
+    })
 }

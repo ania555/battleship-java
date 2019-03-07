@@ -3,8 +3,8 @@ import { listenSalvoes } from "./sendingSalvo.js"
 
 loadData()
 loadPlayer()
-var ooo = window.location.search;
-console.log(ooo);
+/*let ooo = window.location.search;
+console.log(ooo);*/
 window.drag = drag;
 window.allowDrop = allowDrop;
 window.drop = drop;
@@ -31,8 +31,7 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
         return response.json()
     })
     .then((json) => {
-        //console.log(json);
-        var myGame = json;
+        let myGame = json;
         console.log(myGame);
         showSalvoesGrid(myGame);
         showPlayers(myGame);
@@ -54,13 +53,13 @@ let url = " http://localhost:8080/api/game_view/" + getParams();
 }
 
 function loadPlayer() {
-let url = " http://localhost:8080/api/games/";
+    let url = " http://localhost:8080/api/games/";
     fetch(url).then((response) => {
         return response.json()
     })
     .then((json) => {
         console.log(json);
-        var myPlayer = json.player;
+        let myPlayer = json.player;
         console.log(myPlayer);
         showLoggedUser(myPlayer);
     })
@@ -70,7 +69,6 @@ let url = " http://localhost:8080/api/games/";
 }
 
 function showPlayers(item) {
-    let container = document.querySelector("#players");
     for (let i = 0; i < item.gamePlayers.length; i++) {
         let n = getParams();
         if (item.gamePlayers[i].id == n) {document.getElementById("you").innerHTML = item.gamePlayers[i].player.email}
@@ -132,7 +130,6 @@ function showShipsGrid(item) {
 
 
 function listenMyEvents() {
-    console.log("listen");
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
     document.getElementById("ship5Pos").addEventListener("change", function () {adjustPosition("ship5", "airCarrier")});
     document.getElementById("ship4Pos").addEventListener("change", function () {adjustPosition("ship4", "battleship")});
@@ -144,8 +141,6 @@ function listenMyEvents() {
 
 
 function logoutPlayer() {
-    console.log("logout");
-
     fetch("/api/logout", {
     credentials: 'include',
     headers: {
@@ -176,8 +171,7 @@ function showHitsOnMe(item) {
            for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
                 for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
                     if (document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).getAttribute("class") == "ship") {
-                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).style.backgroundImage = "radial-gradient(circle, red 4%, #5c8a8a 41%, #5c8a8a 55%)";
-                        //innerHTML = item.salvoes[m].gamePlayerSalvoes[p].turn;
+                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).className += " myHit"
                     }
                 }
            }
@@ -205,8 +199,8 @@ function showSinksOnMe(item) {
         }
         if (arrShip.length == item.ships[i].locations.length) {
             for (let j = 0; j < item.ships[i].locations.length; j++) {
-            document.getElementById(item.ships[i].locations[j]).style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
-        }
+            document.getElementById(item.ships[i].locations[j]).className = "ship mySink";
+            }
         }
         arrShip = [];
     }
@@ -275,16 +269,13 @@ function hitsSinksTable(item) {
 
 
 function showOppHits(item) {
-console.log("hiiits");
     let n = getParams();
     for (let i = 0; i < 2; i++) {
         if (item.history[i].gamePlayerId == n) {
             for (let j = 0; j <item.history[i].gamePlayerHitsSinks.length; j++) {
                 for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations.length; k++) {
                     if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").getAttribute("class") == "salvo") {
-                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 12%, rgba(15, 52, 87, 0) 68%, rgba(15, 52, 87, 0) 20%)";
-                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").style.backgroundSize = "21px 21px";
-                        //innerHTML = item.history[i].gamePlayerHitsSinks[j].turn;
+                        document.getElementById(item.history[i].gamePlayerHitsSinks[j].hits.hitsLocations[k] + "salvo").className += " oppHit";
                     }
                 }
             }
@@ -300,46 +291,37 @@ function showOppSinks(item) {
             for (let j = 0; j < item.history[i].gamePlayerHitsSinks.length; j++) {
                 if (item.history[i].gamePlayerHitsSinks[j].sinks.AircraftCarrier == "sunk") {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").getAttribute("class") == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.backgroundSize = "33px 33px";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").classList.item(0) == "salvo") {
+                        /*  document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.backgroundSize = "33px 33px";*/
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").className = "salvo oppSink";
                         }
                     }
                 }
                 if (item.history[i].gamePlayerHitsSinks[j].sinks.Battleship == "sunk") {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").getAttribute("class") == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").style.backgroundSize = "33px 33px";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").classList.item(0) == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").className = "salvo oppSink";
                         }
                     }
                 }
                 if (item.history[i].gamePlayerHitsSinks[j].sinks.Submarine == "sunk") {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").getAttribute("class") == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").style.backgroundSize = "33px 33px";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").classList.item(0) == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").className = "salvo oppSink";
                         }
                     }
                 }
                 if (item.history[i].gamePlayerHitsSinks[j].sinks.Destroyer == "sunk") {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.Destloc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").getAttribute("class") == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").style.backgroundSize = "33px 33px";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").classList.item(0) == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").className = "salvo oppSink";
                         }
                     }
                 }
                 if (item.history[i].gamePlayerHitsSinks[j].sinks.PatrolBoat == "sunk") {
                     for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").getAttribute("class") == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").style.backgroundImage = "radial-gradient(circle, red 10%, #000c29 60%, #000c29 30%)";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").style.backgroundSize = "33px 33px";
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").style.borderColor = "rgb(0, 53, 102)";
+                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").classList.item(0) == "salvo") {
+                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").className = "salvo oppSink";
                         }
                     }
                 }
