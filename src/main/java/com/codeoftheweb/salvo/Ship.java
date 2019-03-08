@@ -17,6 +17,8 @@ public class Ship {
     private long id;
     private String type;
     private ArrayList<String> locations;
+    private ArrayList<String> hits;
+    private String state;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
@@ -24,9 +26,11 @@ public class Ship {
 
     public Ship() { }
 
-    public Ship(String type, ArrayList<String> locations, GamePlayer gamePlayer) {
+    public Ship(String type, ArrayList<String> locations, ArrayList<String> hits, String state, GamePlayer gamePlayer) {
         this.type = type;
         this.locations = locations;
+        this.hits = hits;
+        this.state = state;
         this.gamePlayer = gamePlayer;
     }
 
@@ -39,6 +43,14 @@ public class Ship {
     public ArrayList<String> getLocations() { return this.locations; }
 
     public void setLocations(ArrayList<String> locations) { this.locations = locations; }
+
+    public ArrayList<String> getHits() { return hits; }
+
+    public void setHits(ArrayList<String> hits) { this.hits = hits; }
+
+    public String getState() { return state;}
+
+    public void setState(String state) { this.state = state; }
 
     public GamePlayer getGamePlayer() { return gamePlayer; }
 
