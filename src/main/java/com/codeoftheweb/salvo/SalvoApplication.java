@@ -94,17 +94,17 @@ public class SalvoApplication {
 			gamePlayerRepository.save(GP10);
 			gamePlayerRepository.save(GP11);
 
-			Ship S1 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), new ArrayList<String>(), "OK", GP1);
+			Ship S1 = new Ship("AircraftCarrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), new ArrayList<String>(), "OK", GP1);
 			Ship S2 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")), new ArrayList<String>(), "OK", GP1);
 			Ship S3 = new Ship("Submarine", new ArrayList<String>(asList("F3", "G3", "H3")), new ArrayList<String>(asList("H3")), "OK", GP1);
 			Ship S4 = new Ship("Destroyer", new ArrayList<String>(asList("F5", "G5", "H5")), new ArrayList<String>(asList("F5")), "OK", GP1);
-			Ship S5 = new Ship("Patrol Boat", new ArrayList<String>(asList("I8", "I9")), new ArrayList<String>(), "OK", GP1);
+			Ship S5 = new Ship("PatrolBoat", new ArrayList<String>(asList("I8", "I9")), new ArrayList<String>(), "OK", GP1);
 
-			Ship S11 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), "sunk", GP2);
+			Ship S11 = new Ship("AircraftCarrier", new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), "sunk", GP2);
 			Ship S12 = new Ship("Battleship", new ArrayList<String>(asList("E2", "E3", "E4", "E5")), new ArrayList<String>(asList("E5")), "OK", GP2);
 			Ship S13 = new Ship("Submarine", new ArrayList<String>(asList("G2", "H2", "I2")), new ArrayList<String>(), "OK", GP2);
 			Ship S14 = new Ship("Destroyer", new ArrayList<String>(asList("G7", "G8", "G9")), new ArrayList<String>(), "OK", GP2);
-			Ship S15 = new Ship("Patrol Boat", new ArrayList<String>(asList("J9", "J10")), new ArrayList<String>(), "OK", GP2);
+			Ship S15 = new Ship("PatrolBoat", new ArrayList<String>(asList("J9", "J10")), new ArrayList<String>(), "OK", GP2);
 
 			shipRepository.save(S1);
 			shipRepository.save(S2);

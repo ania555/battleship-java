@@ -356,8 +356,8 @@ export function checkShipsPlacement() {
 
 function sendShips() {
     let myData = JSON.stringify([ { "type": "Destroyer", "locations": getShipLocation("placedDest") /*["A1", "B1", "C1"] */},
-                   { "type": "Patrol Boat", "locations": getShipLocation("placedBoat") /*["H5", "H6"] */},
-                   { "type": "Aircraft Carrier", "locations": getShipLocation("placedCarr") /*["A3", "B3", "C3", "D3", "E3"] */},
+                   { "type": "PatrolBoat", "locations": getShipLocation("placedBoat") /*["H5", "H6"] */},
+                   { "type": "AircraftCarrier", "locations": getShipLocation("placedCarr") /*["A3", "B3", "C3", "D3", "E3"] */},
                    { "type": "Battleship", "locations": getShipLocation("placedBattle") /*["A8", "B8", "C8", "D8"] */},
                    { "type": "Submarine", "locations": getShipLocation("placedSub") /*["A10", "B10", "C10"] */}
                  ]);

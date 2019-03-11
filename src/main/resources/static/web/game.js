@@ -21,7 +21,7 @@ let result = ppp.slice(last, size);
  /*window.location.search.replace(reg, function(match, param, val) {
       obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
     });*/
-  console.log(result);
+
   return result;
 }
 
@@ -165,44 +165,23 @@ function showLoggedUser(item) {
 
 
 function showHitsOnMe(item) {
-    let n = getParams();
-    for (let m = 0; m < item.salvoes.length; m++) {
-       if (item.salvoes[m].gamePlayerId != n) {
-           for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
-                for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
-                    if (document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).getAttribute("class") == "ship") {
-                        document.getElementById(item.salvoes[m].gamePlayerSalvoes[p].locations[r]).className += " myHit"
-                    }
-                }
-           }
-       }
+    for (let i = 0; i < item.ships.length; i++) {
+        for (let j = 0; j < item.ships[i].hits.length; j++) {
+            if (document.getElementById(item.ships[i].hits[j]).getAttribute("class") == "ship") {
+                document.getElementById(item.ships[i].hits[j]).className += " myHit";
+            }
+        }
     }
 }
 
 
 function showSinksOnMe(item) {
-    let allOppSalvLocs = [];
-    let n = getParams();
-    for (let m = 0; m < item.salvoes.length; m++) {
-        if (item.salvoes[m].gamePlayerId != n) {
-            for (let p = 0; p < item.salvoes[m].gamePlayerSalvoes.length; p++) {
-                for (let r = 0; r < item.salvoes[m].gamePlayerSalvoes[p].locations.length; r++) {
-                    allOppSalvLocs.push(item.salvoes[m].gamePlayerSalvoes[p].locations[r]);
-                }
-            }
-        }
-    }
-    let arrShip = [];
     for (let i = 0; i < item.ships.length; i++) {
-        for (let j = 0; j < item.ships[i].locations.length; j++) {
-            if (allOppSalvLocs.includes(item.ships[i].locations[j])) {arrShip.push(item.ships[i].locations[j])}
-        }
-        if (arrShip.length == item.ships[i].locations.length) {
+        if (item.ships[i].locations.length === item.ships[i].hits.length) {
             for (let j = 0; j < item.ships[i].locations.length; j++) {
-            document.getElementById(item.ships[i].locations[j]).className = "ship mySink";
+                document.getElementById(item.ships[i].locations[j]).className = "ship mySink";
             }
         }
-        arrShip = [];
     }
 }
 

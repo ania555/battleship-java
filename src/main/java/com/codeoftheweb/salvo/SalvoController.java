@@ -288,10 +288,12 @@ public class SalvoController {
    }
 
    private  Map<String, Object> makeShipsDTO(Ship ship) {
-        Map<String, Object> aoneShip = new LinkedHashMap<String, Object>();
-        aoneShip.put("type", ship.getType());
-        aoneShip.put("locations", ship.getLocations());
-        return aoneShip;
+        Map<String, Object> oneShip = new LinkedHashMap<String, Object>();
+        oneShip.put("type", ship.getType());
+        oneShip.put("locations", ship.getLocations());
+        oneShip.put("hits", ship.getHits());
+        oneShip.put("sink", ship.getState());
+        return oneShip;
    }
 
 
@@ -322,29 +324,19 @@ public class SalvoController {
         onePlayer.put("id", player.getId());
         onePlayer.put("email", player.getUserName());
         onePlayer.put("totalScore", countTotalScore(player));
-        onePlayer.put("win_count", countWins(player));
-        onePlayer.put("loss_count", countLosses(player));
-        onePlayer.put("tie_count", countTies(player));
+        onePlayer.put("win_count", countGameReslts(player, "won"));
+        onePlayer.put("loss_count", countGameReslts(player, "lost"));
+        onePlayer.put("tie_count", countGameReslts(player, "tied"));
         return onePlayer;
     }
 
-    private int countWins(Player player) {
-        List<Object> wins = player.getScores().stream().filter(p -> p.getResult().equals("won")).collect(Collectors.toList());
-        return wins.size();
-    }
-
-    private int countLosses(Player player) {
-        List<Object> losses = player.getScores().stream().filter(p -> p.getResult().equals("lost")).collect(Collectors.toList());
-        return losses.size();
-    }
-
-    private int countTies(Player player) {
-        List<Object> ties = player.getScores().stream().filter(p -> p.getResult().equals("tied")).collect(Collectors.toList());
-        return ties.size();
+    private int countGameReslts (Player player, String option) {
+        List<Object> result = player.getScores().stream().filter(p -> p.getResult().equals(option)).collect(Collectors.toList());
+        return result.size();
     }
 
     private double countTotalScore(Player player) {
-        return 1* countWins(player) + 0.5 * countTies(player);
+        return 1* countGameReslts(player, "won") + 0.5 * countGameReslts(player, "tied");
     }
 
     private Map<String, Object> makeMap(String key, Object value) {
@@ -375,66 +367,46 @@ public class SalvoController {
     private Map<String, Object> makeHitsDTO(Salvo salvo, String userName) {
         GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().orElse(null);
         GamePlayer opponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().orElse(null);
-        if (opponent == null) {return null;}
-        if (opponent.getShips().size() == 0) {return null;}
         Set<Ship> opponentShips = opponent.getShips();
-
+        if (opponent == null) {return null;}
+        if (opponentShips.size() == 0) {return null;}
+        Set<Salvo> mySalvoesTillNow = me.getSalvoes().stream().filter(s -> s.getTurnNumber() <= salvo.getTurnNumber()).collect(Collectors.toSet());
+        List<String> allTurnsShots = new ArrayList<>();
+        mySalvoesTillNow.forEach((e) -> {allTurnsShots.addAll(e.getLocations());});
         List<String> allHits = new ArrayList<>();
-        opponentShips.forEach((e) -> {allHits.addAll(e.getHits());});
+        opponentShips.forEach((e) -> {allHits.addAll(e.getLocations().stream().filter(l -> allTurnsShots.contains(l)).collect(Collectors.toList()));});
 
         Map<String, Object> oneTurnHits = new LinkedHashMap<String, Object>();
         oneTurnHits.put("hitsLocations", allHits);
-        oneTurnHits.put("AircraftCarrier", getShipHitsForSalvo(salvo, opponent, "AircraftCarrier"));
-        oneTurnHits.put("Battleship", getShipHitsForSalvo(salvo, opponent, "Battleship"));
-        oneTurnHits.put("Submarine", getShipHitsForSalvo(salvo, opponent, "Submarine"));
-        oneTurnHits.put("Destroyer", getShipHitsForSalvo(salvo, opponent, "Destroyer"));
-        oneTurnHits.put("PatrolBoat", getShipHitsForSalvo(salvo, opponent, "PatrolBoat"));
+        opponentShips.forEach((e) -> {oneTurnHits.put(e.getType(), e.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList()));});
+
         return oneTurnHits;
     }
 
-    private List<String> getShipHitsForSalvo(Salvo salvo, GamePlayer gamePlayer, String shipType) {
-        Ship currentShip = gamePlayer.getShips().stream().filter(ship -> ship.getType().equals(shipType)).findAny().orElse(null);
-        List<String> currShipHits = currentShip.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
-        return currShipHits;
-    }
 
     private Map<String, Object> makeSinksDTO(Salvo salvo, String userName) {
         GamePlayer me = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName().equals(userName)).findAny().orElse(null);
         GamePlayer opponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != userName).findAny().orElse(null);
-        if (opponent == null) {return null;}
-        if (opponent.getShips().size() == 0) {return null;}
         Set<Ship> opponentShips = opponent.getShips();
-
-/*        Ship carrier = oponentShips.stream().filter(ship -> ship.getType().equals("Aircraft Carrier")).findAny().orElse(null);
-        Ship battleship = oponentShips.stream().filter(ship -> ship.getType().equals("Battleship")).findAny().orElse(null);
-        Ship submarine = oponentShips.stream().filter(ship -> ship.getType().equals("Submarine")).findAny().orElse(null);
-        Ship destroyer = oponentShips.stream().filter(ship -> ship.getType().equals("Destroyer")).findAny().orElse(null);
-        Ship boat = oponentShips.stream().filter(ship -> ship.getType().equals("Patrol Boat")).findAny().orElse(null);*/
-
-        Set<Ship> leftShips = opponentShips.stream().filter(ship -> ship.getState().equals("OK")).collect(Collectors.toSet());
+        if (opponent == null) {return null;}
+        if (opponentShips.size() == 0) {return null;}
+        Set<Salvo> mySalvoesTillNow = me.getSalvoes().stream().filter(s -> s.getTurnNumber() <= salvo.getTurnNumber()).collect(Collectors.toSet());
+        List<String> allTurnsShots = new ArrayList<>();
+        mySalvoesTillNow.forEach((e) -> {allTurnsShots.addAll(e.getLocations());});
+        Set<Ship> leftShips = opponentShips.stream().filter(ship -> ship.getLocations().size() > ship.getLocations().stream().filter(l -> allTurnsShots.contains(l)).collect(Collectors.toList()).size()).collect(Collectors.toSet());
 
         Map<String, Object> oneTurnSinks = new LinkedHashMap<String, Object>();
-        oneTurnSinks.put("AircraftCarrier", findShip(opponent, "AircraftCarrier").getState());
-        oneTurnSinks.put("Battleship", findShip(opponent, "Battleship").getState());
-        oneTurnSinks.put("Submarine", findShip(opponent, "Submarine").getState());
-        oneTurnSinks.put("Destroyer", findShip(opponent, "Destroyer").getState());
-        oneTurnSinks.put("PatrolBoat", findShip(opponent, "PatrolBoat").getState());
         oneTurnSinks.put("left", leftShips.size());
+        opponentShips.forEach((e) -> {if (e.getLocations().stream().filter(l -> allTurnsShots.contains(l)).collect(Collectors.toList()).size() == e.getLocations().size()) {
+            oneTurnSinks.put(e.getType(), "sunk");
+        }
+        else {oneTurnSinks.put(e.getType(), "OK");}
+        });
+        opponentShips.forEach((e) -> {if (e.getLocations().stream().filter(l -> allTurnsShots.contains(l)).collect(Collectors.toList()).size() == e.getLocations().size()) {oneTurnSinks.put(e.getType() + "Sunk", e.getLocations());}});
 
-        opponentShips.forEach((e) -> {if (e.getState() == "sunk") {oneTurnSinks.put(e.getType(), e.getLocations());}});
-
-/*        if (carrier.getState() == "sunk") {oneTurnSinks.put("AirCarLoc", findShip(oponent, "AircraftCarrier").getLocations());}
-        if (battleship.getState() == "sunk") {oneTurnSinks.put("BattleshipLoc", findShip(oponent, "Battleship").getLocations());}
-        if (submarine.getState() == "sunk") {oneTurnSinks.put("SubmarLoc", findShip(oponent, "Submarine").getLocations());}
-        if (destroyer.getState() == "sunk") {oneTurnSinks.put("Destloc", destroyer.getLocations());}
-        if (boat.getState() == "sunk") {oneTurnSinks.put("PatBoatLoc", boat.getLocations());}*/
         return oneTurnSinks;
     }
 
-    private Ship findShip(GamePlayer gamePlayer, String shipType) {
-        Ship currentShip = gamePlayer.getShips().stream().filter(ship -> ship.getType().equals(shipType)).findAny().orElse(null);
-        return currentShip;
-    }
 
     private String showGameState(Long id) {
         GamePlayer meGamePl = gamePlayerRepository.findOne(id);
