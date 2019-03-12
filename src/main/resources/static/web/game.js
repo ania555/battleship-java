@@ -122,11 +122,11 @@ function showShipsGrid(item) {
 
 function listenMyEvents() {
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
-    document.getElementById("ship5Pos").addEventListener("change", function () {adjustPosition("ship5", "airCarrier")});
-    document.getElementById("ship4Pos").addEventListener("change", function () {adjustPosition("ship4", "battleship")});
-    document.getElementById("ship3SubPos").addEventListener("change", function () {adjustPosition("ship3sub", "submarine")});
-    document.getElementById("ship3DestPos").addEventListener("change", function () {adjustPosition("ship3dest", "destroyer")});
-    document.getElementById("ship2Pos").addEventListener("change", function () {adjustPosition("ship2", "patBoat")});
+    document.getElementById("airCarrierBox").addEventListener("change", function () {adjustPosition("ship5", "airCarrier")});
+    document.getElementById("battleshipBox").addEventListener("change", function () {adjustPosition("ship4", "battleship")});
+    document.getElementById("submarineBox").addEventListener("change", function () {adjustPosition("ship3sub", "submarine")});
+    document.getElementById("destroyerBox").addEventListener("change", function () {adjustPosition("ship3dest", "destroyer")});
+    document.getElementById("patBoatBox").addEventListener("change", function () {adjustPosition("ship2", "patBoat")});
     document.getElementById("done").addEventListener("click", function () {checkShipsPlacement()});
 }
 
@@ -241,13 +241,14 @@ function showOppSinks(item) {
     for (let i = 0; i < 2; i++) {
         if (item.history[i].gamePlayerId === Number(n)) {
             const sortArr = item.history[i].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
-            const num = sortArr.length - 1;
             const ships = ["AircraftCarrier", "Battleship", "Submarine", "Destroyer", "PatrolBoat"];
-            for (let i = 0; i < ships.length; i++) {
-                if (sortArr[num].sinks[ships[i]] === "sunk") {
-                    for (let j = 0; j < sortArr[num].sinks[ships[i] + "Sunk"].length; j++) {
-                        if (document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").classList.item(0) === "salvo") {
-                            document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").className = "salvo oppSink";
+            for (let i = 0; i < sortArr.length; i++) {
+                for (let j = 0; j < ships.length; j++) {
+                    if (sortArr[i].sinks[ships[j]] === "sunk") {
+                        for (let k = 0; k < sortArr[i].sinks[ships[j] + "Sunk"].length; k++) {
+                            if (document.getElementById(sortArr[i].sinks[ships[j] + "Sunk"][k] + "salvo").classList.item(0) == "salvo") {
+                                document.getElementById(sortArr[i].sinks[ships[j] + "Sunk"][k] + "salvo").className = "salvo oppSink";
+                            }
                         }
                     }
                 }
@@ -259,8 +260,9 @@ function showOppSinks(item) {
 
 function displayGameState(item) {
     document.getElementById("statusMessage").innerHTML = "";
+    let timerId;
     function startReloading() {
-        const timerId = setTimeout(function() { location.reload(); startReloading(); }, 5000);
+        timerId = setTimeout(function() { location.reload(); startReloading(); }, 5000);
     }
     function stopReloading() {
          clearTimeout(timerId);
@@ -299,7 +301,6 @@ function displayGameState(item) {
                     document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "auto";
                 }
             }
-            document.getElementById("salvoDone").style.visibility = 'visible';
             document.getElementById("statusMessage").innerHTML = "Enter your salvo";
             stopReloading();
             break;

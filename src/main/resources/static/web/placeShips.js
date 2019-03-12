@@ -2,15 +2,15 @@ import { getParams } from "./game.js"
 
 
 export function adjustPosition(form, ship) {
-    let myShip = document.getElementById(ship);
-    let widTh = window.getComputedStyle(myShip, null).getPropertyValue("width");
-    let heigTh = window.getComputedStyle(myShip, null).getPropertyValue("height");
+    const myShip = document.getElementById(ship);
+    const widTh = window.getComputedStyle(myShip, null).getPropertyValue("width");
+    const heigTh = window.getComputedStyle(myShip, null).getPropertyValue("height");
     myShip.style.width = heigTh;
     myShip.style.height = widTh;
 }
 
 function shipHorVer(item) {
-    let check = document.getElementById(item).checked;
+    const check = document.getElementById(item).checked;
     if (check == true) {return "vertical"}
     else if (check == false) {return "horizontal"}
 }
@@ -25,33 +25,33 @@ export function allowDrop(ev) {
 
 export function drop(ev) {
   ev.preventDefault();
-  let data = ev.dataTransfer.getData("text");
-  let start = ev.target.getAttribute("id");
+  const data = ev.dataTransfer.getData("text");
+  const start = ev.target.getAttribute("id");
   //console.log(start);
   //console.log(shipHorVer("ship5"));
-  let letterASC = start.charCodeAt(0);
+  const letterASC = start.charCodeAt(0);
   //console.log(letterASC);
-  let number = Number(start.slice(1, 3));
+  const number = Number(start.slice(1, 3));
   switch (data) {
       case "airCarrier":
-          if (shipHorVer("ship5Pos") == "horizontal" && checkLocationHor(letterASC, number, 5) == false) {return false};
-          if (shipHorVer("ship5Pos") == "vertical" && checkLocationVer(letterASC, number, 5) == false) {return false};
+          if (shipHorVer("airCarrierBox") === "horizontal" && checkLocationHor(letterASC, number, 5) === false) {return false};
+          if (shipHorVer("airCarrierBox") === "vertical" && checkLocationVer(letterASC, number, 5) === false) {return false};
           break;
       case "battleship":
-          if (shipHorVer("ship4Pos") == "horizontal" && checkLocationHor(letterASC, number, 4) == false) {return false};
-          if (shipHorVer("ship4Pos") == "vertical" && checkLocationVer(letterASC, number, 4) == false) {return false};
+          if (shipHorVer("battleshipBox") === "horizontal" && checkLocationHor(letterASC, number, 4) === false) {return false};
+          if (shipHorVer("battleshipBox") === "vertical" && checkLocationVer(letterASC, number, 4) === false) {return false};
           break;
-      case  "submarine":
-          if (shipHorVer("ship3SubPos") == "horizontal" && checkLocationHor(letterASC, number, 3) == false){return false};
-          if (shipHorVer("ship3SubPos") == "vertical" && checkLocationVer(letterASC, number, 3) == false) {return false};
+      case "submarine":
+          if (shipHorVer("submarineBox") === "horizontal" && checkLocationHor(letterASC, number, 3) === false){return false};
+          if (shipHorVer("submarineBox") === "vertical" && checkLocationVer(letterASC, number, 3) === false) {return false};
           break;
       case "destroyer":
-          if (shipHorVer("ship3DestPos") == "horizontal" && checkLocationHor(letterASC, number, 3) == false){return false};
-          if (shipHorVer("ship3DestPos") == "vertical" && checkLocationVer(letterASC, number, 3) == false) {return false};
+          if (shipHorVer("destroyerBox") === "horizontal" && checkLocationHor(letterASC, number, 3) === false){return false};
+          if (shipHorVer("destroyerBox") === "vertical" && checkLocationVer(letterASC, number, 3) === false) {return false};
           break;
       case "patBoat":
-          if (shipHorVer("ship2Pos") == "horizontal" && checkLocationHor(letterASC, number, 2) == false) {return false};
-          if (shipHorVer("ship2Pos") == "vertical" && checkLocationVer(letterASC, number, 2) == false) {return false};
+          if (shipHorVer("patBoatBox") === "horizontal" && checkLocationHor(letterASC, number, 2) === false) {return false};
+          if (shipHorVer("patBoatBox") === "vertical" && checkLocationVer(letterASC, number, 2) === false) {return false};
           break;
   }
   ev.target.appendChild(document.getElementById(data));
@@ -66,12 +66,12 @@ function checkLocationVer(letterASC, number, x) {
        alert("Location not allowed");
        return false;
    }
-   else if (number == 10 && letterASC > 65 && letterASC < 75 - x) {
+   else if (number === 10 && letterASC > 65 && letterASC < 75 - x) {
        for (let i = 0; i < x + 2; i++) {
            for (let j = 0; j < 2; j++) {
                if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed") {
-                      alert("Location not allowed");
-                      return false;
+                   alert("Location not allowed");
+                   return false;
                }
            }
        }
@@ -96,7 +96,7 @@ function checkLocationVer(letterASC, number, x) {
            }
        }
    }
-   else if (number > 1 && number < 10 && letterASC == 65) {
+   else if (number > 1 && number < 10 && letterASC === 65) {
        for (let i = 1; i < x + 2; i++) {
            for (let j = 0; j < 3; j++) {
                if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -106,7 +106,7 @@ function checkLocationVer(letterASC, number, x) {
            }
        }
    }
-   else if (number > 1 && number < 10 && letterASC == 75 - x) {
+   else if (number > 1 && number < 10 && letterASC === 75 - x) {
        for (let i = 0; i < x + 1; i++) {
            for (let j = 0; j < 3; j++) {
                if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -116,7 +116,7 @@ function checkLocationVer(letterASC, number, x) {
            }
        }
    }
-   else if (number == 1 && letterASC == 65) {
+   else if (number === 1 && letterASC === 65) {
        for (let i = 1; i < x + 1; i++) {
            for (let j = 1; j < 3; j++) {
                if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -126,7 +126,7 @@ function checkLocationVer(letterASC, number, x) {
            }
        }
    }
-   else if (number == 1 && letterASC == 75 - x) {
+   else if (number === 1 && letterASC === 75 - x) {
        for (let i = 0; i < x + 1; i++) {
            for (let j = 1; j < 3; j++) {
                if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -136,7 +136,7 @@ function checkLocationVer(letterASC, number, x) {
            }
        }
    }
-   else if (number == 10 && letterASC == 65) {
+   else if (number === 10 && letterASC === 65) {
        for (let i = 1; i < x + 2; i++) {
            for (let j = 0; j < 2; j++) {
                if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -146,7 +146,7 @@ function checkLocationVer(letterASC, number, x) {
            }
        }
    }
-   else if (number == 10 && letterASC == 75 - x) {
+   else if (number === 10 && letterASC === 75 - x) {
        for (let i = 0; i < x + 1; i++) {
            for (let j = 0; j < 2; j++) {
                if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -164,7 +164,7 @@ function checkLocationHor(letterASC, number, x) {
      alert("Location not allowed");
      return false;
   }
-  else if (number == 11 - x && letterASC > 65 && letterASC < 74) {
+  else if (number === 11 - x && letterASC > 65 && letterASC < 74) {
       for (let i = 0; i < 3; i++) {
           for (let j = 0; j < x + 1; j++) {
               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 +j).toString()).classList.item(0) == "placed") {
@@ -176,7 +176,7 @@ function checkLocationHor(letterASC, number, x) {
   }
   else if (number == 1 && letterASC > 65 && letterASC < 74) {
       for (let i = 0; i < 3; i++) {
-          for (let j = 1; j < x + 1; j++) {
+          for (let j = 0; j < x + 1; j++) {
               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number +j).toString()).classList.item(0) == "placed") {
                   alert("Location not allowed");
                   return false;
@@ -194,7 +194,7 @@ function checkLocationHor(letterASC, number, x) {
           }
       }
   }
-  else if (number > 1 && number < 11 - x && letterASC == 65) {
+  else if (number > 1 && number < 11 - x && letterASC === 65) {
       for (let i = 1; i < 3; i++) {
           for (let j = 0; j < x + 2; j++) {
               if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -204,7 +204,7 @@ function checkLocationHor(letterASC, number, x) {
           }
       }
   }
-      else if (number > 1 && number < 11 - x && letterASC == 74) {
+      else if (number > 1 && number < 11 - x && letterASC === 74) {
           for (let i = 0; i < 2; i++) {
               for (let j = 0; j < x + 2; j++) {
                   if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -214,7 +214,7 @@ function checkLocationHor(letterASC, number, x) {
               }
           }
       }
-      else if (number == 1 && letterASC == 65) {
+      else if (number === 1 && letterASC === 65) {
           for (let i = 1; i < 3; i++) {
               for (let j = 1; j < x + 1; j++) {
                   if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed") {
@@ -224,7 +224,7 @@ function checkLocationHor(letterASC, number, x) {
               }
           }
       }
-      else if (number == 1 && letterASC == 74) {
+      else if (number === 1 && letterASC === 74) {
           for (let i = 0; i < 2; i++) {
               for (let j = 1; j < x + 1; j++) {
                   if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number + j).toString()).classList.item(0) == "placed") {
@@ -234,7 +234,7 @@ function checkLocationHor(letterASC, number, x) {
               }
           }
       }
-      else if (number == 11 - x && letterASC == 65) {
+      else if (number === 11 - x && letterASC === 65) {
           for (let i = 1; i < 3; i++) {
               for (let j = 0; j < x + 1; j++) {
                   if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -244,7 +244,7 @@ function checkLocationHor(letterASC, number, x) {
               }
           }
       }
-      else if (number == 11 - x && letterASC == 74) {
+      else if (number === 11 - x && letterASC === 74) {
           for (let i = 0; i < 2; i++) {
               for (let j = 0; j < x + 1; j++) {
                   if (document.getElementById(String.fromCharCode(letterASC - 1 + i) + "" + (number - 1 + j).toString()).classList.item(0) == "placed") {
@@ -259,18 +259,18 @@ function checkLocationHor(letterASC, number, x) {
 
 
 function  placeRest(place, item) {
-    let letter = place.slice(0, 1);
-    let number = Number(place.slice(1, 3));
-    let letterASC = place.charCodeAt(0);
+    const letter = place.slice(0, 1);
+    const number = Number(place.slice(1, 3));
+    const letterASC = place.charCodeAt(0);
     console.log(letter + "" + (number + 1).toString())
     switch (item) {
         case "airCarrier":
-            if (shipHorVer("ship5Pos") == "horizontal") {
+            if (shipHorVer("airCarrierBox") === "horizontal") {
                 for (let i = 0; i < 4; i++) {
                     document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedCarr";
                 }
             }
-            else if (shipHorVer("ship5Pos") == "vertical") {
+            else if (shipHorVer("airCarrierBox") === "vertical") {
                 for (let i = 1; i < 5; i++) {
                     document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedCarr";
                 }
@@ -278,12 +278,12 @@ function  placeRest(place, item) {
             document.getElementById(place).className += " placedCarr";
             break;
         case "battleship":
-            if (shipHorVer("ship4Pos") == "horizontal") {
+            if (shipHorVer("battleshipBox") === "horizontal") {
                 for (let i = 0; i < 3; i++) {
                     document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedBattle";
                 }
             }
-            else if (shipHorVer("ship4Pos") == "vertical") {
+            else if (shipHorVer("battleshipBox") === "vertical") {
                 for (let i = 1; i < 4; i++) {
                     document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedBattle";
                 }
@@ -291,12 +291,12 @@ function  placeRest(place, item) {
             document.getElementById(place).className += " placedBattle";
             break;
         case "submarine":
-            if (shipHorVer("ship3SubPos") == "horizontal") {
+            if (shipHorVer("submarineBox") === "horizontal") {
                 for (let i = 0; i < 2; i++) {
                     document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedSub";
                 }
             }
-            else if (shipHorVer("ship3SubPos") == "vertical") {
+            else if (shipHorVer("submarineBox") === "vertical") {
                 for (let i = 1; i < 3; i++) {
                    document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedSub";
                 }
@@ -304,12 +304,12 @@ function  placeRest(place, item) {
             document.getElementById(place).className += " placedSub";
             break;
         case "destroyer":
-            if (shipHorVer("ship3DestPos") == "horizontal") {
+            if (shipHorVer("destroyerBox") === "horizontal") {
                 for (let i = 0; i < 2; i++) {
                     document.getElementById(letter + "" + (number + i).toString()).nextSibling.className = "placed placedDest";
                 }
             }
-            else if (shipHorVer("ship3DestPos") == "vertical") {
+            else if (shipHorVer("destroyerBox") === "vertical") {
                 for (let i = 1; i < 3; i++) {
                     document.getElementById(String.fromCharCode(letterASC + i) + "" + (number).toString()).className = "placed placedDest";
                 }
@@ -317,23 +317,22 @@ function  placeRest(place, item) {
             document.getElementById(place).className += " placedDest";
             break;
         case "patBoat":
-            if (shipHorVer("ship2Pos") == "horizontal") {
+            if (shipHorVer("patBoatBox") === "horizontal") {
             document.getElementById(place).nextSibling.className = "placed placedBoat";
             }
-            else if (shipHorVer("ship2Pos") == "vertical") {
+            else if (shipHorVer("patBoatBox") === "vertical") {
             document.getElementById(String.fromCharCode(letterASC + 1) + "" + (number).toString()).className = "placed placedBoat";
             }
             document.getElementById(place).className += " placedBoat";
             break;
     }
-    let cleanCell = document.getElementById(place)
+    const cleanCell = document.getElementById(place)
     cleanCell.removeChild(cleanCell.childNodes[0]);
- /*   document.getElementById("B5").classList.item(0);*/
 }
 
 
 function getShipLocation(item) {
-    let arrShip = [];
+    const arrShip = [];
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
             if (document.getElementById(String.fromCharCode(65 + i) + "" + (1 + j).toString()).classList.item(1) == item) {
@@ -355,7 +354,7 @@ export function checkShipsPlacement() {
 
 
 function sendShips() {
-    let myData = JSON.stringify([ { "type": "Destroyer", "locations": getShipLocation("placedDest") /*["A1", "B1", "C1"] */},
+    const myData = JSON.stringify([ { "type": "Destroyer", "locations": getShipLocation("placedDest") /*["A1", "B1", "C1"] */},
                    { "type": "PatrolBoat", "locations": getShipLocation("placedBoat") /*["H5", "H6"] */},
                    { "type": "AircraftCarrier", "locations": getShipLocation("placedCarr") /*["A3", "B3", "C3", "D3", "E3"] */},
                    { "type": "Battleship", "locations": getShipLocation("placedBattle") /*["A8", "B8", "C8", "D8"] */},
@@ -392,18 +391,14 @@ export function displayShipPlacement(item) {
         document.getElementById("salvoesSubmission").style.visibility = 'hidden';
         document.getElementById("gameHistory").style.visibility = 'hidden';
         document.getElementById("salvoDone").style.visibility = 'hidden';
-        document.getElementById("statusMessage").innerHTML = "Place your ships"
         }
-    else if (item.ships.length == 5 && item.ships[0].locations.length > 1 && item.ships[1].locations.length > 1) {
+    else if (item.ships.length === 5 && item.ships[0].locations.length > 1 && item.ships[1].locations.length > 1) {
         document.getElementById("shipPlacement").style.visibility = 'hidden';
-        document.getElementById("salvoesSubmission").style.visibility = 'visible';
-        document.getElementById("gameHistory").style.visibility = 'visible';
     }
 }
 
 
 export function listenShipsGrid(item) {
-    console.log("listen ships");
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
             document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).addEventListener("click", function () {removeShip(this.getAttribute("id"))});
@@ -412,42 +407,24 @@ export function listenShipsGrid(item) {
 }
 
 function removeShip(idItem) {
-    let myShip = document.getElementById(idItem).getAttribute("class");
+    const myShip = document.getElementById(idItem).getAttribute("class");
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
-            if (document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).getAttribute("class") == myShip) {
+            if (document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).getAttribute("class") === myShip) {
                 document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).removeAttribute("class");
             }
         }
     }
-    let thisShip = document.createElement("div");
+    const shipClass = ["placed placedCarr", "placed placedBattle", "placed placedSub", "placed placedDest", "placed placedBoat"];
+    const shipIds = ["airCarrier", "battleship", "submarine", "destroyer", "patBoat"];
+    const thisShip = document.createElement("div");
     thisShip.setAttribute("draggable", "true");
     thisShip.setAttribute("ondragstart", "drag(event)");
-    switch (myShip) {
-        case "placed placedCarr":
-            thisShip.setAttribute("id", "airCarrier");
-            document.getElementById("airCarrierDiv").appendChild(thisShip);
-            document.getElementById("ship5Pos").checked = false;
-            break;
-        case "placed placedBattle":
-            thisShip.setAttribute("id", "battleship");
-            document.getElementById("battleshipDiv").appendChild(thisShip);
-            document.getElementById("ship4Pos").checked = false;
-            break;
-        case "placed placedSub":
-            thisShip.setAttribute("id", "submarine");
-            document.getElementById("submarineDiv").appendChild(thisShip);
-            document.getElementById("ship3SubPos").checked = false;
-            break;
-        case "placed placedDest":
-            thisShip.setAttribute("id", "destroyer");
-            document.getElementById("destroyerDiv").appendChild(thisShip);
-            document.getElementById("ship3DestPos").checked = false;
-            break;
-        case "placed placedBoat":
-            thisShip.setAttribute("id", "patBoat");
-            document.getElementById("patBoatDiv").appendChild(thisShip);
-            document.getElementById("ship2Pos").checked = false;
-            break;
+    for (let i = 0; i < shipClass.length; i++) {
+        if (myShip === shipClass[i]) {
+            thisShip.setAttribute("id", shipIds[i]);
+            document.getElementById( shipIds[i] + "Div").appendChild(thisShip);
+            document.getElementById(shipIds[i] + "Box").checked = false;
+        }
     }
 }
