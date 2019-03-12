@@ -37,7 +37,11 @@ public class SalvoController {
 
     @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
-        //String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
+        String userName = authentication.getName();
+        if (userName.isEmpty()) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
+        }
+
         Player user = playerRepository.findByUserName(authentication.getName());
         if (user == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
@@ -58,7 +62,7 @@ public class SalvoController {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Ships not placed"), HttpStatus.FORBIDDEN);
         }
 
-        GamePlayer opponent = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != authentication.getName()).findAny().orElse(null);
+        GamePlayer opponent = thisGmPl.getGame().getGamePlayers().stream().filter(gPl -> gPl.getPlayer().getUserName() != authentication.getName()).findAny().orElse(null);
         if (opponent == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Opponent did not enter the game"), HttpStatus.FORBIDDEN);
         }
@@ -97,7 +101,9 @@ public class SalvoController {
     private void setHitsAndSinks(Salvo salvo, GamePlayer gamePlayer, String shipType) {
         Set<Ship> opponentShips = gamePlayer.getShips();
         Ship currentShip = opponentShips.stream().filter(ship -> ship.getType().equals(shipType)).findAny().orElse(null);
+        if (currentShip == null) {return;}
         List<String> hitsCurrentShip = currentShip.getLocations().stream().filter(l -> salvo.getLocations().contains(l)).collect(Collectors.toList());
+        if (hitsCurrentShip.size() == 0) {return;}
         currentShip.getHits().addAll(hitsCurrentShip);
         if (currentShip.getHits().size() == currentShip.getLocations().size()) {currentShip.setState("sunk");}
     }
@@ -105,6 +111,10 @@ public class SalvoController {
     @RequestMapping(value="/games/players/{gamePlayerId}/ships", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> placeShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
         String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
+        if (userName.isEmpty()) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
+        }
+
         Player user = playerRepository.findByUserName(userName);
         if (user == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
@@ -135,12 +145,10 @@ public class SalvoController {
 
     @RequestMapping(path="/game/{gameId}/players", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long gameId, Authentication authentication) {
-        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
-        /*if (userName.isEmpty()) {
+        if (isGuest(authentication) == true) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
-        }*/
-        Player user = playerRepository.findByUserName(userName);
-        System.out.println(user);
+        }
+        Player user = playerRepository.findByUserName(authentication.getName());
         if (user == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
@@ -160,11 +168,10 @@ public class SalvoController {
 
     @RequestMapping(value="/games", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
-        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
-        if (userName.isEmpty()) {
+        if (isGuest(authentication) == true) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         }
-        Player user = playerRepository.findByUserName(userName);
+        Player user = playerRepository.findByUserName(authentication.getName());
         if (user == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
@@ -175,7 +182,7 @@ public class SalvoController {
 
     @RequestMapping(value="/players", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, @RequestParam String password) {
-        Map<String, Object> showCrPlayer = new LinkedHashMap<String, Object>();
+        //Map<String, Object> showCrPlayer = new LinkedHashMap<String, Object>();
         if (userName.isEmpty()) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         }

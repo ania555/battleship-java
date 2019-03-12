@@ -2,8 +2,6 @@ package com.codeoftheweb.salvo;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -198,13 +196,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-                //.antMatchers("/**").permitAll();
-				//.anyRequest().fullyAuthenticated()
                 .antMatchers( "/web/**", "/api/games", "/api/leader_board").permitAll()
                 .antMatchers("/api/players").permitAll()
                 .antMatchers("/api/login").permitAll()
-                //.antMatchers("/rest/**").hasAuthority("ADMIN")
-                .antMatchers("/api/**", "/rest/**").hasAuthority("USER");
+                .antMatchers( "/api/**").hasAuthority("USER");
 
 		http.formLogin()
 				.usernameParameter("userName")
@@ -213,22 +208,16 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.logout().logoutUrl("/api/logout")
                 .invalidateHttpSession(true);
-               // .addLogoutHandler(logoutHandler)
-               // .deleteCookies(cookieNamesToClear)  ;
 
-        // turn off checking for CSRF tokens
+
         http.csrf().disable();
 
-        // if user is not authenticated, just send an authentication failure response
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 
-        // if login is successful, just clear the flags asking for authentication
         http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
 
-        // if login fails, just send an authentication failure response
         http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 
-        // if logout is successful, just send a success response
         http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
 	}
 
@@ -238,8 +227,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
         }
     }
-
-
 
 }
 

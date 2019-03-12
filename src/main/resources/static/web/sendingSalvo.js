@@ -39,6 +39,7 @@ function getSalvoLocations() {
 function sendSalvo(item) {
     let n = getParams();
     let me;
+    console.log("send salvo");
     for (let i = 0; i < item.history.length; i++) {
         if (item.history[i].gamePlayerId == n)  me = item.history[i];
     }
@@ -60,7 +61,7 @@ function sendSalvo(item) {
     })
     .then((json) => {
         console.log(json)
-        location.reload();
+        //location.reload();
     })
     .catch((error) => {
         console.log('Request failure: ', error);

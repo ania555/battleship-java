@@ -267,44 +267,27 @@ function showOppSinks(item) {
     let n = getParams();
     for (let i = 0; i < 2; i++) {
         if (item.history[i].gamePlayerId == n) {
-            for (let j = 0; j < item.history[i].gamePlayerHitsSinks.length; j++) {
-                if (item.history[i].gamePlayerHitsSinks[j].sinks.AircraftCarrier == "sunk") {
-                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").classList.item(0) == "salvo") {
-                        /*  document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").style.backgroundSize = "33px 33px";*/
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.AirCarLoc[k] + "salvo").className = "salvo oppSink";
+            let sortArr = item.history[i].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
+            let num = sortArr.length - 1;
+            let ships = ["AircraftCarrier", "Battleship", "Submarine", "Destroyer", "PatrolBoat"];
+                for (let i = 0; i < ships.length; i++) {
+                    if (sortArr[num].sinks[ships[i]] == "sunk") {
+                        for (let j = 0; j < sortArr[num].sinks[ships[i] + "Sunk"].length; j++) {
+                            if (document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").classList.item(0) == "salvo") {
+                                document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").className = "salvo oppSink";
+                            }
                         }
                     }
                 }
-                if (item.history[i].gamePlayerHitsSinks[j].sinks.Battleship == "sunk") {
-                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").classList.item(0) == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.BattleshipLoc[k] + "salvo").className = "salvo oppSink";
+
+                /*if (sortArr[num].sinks.AircraftCarrier == "sunk") {
+                    for (let j = 0; j < sortArr[num].sinks.AircraftCarrierSunk.length; j++) {
+                        if (document.getElementById(sortArr[num].sinks.AircraftCarrierSunk[j] + "salvo").classList.item(0) == "salvo") {
+                            document.getElementById(sortArr[num].sinks.AircraftCarrierSunk[j] + "salvo").className = "salvo oppSink";
                         }
                     }
-                }
-                if (item.history[i].gamePlayerHitsSinks[j].sinks.Submarine == "sunk") {
-                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").classList.item(0) == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.SubmarLoc[k] + "salvo").className = "salvo oppSink";
-                        }
-                    }
-                }
-                if (item.history[i].gamePlayerHitsSinks[j].sinks.Destroyer == "sunk") {
-                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.Destloc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").classList.item(0) == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.Destloc[k] + "salvo").className = "salvo oppSink";
-                        }
-                    }
-                }
-                if (item.history[i].gamePlayerHitsSinks[j].sinks.PatrolBoat == "sunk") {
-                    for (let k = 0; k < item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc.length; k++) {
-                        if (document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").classList.item(0) == "salvo") {
-                            document.getElementById(item.history[i].gamePlayerHitsSinks[j].sinks.PatBoatLoc[k] + "salvo").className = "salvo oppSink";
-                        }
-                    }
-                }
-            }
+                }*/
+
         }
     }
 }
