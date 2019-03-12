@@ -58,6 +58,7 @@ h1 {
 #statusMessage {
   grid-column: 4;
   height: 50px;
+  width: 390px;
   padding: 10px 0px 15px 0px;
   background-color: rgb(200, 200, 200);
   color: rgb(0, 21, 46);

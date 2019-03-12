@@ -37,8 +37,7 @@ public class SalvoController {
 
     @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> sendSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
-        String userName = authentication.getName();
-        if (userName.isEmpty()) {
+        if (isGuest(authentication) == true) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         }
 
@@ -110,12 +109,11 @@ public class SalvoController {
 
     @RequestMapping(value="/games/players/{gamePlayerId}/ships", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> placeShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
-        String userName = playerRepository.findByUserName(authentication.getName()).getUserName();
-        if (userName.isEmpty()) {
+        if (isGuest(authentication) == true) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         }
 
-        Player user = playerRepository.findByUserName(userName);
+        Player user = playerRepository.findByUserName(authentication.getName());
         if (user == null) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "Unauthorised"), HttpStatus.UNAUTHORIZED);
         }
@@ -182,9 +180,8 @@ public class SalvoController {
 
     @RequestMapping(value="/players", method= RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, @RequestParam String password) {
-        //Map<String, Object> showCrPlayer = new LinkedHashMap<String, Object>();
-        if (userName.isEmpty()) {
-            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
+        if (userName.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<Map<String, Object>>(makeMap("error", "No name or password"), HttpStatus.FORBIDDEN);
         }
         Player user = playerRepository.findByUserName(userName);
         if (user != null) {
@@ -223,7 +220,6 @@ public class SalvoController {
             return new  ResponseEntity<Map<String, Object>>(oneGamePlayer, HttpStatus.OK);
         }
         else {return new  ResponseEntity<Map<String, Object>>(makeMap("error", "unauthorized"), HttpStatus.UNAUTHORIZED);}
-        //return oneGamePlayer;
     }
 
    @RequestMapping("/games")

@@ -61,7 +61,7 @@ function sendSalvo(item) {
     })
     .then((json) => {
         console.log(json)
-        //location.reload();
+        location.reload();
     })
     .catch((error) => {
         console.log('Request failure: ', error);

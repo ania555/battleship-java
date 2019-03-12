@@ -270,24 +270,15 @@ function showOppSinks(item) {
             let sortArr = item.history[i].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
             let num = sortArr.length - 1;
             let ships = ["AircraftCarrier", "Battleship", "Submarine", "Destroyer", "PatrolBoat"];
-                for (let i = 0; i < ships.length; i++) {
-                    if (sortArr[num].sinks[ships[i]] == "sunk") {
-                        for (let j = 0; j < sortArr[num].sinks[ships[i] + "Sunk"].length; j++) {
-                            if (document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").classList.item(0) == "salvo") {
-                                document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").className = "salvo oppSink";
-                            }
+            for (let i = 0; i < ships.length; i++) {
+                if (sortArr[num].sinks[ships[i]] == "sunk") {
+                    for (let j = 0; j < sortArr[num].sinks[ships[i] + "Sunk"].length; j++) {
+                        if (document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").classList.item(0) == "salvo") {
+                            document.getElementById(sortArr[num].sinks[ships[i] + "Sunk"][j] + "salvo").className = "salvo oppSink";
                         }
                     }
                 }
-
-                /*if (sortArr[num].sinks.AircraftCarrier == "sunk") {
-                    for (let j = 0; j < sortArr[num].sinks.AircraftCarrierSunk.length; j++) {
-                        if (document.getElementById(sortArr[num].sinks.AircraftCarrierSunk[j] + "salvo").classList.item(0) == "salvo") {
-                            document.getElementById(sortArr[num].sinks.AircraftCarrierSunk[j] + "salvo").className = "salvo oppSink";
-                        }
-                    }
-                }*/
-
+            }
         }
     }
 }
@@ -297,43 +288,59 @@ function displayGameState(item) {
     document.getElementById("statusMessage").innerHTML = "";
     let timerId;
     function startReloading() {
-        let  timerId = setTimeout(function() { location.reload(); startReloading(); }, 5000);
+        timerId = setTimeout(function() { location.reload(); startReloading(); }, 5000);
     }
     function stopReloading() {
          clearTimeout(timerId);
     }
-    if (item.gameState == "PlaceShips") {
-        document.getElementById("statusMessage").innerHTML = "Place your ships"
-    }
-    else if (item.gameState == "WaitForOpponentSalvo") {
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "none";
+    switch (item.gameState) {
+        case "PlaceShips":
+            document.getElementById("statusMessage").innerHTML = "Place your ships";
+            break;
+        case "WaitForOpponentToEnterGame":
+            document.getElementById("statusMessage").innerHTML = "Waite for the opponent to enter the game";
+            document.getElementById("salvoesSubmission").style.visibility = 'hidden';
+            document.getElementById("gameHistory").style.visibility = 'hidden';
+            document.getElementById("salvoDone").style.visibility = 'hidden';
+            startReloading();
+            break;
+        case "WaitForOpponentToPlaceShips":
+            document.getElementById("statusMessage").innerHTML = "Waite for the opponent to place ships";
+            document.getElementById("salvoesSubmission").style.visibility = 'hidden';
+            document.getElementById("gameHistory").style.visibility = 'hidden';
+            document.getElementById("salvoDone").style.visibility = 'hidden';
+            startReloading();
+            break;
+        case "WaitForOpponentSalvo":
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "none";
+                }
             }
-        }
-        document.getElementById("salvoDone").style.visibility = 'hidden';
-        document.getElementById("statusMessage").innerHTML = "Waite for the opponent to fire salvo";
-        startReloading()
-    }
-    else if (item.gameState == "EnterSalvo") {
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "auto";
+            document.getElementById("salvoDone").style.visibility = 'hidden';
+            document.getElementById("statusMessage").innerHTML = "Waite for the opponent to fire salvo";
+            startReloading();
+            break;
+        case  "EnterSalvo":
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "auto";
+                }
             }
-        }
-        document.getElementById("salvoDone").style.visibility = 'visible';
-        document.getElementById("statusMessage").innerHTML = "Enter your salvo";
-        stopReloading()
-    }
-    else if (item.gameState == "GameOver") {
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "none";
+            document.getElementById("salvoDone").style.visibility = 'visible';
+            document.getElementById("statusMessage").innerHTML = "Enter your salvo";
+            stopReloading();
+            break;
+        case  "GameOver":
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1) + "salvo").style.pointerEvents = "none";
+                }
             }
-        }
-        document.getElementById("salvoDone").style.visibility = 'hidden';
-        document.getElementById("statusMessage").innerHTML = "Game over"
-        stopReloading()
+            document.getElementById("salvoDone").style.visibility = 'hidden';
+            document.getElementById("statusMessage").innerHTML = "Game over"
+            stopReloading();
+            break;
     }
 }
 
