@@ -5,7 +5,7 @@ font-family: sans-serif;
 
 #headContainer {
  display: grid;
- grid-template-columns: 100px  auto 150px 50px 100px;
+ grid-template-columns: 100px  auto 230px 50px 100px;
  background-color: rgb(80, 80, 80);
  color: rgb(234, 234, 225);
 }
@@ -31,7 +31,7 @@ h1 {
 
 #gridContainer {
   display: grid;
-  grid-template-columns: 70px 460px 100px auto 290px 70px;
+  grid-template-columns: 70px 520px 50px auto 290px 70px;
   grid-template-rows: 70px auto auto auto;
   background-image: url(omaha.jpg);
   background-repeat: no-repeat;
@@ -66,7 +66,6 @@ h1 {
 
 .myList {
   width: 540px;
-  /*background-color: rgba(0, 34, 51, 0.3);*/
   background-color: rgba(23, 26, 28, 0.4);
   color: white;
 }
@@ -80,9 +79,9 @@ a:hover{
 }
 
 #newGame {
-  grid-column: 5;
+  grid-column: 6;
   grid-row: 2;
-  padding-left: 50px;
+  padding-left: 40px;
   margin-top: 40px;
 }
 
