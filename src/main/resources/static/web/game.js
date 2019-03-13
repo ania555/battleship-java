@@ -293,7 +293,7 @@ function displayGameState(item) {
             }
             document.getElementById("salvoDone").style.visibility = 'hidden';
             document.getElementById("statusMessage").innerHTML = "Waite for the opponent to fire salvo";
-            //startReloading();
+            startReloading();
             break;
         case  "EnterSalvo":
             for (let i = 0; i < 10; i++) {
