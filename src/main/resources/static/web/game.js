@@ -122,11 +122,11 @@ function showShipsGrid(item) {
 
 function listenMyEvents() {
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
-    document.getElementById("airCarrierBox").addEventListener("change", function () {adjustPosition("ship5", "airCarrier")});
-    document.getElementById("battleshipBox").addEventListener("change", function () {adjustPosition("ship4", "battleship")});
-    document.getElementById("submarineBox").addEventListener("change", function () {adjustPosition("ship3sub", "submarine")});
-    document.getElementById("destroyerBox").addEventListener("change", function () {adjustPosition("ship3dest", "destroyer")});
-    document.getElementById("patBoatBox").addEventListener("change", function () {adjustPosition("ship2", "patBoat")});
+    document.getElementById("airCarrierBox").addEventListener("change", function () {adjustPosition("airCarrier")});
+    document.getElementById("battleshipBox").addEventListener("change", function () {adjustPosition("battleship")});
+    document.getElementById("submarineBox").addEventListener("change", function () {adjustPosition("submarine")});
+    document.getElementById("destroyerBox").addEventListener("change", function () {adjustPosition("destroyer")});
+    document.getElementById("patBoatBox").addEventListener("change", function () {adjustPosition("patBoat")});
     document.getElementById("done").addEventListener("click", function () {checkShipsPlacement()});
 }
 
