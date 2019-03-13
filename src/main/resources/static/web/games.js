@@ -1,5 +1,5 @@
 import { findUser,  logoutPlayer}  from "./login.js";
-import { createNewGame, joinGame} from "./crateNewGame.js";
+import { createJoinGame } from "./crateNewGame.js";
 
 loadData()
 loadLeaderBoard()
@@ -114,10 +114,10 @@ function listenEvents(item) {
     document.querySelector("#login").addEventListener("click", function () {findUser("login")});
     document.querySelector("#logout").addEventListener("click", function () {logoutPlayer()});
     document.querySelector("#signin").addEventListener("click", function () {findUser("signIn")});
-    document.querySelector("#createGame").addEventListener("click", function () {createNewGame()});
+    document.querySelector("#createGame").addEventListener("click", function () {createJoinGame(null, "create")});
     for (let i = 0; i < item.length; i++) {
         let j = i + 1;
-        document.getElementById("game" + j).addEventListener("click", function () {joinGame(this.getAttribute("data-id"))});
+        document.getElementById("game" + j).addEventListener("click", function () {createJoinGame(this.getAttribute("data-id"), "join")});
     }
 }
 
