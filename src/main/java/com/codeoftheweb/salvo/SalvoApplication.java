@@ -35,6 +35,7 @@ public class SalvoApplication {
 
 		System.out.println("Hello");
 	}
+/*
 
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository,
@@ -165,6 +166,7 @@ public class SalvoApplication {
 			scoreRepository.save(score10);
 		};
 	}
+*/
 
 }
 

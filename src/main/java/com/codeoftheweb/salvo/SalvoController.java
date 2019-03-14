@@ -418,8 +418,6 @@ public class SalvoController {
         if (meGamePl.getShips().size() == 0) {return "PlaceShips";}
         if (meGamePl.getShips().size() == 5 && opponentGmPl == null) {return "WaitForOpponentToEnterGame";}
         if (meGamePl.getShips().size() == 5 && opponentGmPl != null && opponentGmPl.getShips().size() == 0) {return "WaitForOpponentToPlaceShips";}
-        //if (opponentGmPl == null && meGamePl.getSalvoes().size() == 0) {return "EnterSalvo";}
-        //if (opponentGmPl == null && meGamePl.getSalvoes().size() > 0) {return "WaitForOpponentSalvo";}
         if (meGamePl.getShips().size() == 5 && opponentGmPl != null && opponentGmPl.getShips().size() == 5 && checkIfgameOver(id) == "continue" && meGamePl.getSalvoes().size() > opponentGmPl.getSalvoes().size()) {return "WaitForOpponentSalvo";}
         if (meGamePl.getShips().size() == 5 && opponentGmPl != null && opponentGmPl.getShips().size() == 5 && checkIfgameOver(id) == "continue" && meGamePl.getSalvoes().size() < opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
         if (meGamePl.getShips().size() == 5 && opponentGmPl != null && opponentGmPl.getShips().size() == 5 && checkIfgameOver(id) != "continue" && meGamePl.getSalvoes().size() < opponentGmPl.getSalvoes().size()) {return "EnterSalvo";}
