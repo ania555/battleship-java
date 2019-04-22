@@ -333,7 +333,8 @@ function removeShip(idItem) {
     const myShip = document.getElementById(idItem).getAttribute("class");
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
-            if (document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).getAttribute("class") === myShip) {
+            if (document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).getAttribute("class") === myShip &&
+                document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).classList.item(0) === "placed") {
                 document.getElementById(String.fromCharCode(65 + i) + "" + (j + 1)).removeAttribute("class");
             }
         }

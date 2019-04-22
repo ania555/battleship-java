@@ -10,14 +10,15 @@ export function listenSalvoes(item) {
     document.getElementById("salvoDone").addEventListener("click", function () {sendSalvo(item)});
 }
 
+
 function setShot(item) {
     const myShot = document.getElementById(item);
     const shotList = document.querySelectorAll(".shot");
-    if (myShot.getAttribute("class") == "shot") {myShot.removeAttribute("class")}
-    else if (myShot.getAttribute("class") != "salvo" && shotList.length < 3) {myShot.setAttribute("class", "shot")}
-    else if (myShot.getAttribute("class") != "salvo" && shotList.length >= 3) {alert("You have already fired all shots for this turn"); return false;}
-    else if (myShot.getAttribute("class") == "salvo" && shotList.length < 3) {alert("This location has already been shot"); return false;}
-    else if (myShot.getAttribute("class") == "salvo" && shotList.length >= 3) {alert("You have already fired all shots for this turn"); return false;}
+    if (myShot.getAttribute("class") === "shot") {myShot.removeAttribute("class")}
+    else if (myShot.classList.item(0) !== "salvo" && shotList.length < 3) {myShot.setAttribute("class", "shot")}
+    else if (myShot.classList.item(0) !== "salvo" && shotList.length >= 3) {alert("You can fire maximal 3 shots for each turn"); return false;}
+    else if (myShot.classList.item(0) === "salvo"  && shotList.length < 3) {alert("This location has already been shot"); return false;}
+    else if (myShot.classList.item(0) === "salvo" && shotList.length >= 3) {alert("You can fire maximal 3 shots for each turn"); return false;}
 
 }
 

@@ -128,6 +128,7 @@ function listenMyEvents() {
     document.getElementById("destroyerBox").addEventListener("change", function () {adjustPosition("destroyer")});
     document.getElementById("patBoatBox").addEventListener("change", function () {adjustPosition("patBoat")});
     document.getElementById("done").addEventListener("click", function () {checkShipsPlacement()});
+
 }
 
 
@@ -177,47 +178,7 @@ function showSinksOnMe(item) {
 }
 
 
-function hitsSinksTable(item) {
-    const container = document.getElementById("historyTable");
-    const n = getParams();
-    const ships1 = ["AircraftCarrier", "Battleship", "Submarine", "Destroyer", "PatrolBoat"];
-    const ships2 = ["Aircraft Carrier", "Battleship", "Submarine", "Destroyer", "Patrol Boat"];
-    for (let i = 0; i < item.history[0].gamePlayerHitsSinks.length + 2; i++) {
-        let arrMeHits = [];
-        let arrOppHits = [];
-        let arrSinksMe = [];
-        let arrSinksOpp = [];
-        const row = container.insertRow();
-        const turn = row.insertCell();
-        turn.innerHTML = i + 1;
-        const hitsOnMe = row.insertCell();
-        hitsOnMe.setAttribute("class", "you");
-        const myLeft = row.insertCell();
-        myLeft.setAttribute("class", "you");
-        const hitsOnOpp = row.insertCell();
-        const oppLeft = row.insertCell();
-        for (let j = 0; j < 2; j++) {
-            if (item.history[j].gamePlayerId === Number(n)) {
-                let sortMeTurns = item.history[j].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
-                for (let k = 0; k < ships1.length; k++) {
-                    if (sortMeTurns[i].hits[ships1[k]].length !== 0) {arrMeHits.push(ships2[k] + ": " + sortMeTurns[i].hits[ships1[k]].length + ", ")};
-                    if (sortMeTurns[i].sinks[ships1[k]] === "sunk" && sortMeTurns[i - 1].sinks[ships1[k]] !== "sunk") {arrSinksMe.push(" | " + ships2[k] + " sunk")};
-                }
-                hitsOnOpp.innerHTML = arrMeHits + arrSinksMe;
-                oppLeft.innerHTML = sortMeTurns[i].sinks.left;
-            }
-            if (item.history[j].gamePlayerId !== Number(n)) {
-                let sortOppTurns = item.history[j].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
-                for (let k = 0; k < ships1.length; k++) {
-                    if (sortOppTurns[i].hits[ships1[k]].length !== 0) {arrOppHits.push(ships2[k] + ": " + sortOppTurns[i].hits[ships1[k]].length + ", ")};
-                    if (sortOppTurns[i].sinks[ships1[k]] === "sunk" && sortOppTurns[i - 1].sinks[ships1[k]] !== "sunk") {arrSinksOpp.push(" | " + ships2[k] + " sunk")};
-                }
-                hitsOnMe.innerHTML = arrOppHits + arrSinksOpp,
-                myLeft.innerHTML = sortOppTurns[i].sinks.left;
-            }
-        }
-    }
-}
+
 
 
 function showOppHits(item) {
@@ -272,14 +233,14 @@ function displayGameState(item) {
             document.getElementById("statusMessage").innerHTML = "Place your ships";
             break;
         case "WaitForOpponentToEnterGame":
-            document.getElementById("statusMessage").innerHTML = "Waite for the opponent to enter the game";
+            document.getElementById("statusMessage").innerHTML = "Wait for the opponent to enter the game";
             document.getElementById("salvoesSubmission").style.visibility = 'hidden';
             document.getElementById("gameHistory").style.visibility = 'hidden';
             document.getElementById("salvoDone").style.visibility = 'hidden';
             startReloading();
             break;
         case "WaitForOpponentToPlaceShips":
-            document.getElementById("statusMessage").innerHTML = "Waite for the opponent to place ships";
+            document.getElementById("statusMessage").innerHTML = "Wait for the opponent to place ships";
             document.getElementById("salvoesSubmission").style.visibility = 'hidden';
             document.getElementById("gameHistory").style.visibility = 'hidden';
             document.getElementById("salvoDone").style.visibility = 'hidden';
@@ -292,7 +253,7 @@ function displayGameState(item) {
                 }
             }
             document.getElementById("salvoDone").style.visibility = 'hidden';
-            document.getElementById("statusMessage").innerHTML = "Waite for the opponent to fire salvo";
+            document.getElementById("statusMessage").innerHTML = "Wait for the opponent to fire salvo";
             startReloading();
             break;
         case  "EnterSalvo":
@@ -314,5 +275,48 @@ function displayGameState(item) {
             document.getElementById("statusMessage").innerHTML = "Game over"
             stopReloading();
             break;
+    }
+}
+
+
+function hitsSinksTable(item) {
+    const container = document.getElementById("historyTable");
+    const n = getParams();
+    const ships1 = ["AircraftCarrier", "Battleship", "Submarine", "Destroyer", "PatrolBoat"];
+    const ships2 = ["Aircraft Carrier", "Battleship", "Submarine", "Destroyer", "Patrol Boat"];
+    for (let i = 0; i < item.history[0].gamePlayerHitsSinks.length + 2; i++) {
+        let arrMeHits = [];
+        let arrOppHits = [];
+        let arrSinksMe = [];
+        let arrSinksOpp = [];
+        const row = container.insertRow();
+        const turn = row.insertCell();
+        turn.innerHTML = i + 1;
+        const hitsOnMe = row.insertCell();
+        hitsOnMe.setAttribute("class", "you");
+        const myLeft = row.insertCell();
+        myLeft.setAttribute("class", "you");
+        const hitsOnOpp = row.insertCell();
+        const oppLeft = row.insertCell();
+        for (let j = 0; j < 2; j++) {
+            if (item.history[j].gamePlayerId === Number(n)) {
+                let sortMeTurns = item.history[j].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
+                for (let k = 0; k < ships1.length; k++) {
+                    if (sortMeTurns[i].hits[ships1[k]].length !== 0) {arrMeHits.push(ships2[k] + ": " + sortMeTurns[i].hits[ships1[k]].length + ", ")};
+                    if (sortMeTurns[i].sinks[ships1[k]] === "sunk" && sortMeTurns[i - 1].sinks[ships1[k]] !== "sunk") {arrSinksMe.push(" | " + ships2[k] + " sunk")};
+                }
+                hitsOnOpp.innerHTML = arrMeHits + arrSinksMe;
+                oppLeft.innerHTML = sortMeTurns[i].sinks.left;
+            }
+            if (item.history[j].gamePlayerId !== Number(n)) {
+                let sortOppTurns = item.history[j].gamePlayerHitsSinks.sort((a, b) => a.turn - b.turn);
+                for (let k = 0; k < ships1.length; k++) {
+                    if (sortOppTurns[i].hits[ships1[k]].length !== 0) {arrOppHits.push(ships2[k] + ": " + sortOppTurns[i].hits[ships1[k]].length + ", ")};
+                    if (sortOppTurns[i].sinks[ships1[k]] === "sunk" && sortOppTurns[i - 1].sinks[ships1[k]] !== "sunk") {arrSinksOpp.push(" | " + ships2[k] + " sunk")};
+                }
+                hitsOnMe.innerHTML = arrOppHits + arrSinksOpp,
+                myLeft.innerHTML = sortOppTurns[i].sinks.left;
+            }
+        }
     }
 }
